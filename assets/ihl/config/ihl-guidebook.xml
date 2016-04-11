@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<guidebook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+         xsi:noNamespaceSchemaLocation="adress.xsd">
+	<section id="0">
+		<title>
+			ihl.guidebook.title01
+		</title>
+		<itemstack damage="0">
+			ihl:ironWorkbench
+		</itemstack>
+		<text>
+			ihl.guidebook.section01.1
+		</text>
+		<image width="110" height="200">
+			textures/guidebook/iron_workbench_gui.png
+		</image>
+		<text>
+			ihl.guidebook.section01.2
+		</text>
+	</section>
+	<section id="1">
+		<title>
+			ihl.guidebook.title02
+		</title>
+		<itemstack damage="0">
+			ihl:fractionatorBottom
+		</itemstack>
+		<itemstack damage="0">
+			ihl:fractionatorSection
+		</itemstack>
+		<itemstack damage="0">
+			ihl:fractionatorCover
+		</itemstack>
+		<itemstack damage="0">
+			ihl:refluxCondenser
+		</itemstack>
+		<text>
+			ihl.guidebook.section02.1
+		</text>
+		<image width="110" height="200">
+			textures/guidebook/distillation_column.png
+		</image>
+		<text>
+			ihl.guidebook.section02.2
+		</text>
+	</section>
+	<section id="2">
+		<title>
+			ihl.guidebook.title03
+		</title>
+		<itemstack damage="0">
+			ihl:wireMill
+		</itemstack>
+		<itemstack damage="0">
+			ihl:vulcanizationExtrudingMold
+		</itemstack>
+		<itemstack damage="0">
+			ihl:extruder
+		</itemstack>
+		<itemstack damage="0">
+			ihl:coiler
+		</itemstack>
+		<text>
+			ihl.guidebook.section03.1
+		</text>
+		<image width="110" height="200">
+			textures/guidebook/cable_production.png
+		</image>
+		<text>
+			ihl.guidebook.section03.2
+		</text>
+	</section>
+	<section id="3">
+		<title>
+			ihl.guidebook.title04
+		</title>
+		<itemstack damage="0">
+			ihl:batterySwitchUnit
+		</itemstack>
+		<itemstack damage="0">
+			ihl:rectifierTransformerUnit
+		</itemstack>
+		<itemstack damage="0">
+			ihl:frequencyGenerator
+		</itemstack>
+		<text>
+			ihl.guidebook.section04.1
+		</text>
+		<image width="110" height="100">
+			textures/guidebook/hvdc_line.png
+		</image>
+		<text>
+			ihl.guidebook.section04.2
+		</text>
+	</section>
+	<section id="4">
+		<title>
+			ihl.guidebook.title05
+		</title>
+		<itemstack damage="0">
+			ihl:goldChimneyKnee
+		</itemstack>
+		<itemstack damage="0">
+			ihl:leadOven
+		</itemstack>
+		<itemstack damage="0">
+			ihl:goldPrecipitatorCondenser
+		</itemstack>
+		<text>
+			ihl.guidebook.section05.1
+		</text>
+		<image width="110" height="200">
+			textures/guidebook/sulphuric_acid.png
+		</image>
+		<text>
+			ihl.guidebook.section05.2
+		</text>
+	</section>
+	<section id="5">
+		<title>
+			ihl.guidebook.title06
+		</title>
+		<itemstack damage="0">
+			ihl:sackBlock
+		</itemstack>
+		<itemstack damage="0">
+			ihl:evaporatorBlock
+		</itemstack>
+		<itemstack damage="10018">
+			ihl:item.ihlSimpleItem
+		</itemstack>
+		<itemstack damage="10019">
+			ihl:item.ihlSimpleItem
+		</itemstack>
+		<text>
+			ihl.guidebook.section06.1
+		</text>
+		<image width="110" height="200">
+			textures/guidebook/sap_gathering.png
+		</image>
+		<text>
+			ihl.guidebook.section06.2
+		</text>
+	</section>
+</guidebook>
+     <!-- 
+	Hope this XML is well-formed.
+      -->

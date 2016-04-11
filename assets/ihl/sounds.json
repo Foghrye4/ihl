@@ -1,0 +1,76 @@
+{
+  "handpumpOne": {
+    "category": "neutral",
+    "sounds": [
+      "handpumpOne"
+    ]
+  },
+  "collectorHurt": {
+    "category": "neutral",
+    "sounds": [
+      "collectorHurt"
+    ]
+  },
+  "lostHeadCry": {
+    "category": "hostile",
+    "sounds": [
+      "lostHeadCry",
+      "lostHeadCry-001",
+      "lostHeadCry-002",
+      "lostHeadCry-003",
+      "lostHeadCry-004",
+      "lostHeadCry-005",
+      "lostHeadCry-006",
+      "lostHeadCry-007"
+    ]
+  },
+  "lostHeadLaught": {
+    "category": "hostile",
+    "sounds": [
+      "lostHeadLaught",
+      "lostHeadLaught-001",
+      "lostHeadLaught-002",
+      "lostHeadLaught-003"
+    ]
+  },
+  "lostHeadLaughtLong": {
+    "category": "hostile",
+    "sounds": [
+      "lostHeadLaughtLong"
+    ]
+  },
+  "lostHeadScream": {
+    "category": "hostile",
+    "sounds": [
+      "lostHeadScream",
+      "lostHeadScream-001",
+      "lostHeadScream-002",
+      "lostHeadScream-003",
+      "lostHeadScream-004"
+    ]
+  },
+  "lostHeadDeath": {
+    "category": "hostile",
+    "sounds": [
+      "lostHeadDeath"
+    ]
+  },
+  "spotlightRotating": {
+    "category": "master",
+    "sounds": [
+      "spotlightRotating"
+    ]
+  },
+  "electrocution": {
+    "category": "master",
+    "sounds": [
+      "electrocution"
+    ]
+  },
+  "zap": {
+    "category": "master",
+    "sounds": [
+      "zap"
+    ]
+  }
+}
