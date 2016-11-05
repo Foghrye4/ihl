@@ -40,7 +40,6 @@ import ihl.flexible_cable.BatterySwitchUnitTileEntity;
 import ihl.flexible_cable.BlastEntityFX;
 import ihl.flexible_cable.IronWorkbenchModel;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
-import ihl.flexible_cable.IronWorkbenchRender;
 import ihl.flexible_cable.NodeEntity;
 import ihl.flexible_cable.NodeRender;
 import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
@@ -187,7 +186,6 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(GoldChimneyKneeTileEntity.class, new GoldChimneyKneeRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(PrecipitatorCondenserTileEntity.class, new PrecipitatorCondenserRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(CoilerTileEntity.class, new CoilerRender());
-		ClientRegistry.bindTileEntitySpecialRenderer(IronWorkbenchTileEntity.class, new IronWorkbenchRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(RollingMachinePart1TileEntity.class, new RollingMachineRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(RollingMachinePart2TileEntity.class, new UniversalTileRender(new RollingMachinePart2Model(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/coiler.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(VulcanizationExtrudingMoldTileEntity.class, new UniversalTileRender(new VulcanizationExtrudingMoldModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/coiler.png")));

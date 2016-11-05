@@ -1328,6 +1328,34 @@ public class IHLMod implements IFuelHandler{
 				new FluidStack [] {},
 				new FluidStack [] {},
 				600, 30, 0);
+		Recipe.RecipeMap.sChemicalRecipes.addRecipe(
+				true,
+				new ItemStack[] {OreDictManager.INSTANCE.getStack(OP.dust,MT.Sodium, 1),
+				OreDictManager.INSTANCE.getStack(OP.cell,MT.Empty, 1)},
+				new ItemStack[] {OreDictManager.INSTANCE.getStack(OP.cell,MT.Hydrogen, 1)},
+				null,
+				new long[]{10000},
+				new FluidStack[]{new FluidStack(FluidRegistry.WATER, 1500)}, 
+				new FluidStack[]{FluidRegistry.getFluidStack("solution.natriumhydroxide", 1000)}, 
+				950,30,0);
+		Recipe.RecipeMap.sChemicalRecipes.addRecipe(
+				true,
+				new ItemStack[] {OreDictManager.INSTANCE.getStack(OP.dust,MT.SiliconDioxide, 1),OreDictManager.INSTANCE.getStack(OP.cell,MT.Empty, 2)},
+				new ItemStack[] {OreDictManager.INSTANCE.getStack("cellLiquidGlass", 2)},
+				null, 
+				new long[]{10000},
+				new FluidStack[]{FluidRegistry.getFluidStack("solution.natriumhydroxide", 1000)}, 
+				new FluidStack[]{},
+				950,30,0);
+		Recipe.RecipeMap.sChemicalRecipes.addRecipe(
+				true,
+				new ItemStack[] {OreDictManager.INSTANCE.getStack("cellSpruceResin", 1)},
+				new ItemStack[] {},
+				null, 
+				new long[]{10000},
+				new FluidStack[]{FluidRegistry.getFluidStack("glyceryl", 50)}, 
+				new FluidStack[]{FluidRegistry.getFluidStack("cablingcolophony", 600)},
+				950,30,0);
 		GT_ModHandler.addShapelessCraftingRecipe(IHLUtils.getThisModItemStack("dustCoalElectrodePremix"), new Object[] {OreDictManager.INSTANCE.getStack(OP.dust,MT.Coal,1), IHLUtils.getOreDictItemStack("nuggetTarPitch")});
 		GT_ModHandler.addShapelessCraftingRecipe(IHLUtils.getThisModItemStackWithSize("dustIrongraphite",2), new Object[] {OreDictManager.INSTANCE.getStack(OP.dust,MT.Iron,1), OreDictManager.INSTANCE.getStack(OP.dust,MT.Graphite,1)});
 		GT_ModHandler.addShapelessCraftingRecipe(IHLUtils.getThisModItemStackWithSize("dustPorcelain",4), new Object[] {OreDictManager.INSTANCE.getStack(OP.dust,MT.Clay,1),OreDictManager.INSTANCE.getStack(OP.dust,MT.Clay,1), OreDictManager.INSTANCE.getStack(OP.dust,MT.SiliconDioxide,1), OreDictManager.INSTANCE.getStack(OP.dust,MT.PotassiumFeldspar,1)});
