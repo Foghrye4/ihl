@@ -9,24 +9,22 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class UniversalRecipeOutput{
 
-    private final List<FluidStack> fluidOutputs=new ArrayList();
-    private final List<RecipeOutputItemStack> itemOutputs=new ArrayList();
+    private final List<FluidStack> fluidOutputs=new ArrayList<FluidStack>();
+    private final List<RecipeOutputItemStack> itemOutputs=new ArrayList<RecipeOutputItemStack>();
     private final int time;
     public final boolean specialConditions;
     
-    public UniversalRecipeOutput(List<FluidStack> fluidOutputs1, List itemOutputs1, int time1)
+    public UniversalRecipeOutput(FluidStack[] fluidOutputs1, Object[] itemOutputs1, int time1)
     {
     	this(fluidOutputs1, itemOutputs1, time1,false);
     }
     
-    public UniversalRecipeOutput(List<FluidStack> fluidOutputs1, List itemOutputs1, int time1, boolean specialConditions1)
+    public UniversalRecipeOutput(FluidStack[] fluidStacks, Object[] recipeOutputItemStacks, int time1, boolean specialConditions1)
     {
-    	if(fluidOutputs1!=null)
+    	if(fluidStacks!=null)
     	{
-        	Iterator<FluidStack> ioi = fluidOutputs1.iterator();
-        	while(ioi.hasNext())
+        	for(FluidStack fStack:fluidStacks)
         	{
-        		FluidStack fStack = ioi.next();
         		if(fStack==null)
         		{
         			throw new NullPointerException("Recipe cannot contain null elements!");
@@ -34,12 +32,10 @@ public class UniversalRecipeOutput{
         		fluidOutputs.add(fStack);
         	}
     	}
-    	if(itemOutputs1!=null)
+    	if(recipeOutputItemStacks!=null)
     	{
-        	Iterator ioi = itemOutputs1.iterator();
-        	while(ioi.hasNext())
+        	for(Object io:recipeOutputItemStacks)
         	{
-        		Object io = ioi.next();
         		if(io==null)
         		{
         			throw new NullPointerException("Recipe output cannot be null!");
@@ -57,6 +53,14 @@ public class UniversalRecipeOutput{
     	specialConditions=specialConditions1;
     	time=time1;
     }
+
+	public UniversalRecipeOutput(List<FluidStack> recipeOutputsFluids,
+			List<RecipeOutputItemStack> recipeOutputsRecipeOut, int time1) {
+		this.fluidOutputs.addAll(recipeOutputsFluids);
+		this.itemOutputs.addAll(recipeOutputsRecipeOut);
+		this.time=time1;
+		this.specialConditions=false;
+	}
 
 	public boolean matches(List<FluidStack> fluidOutputs1, List<ItemStack> itemOutputs1) 
 	{
@@ -98,27 +102,27 @@ public class UniversalRecipeOutput{
 	}
 
 	public UniversalRecipeOutput copyWithMultiplier(int mulipier) {
-		ArrayList<FluidStack> fluidStacks = new ArrayList<FluidStack>();
-		ArrayList<RecipeOutputItemStack> itemStacks = new ArrayList<RecipeOutputItemStack>();
+		FluidStack[] fluidStacks = null;
+		RecipeOutputItemStack[] itemStacks = null;
 		if(fluidOutputs!=null && !fluidOutputs.isEmpty())
 		{
-			Iterator<FluidStack> fi = fluidOutputs.iterator();
-			while(fi.hasNext())
+			fluidStacks = new FluidStack[fluidOutputs.size()];
+			for(int i=0;i<fluidOutputs.size();i++)
 			{
-				FluidStack fs = fi.next();
+				FluidStack fs = fluidOutputs.get(i);
 				FluidStack newFs = fs.copy();
 				newFs.amount*=mulipier;
-				fluidStacks.add(newFs);
+				fluidStacks[i]=fs;
 			}
 		}
 		if(itemOutputs!=null && !itemOutputs.isEmpty())
 		{
-			Iterator<RecipeOutputItemStack> ii = itemOutputs.iterator();
-			while(ii.hasNext())
+			itemStacks = new RecipeOutputItemStack[itemOutputs.size()];
+			for(int i=0;i<itemOutputs.size();i++)
 			{
-				RecipeOutputItemStack is = ii.next();
+				RecipeOutputItemStack is = itemOutputs.get(i);
 				RecipeOutputItemStack newIs = is.copy(mulipier);
-				itemStacks.add(newIs);
+				itemStacks[i]=newIs;
 			}	
 		}
 		return new UniversalRecipeOutput(fluidStacks,itemStacks, getTime(),false);

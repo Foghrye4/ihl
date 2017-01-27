@@ -72,5 +72,17 @@
     "sounds": [
       "zap"
     ]
+  },
+  "explosion": {
+    "category": "master",
+    "sounds": [
+      "explosion"
+    ]
+  },
+  "fuse": {
+    "category": "master",
+    "sounds": [
+      "fuse"
+    ]
   }
 }

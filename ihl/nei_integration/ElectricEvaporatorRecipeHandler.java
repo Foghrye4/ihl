@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.util.Map;
 
 import ihl.processing.chemistry.ElectricEvaporatorGui;
-import ihl.processing.chemistry.ElectricEvaporatorTileEntity;
 import ihl.processing.chemistry.EvaporatorTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;

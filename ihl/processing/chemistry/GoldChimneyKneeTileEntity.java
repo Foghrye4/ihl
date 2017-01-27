@@ -8,7 +8,6 @@ import java.util.Map;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
@@ -52,7 +51,7 @@ public class GoldChimneyKneeTileEntity extends TileEntity implements IWrenchable
 	@Override
     public List<String> getNetworkedFields()
     {
-		List<String> fields = new ArrayList();
+		List<String> fields = new ArrayList<String>();
 		fields.add("facing");
 		return fields;
     }
@@ -273,7 +272,7 @@ public class GoldChimneyKneeTileEntity extends TileEntity implements IWrenchable
 		
 		public static void addRecipe(UniversalRecipeInput input, FluidStack fluidStackWithSize) 
 		{
-			recipeManager.addRecipe(input, new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackWithSize}),null,20));
+			recipeManager.addRecipe(input, new UniversalRecipeOutput((new FluidStack[] {fluidStackWithSize}),null,20));
 		}
 		
 	    public UniversalRecipeOutput getOutput()
@@ -281,6 +280,7 @@ public class GoldChimneyKneeTileEntity extends TileEntity implements IWrenchable
 	    	return GoldChimneyKneeTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
 	    }
 	    
+		@SuppressWarnings("rawtypes")
 		public List[] getInput()
 		{
 			return new List[] {Arrays.asList(new FluidStack[] {this.gasBuffer.getFluid(),this.fluidTank.getFluid()}),null};

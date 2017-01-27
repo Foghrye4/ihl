@@ -1,13 +1,9 @@
 package ihl.flexible_cable;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,7 +19,7 @@ public class SubRTUEnergyNetNode implements IEnergyNetNode{
 	private RectifierTransformerUnitTileEntity base;
 	private short side;
 	private int gridID=-1;
-	private Set<NBTTagCompound> cableList = new HashSet();
+	private Set<NBTTagCompound> cableList = new HashSet<NBTTagCompound>();
 	
 	public SubRTUEnergyNetNode(RectifierTransformerUnitTileEntity base1, short facing1)
 	{

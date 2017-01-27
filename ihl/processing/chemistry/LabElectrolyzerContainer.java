@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class LabElectrolyzerContainer extends ContainerBase {
+public class LabElectrolyzerContainer extends ContainerBase<LabElectrolyzerTileEntity> {
 
     protected LabElectrolyzerTileEntity tileEntity;
     public short lastProgress = -1;
@@ -53,7 +53,7 @@ public class LabElectrolyzerContainer extends ContainerBase {
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.emptyFluidItemsSlot, 1, 42, 33));
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.emptyFluidItemsSlot, 2, 106, 15));
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.outputSlot, 1, 87, 51));
-            this.addSlotToContainer(new SlotInvSlot(tileEntity1.engine, 0, 152, 15));
+            this.addSlotToContainer(new SlotInvSlot(tileEntity1.dischargeSlot, 0, 152, 15));
     }
 
     @Override

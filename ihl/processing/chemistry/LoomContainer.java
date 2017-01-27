@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class LoomContainer extends ContainerBase {
+public class LoomContainer extends ContainerBase<LoomTileEntity> {
 
 	public LoomTileEntity tileEntity;
     public int lastProgress = -1;

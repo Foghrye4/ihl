@@ -20,7 +20,6 @@ public class IHLFluidTank implements IFluidTank
 {
     private final List<FluidStack> fluidList = new ArrayList<FluidStack>();
     private final int capacity;
-    private boolean isOpenVessel=false;
     private int temperature=293;
 
     public IHLFluidTank(int capacity)
@@ -30,7 +29,6 @@ public class IHLFluidTank implements IFluidTank
 
     public IHLFluidTank(int capacity, boolean isOpenVessel1)
     {
-    	this.isOpenVessel=isOpenVessel1;
         this.capacity = capacity;
     }
     
@@ -295,7 +293,7 @@ public class IHLFluidTank implements IFluidTank
 	
 	public void sortFluidsByDensity()
 	{
-		Map<Integer, FluidStack> sortMap = new HashMap();
+		Map<Integer, FluidStack> sortMap = new HashMap<Integer, FluidStack>();
 		int[] keysArray = new int[fluidList.size()];
     	Iterator<FluidStack> fli = fluidList.iterator();
 		while(fli.hasNext())
@@ -357,11 +355,11 @@ public class IHLFluidTank implements IFluidTank
 		return this.fluidList;
 	}
 
-	public void drain(List fluidInputs, boolean doDrain) 
+	public void drain(List<?> fluidInputs, boolean doDrain) 
 	{
 		if(fluidInputs!=null && !fluidInputs.isEmpty())
 		{
-			Iterator fsi = fluidInputs.iterator();
+			Iterator<?> fsi = fluidInputs.iterator();
 			while(fsi.hasNext())
 			{
 				this.drain(fsi.next(), doDrain);

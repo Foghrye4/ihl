@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class CryogenicDistillerContainer extends ContainerBase {
+public class CryogenicDistillerContainer extends ContainerBase<CryogenicDistillerTileEntity> {
 
 	public CryogenicDistillerTileEntity tileEntity;
     public int lastProgress = -1;
@@ -39,7 +39,7 @@ public class CryogenicDistillerContainer extends ContainerBase {
         {
             this.addSlotToContainer(new Slot(entityPlayer.inventory, col, 8 + col * 18, height + -24));
         }
-        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.engine,0, 8, 32));	
+        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.dischargeSlot,0, 8, 32));	
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.fillInputSlotInput,0, 58, 51));	
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.fillInputSlotProducts,0, 103, 51));	
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.fluidItemsSlot,0, 58, 15));	

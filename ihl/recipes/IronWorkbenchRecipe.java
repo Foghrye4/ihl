@@ -16,11 +16,11 @@ public class IronWorkbenchRecipe {
 	public List<IRecipeInput> materials=new ArrayList<IRecipeInput>();
 	public List<ItemStack> outputs = new ArrayList<ItemStack>(); 
 	
-	public IronWorkbenchRecipe(List tools1, List materials1, List<ItemStack> output1_1)
+	public IronWorkbenchRecipe(List<?> tools1, List<?> materials1, List<ItemStack> output1_1)
 	{
 		if(tools1!=null)
 		{
-			Iterator iTools1 = tools1.iterator();
+			Iterator<?> iTools1 = tools1.iterator();
 			while(iTools1.hasNext())
 			{
 				Object tool = iTools1.next();
@@ -37,13 +37,13 @@ public class IronWorkbenchRecipe {
 						tools.add(new RecipeInputItemStack(stack));
 					}
 				}
-				else
+				else 
 				{
 					tools.add((IRecipeInput) tool);
 				}
 			}
 		}
-		Iterator iMaterials1 = materials1.iterator();
+		Iterator<?> iMaterials1 = materials1.iterator();
 		while(iMaterials1.hasNext())
 		{
 			Object material = iMaterials1.next();
@@ -77,9 +77,33 @@ public class IronWorkbenchRecipe {
 		}
 	}
 	
-	public IronWorkbenchRecipe(List asList, List asList2,	List<ItemStack> asList3, List<ItemStack> workspaceElements1) {
+	public IronWorkbenchRecipe(List<?> asList, List<?> asList2,	List<ItemStack> asList3, List<ItemStack> workspaceElements1) {
 		this(asList, asList2, asList3);
+		if(workspaceElements1!=null)
+		{
 			this.workspaceElements.addAll(workspaceElements1);
+		}
+	}
+
+	public boolean isTool(ItemStack tool1)
+	{
+		if(tools!=null && !tools.isEmpty())
+		{
+			if(tool1==null)
+			{
+				return false;
+			}
+			Iterator<IRecipeInput> i1 = tools.iterator();
+			while(i1.hasNext())
+			{
+				IRecipeInput tool = i1.next();
+				if(tool.matches(tool1))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public boolean isCanBeCrafted(List<ItemStack> tools1, List<ItemStack> materials1, List<ItemStack> workspaceElements1)

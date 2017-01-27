@@ -72,11 +72,8 @@ private final float scale=1F/16F;
 				model.RotatingPart1.render(scale);
 				model.RotatingPart2.render(scale);
 			}
-			if(cte.hasEngine)
-			{
-				model.MotorPart1.render(scale);
-				model.MotorPart2.render(scale);
-			}
+			model.MotorPart1.render(scale);
+			model.MotorPart2.render(scale);
 		}
 		GL11.glPopMatrix(); //end
 

@@ -1,6 +1,5 @@
 package ihl.processing.metallurgy;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity{
 	
 	public static void addRecipe(IRecipeInput input1, IRecipeInput input2, String output1)
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null,Arrays.asList(new IRecipeInput [] {input1,input2})),new UniversalRecipeOutput(null,Arrays.asList(new ItemStack [] {IHLUtils.getThisModItemStack(output1)}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null,new IRecipeInput [] {input1,input2}),new UniversalRecipeOutput(null,new ItemStack [] {IHLUtils.getThisModItemStack(output1)},20));
 	}
 
 	@Override
@@ -46,13 +45,11 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity{
 
 	@Override
 	public String getLoopSoundFile() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getStopSoundFile() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -104,7 +101,7 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity{
         ItemStack crucible = input.getItemStack(IHLMod.crucible);
         if(crucible!=null)
         {
-        	ItemStack stack = ((Crucible)crucible.getItem()).processContent(crucible, this);
+        	((Crucible)crucible.getItem()).processContent(crucible, this);
         }
 	}
 	
@@ -117,7 +114,7 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity{
 	}
 	
 	@Override
-	public List[] getInput()
+	public List<?>[] getInput()
 	{
 		return new List[] {null, this.input.getItemStackList()};
 	}

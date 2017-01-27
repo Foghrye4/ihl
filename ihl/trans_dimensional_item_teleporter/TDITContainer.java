@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class TDITContainer extends ContainerBase {
+public class TDITContainer extends ContainerBase<TDITTileEntity> {
 
     protected TDITTileEntity tileEntity;
     public int lastStorage = -1;

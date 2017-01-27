@@ -29,7 +29,6 @@ public class FractionatorBottomTileEntity extends TileEntityInventory
 {
 	private final static UniversalRecipeManager recipeManager = new UniversalRecipeManager("fractionator");
     private static float kF = 24000F;
-    private static float gasC = 1F;
     private static float fluidC = 4F;
     private static float H = 2256F;
     private final IHLFluidTank waterTank = new IHLFluidTank(100);
@@ -38,7 +37,7 @@ public class FractionatorBottomTileEntity extends TileEntityInventory
     private int amountOfFluidEvaporated=0;
     private int systemHeat=0;
     private static final int maxSystemHeat=10000;
-    private final List<FractionatorSectionTileEntity> listOfColumnSections = new ArrayList();
+    private final List<FractionatorSectionTileEntity> listOfColumnSections = new ArrayList<FractionatorSectionTileEntity>();
     private FractionatorCoverTileEntity columnCover;
     private RefluxCondenserTileEntity refluxCondenser;
     private IHeatSource heatSource;
@@ -78,7 +77,7 @@ public class FractionatorBottomTileEntity extends TileEntityInventory
 
     public static void addRecipe(FluidStack fluidIn, FluidStack fluidOut1, FluidStack fluidOut2) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidIn}), null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidOut1,fluidOut2}),null,2));
+		recipeManager.addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidIn}), null), new UniversalRecipeOutput((new FluidStack[] {fluidOut1,fluidOut2}),null,2));
 	}
 
     

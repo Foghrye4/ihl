@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class RollingMachineContainer extends ContainerBase {
+public class RollingMachineContainer extends ContainerBase<RollingMachinePart1TileEntity> {
 
 	public RollingMachinePart1TileEntity tileEntity;
     public int lastProgress = -1;
@@ -33,7 +33,7 @@ public class RollingMachineContainer extends ContainerBase {
         }
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.input, 0, 54, 25));
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.output, 0, 105, 25));
-        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.engine,0, 22, 55));	
+        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.dischargeSlot,0, 22, 55));	
 	}
 
 	   @Override

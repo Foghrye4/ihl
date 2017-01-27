@@ -9,7 +9,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import ic2.core.network.NetworkManager;
 import ihl.interfaces.IItemHasMiniGUI;
 import ihl.interfaces.ItemMiniGUI;
 import ihl.utils.IHLRenderUtils;
@@ -22,18 +21,9 @@ public class IronWorkbenchGui extends GuiContainer {
 	private static final short outputslotoffset=66;
 
     public IronWorkbenchGui (IronWorkbenchContainer container1) {
-            //the container is instanciated and passed to the superclass for handling
             super(container1);
             this.container=container1;
             this.ySize=IronWorkbenchContainer.height;
-    }
-    
-    @Override
-	public void initGui()
-    {
-        super.initGui();
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
     }
     
     @Override
@@ -103,7 +93,6 @@ public class IronWorkbenchGui extends GuiContainer {
             this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
             if (this.container.tileEntity.progress > 0)
             {
-                int progressLevel=Math.min(Math.round(this.container.tileEntity.progress*16.0F/this.container.tileEntity.maxProgress),16);
                 int frameNum=0;
                 short slotRecipeNum=this.container.tileEntity.output.slotRecipe[0];
                 for(int row = 0;row<6;row++)

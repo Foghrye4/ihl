@@ -1,6 +1,5 @@
 package ihl.processing.metallurgy;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +7,6 @@ import ic2.api.recipe.IRecipeInput;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.invslots.IHLInvSlotOutput;
 import ihl.recipes.RecipeOutputItemStack;
@@ -28,7 +26,6 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 
     public final ApparatusProcessableInvSlot input;
     public final IHLInvSlotOutput output;
-    public boolean hasEngine;
 	public boolean assembled;
 	protected static final UniversalRecipeManager recipeManager = new UniversalRecipeManager("woodenrollingmachine");
 
@@ -37,7 +34,6 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 		super();
 		input = new ApparatusProcessableInvSlot(this, "input", 1, Access.IO, 3, 64);
 		output = new IHLInvSlotOutput(this, "output", 2, 1);
-		isGuiScreenOpened=true;
 	}
 	
     public UniversalRecipeOutput getOutput()
@@ -50,7 +46,6 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
     {
 		List<String> fields = super.getNetworkedFields();
 		fields.add("assembled");
-		fields.add("hasEngine");
 		return fields;
     }
 	
@@ -74,17 +69,6 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	        	assembled=true;
 				IC2.network.get().updateTileEntityField(this, "assembled");
 	        }
-	        if(this.engine.isEmpty() && hasEngine==true)
-	        {
-				this.hasEngine=false;
-				IC2.network.get().updateTileEntityField(this, "hasEngine");
-	        }
-	        else if(this.engine.correctContent() && hasEngine==false)
-	        {
-				this.hasEngine=true;
-				IC2.network.get().updateTileEntityField(this, "hasEngine");
-	        }
-	        
             if (this.getActive() && this.progress == 0 && !this.canOperate())
             {
                 this.setActive(false);
@@ -126,6 +110,7 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List[] getInput()
 	{
@@ -135,7 +120,7 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	@Override
 	public boolean canOperate()
 	{
-		return this.engine.correctContent() && this.getOutput()!=null && this.output.canAdd(this.getOutput().getItemOutputs()) && checkCorrectAccembly();
+		return this.getOutput()!=null && this.output.canAdd(this.getOutput().getItemOutputs()) && checkCorrectAccembly();
 	}
 	
 	private boolean checkCorrectAccembly()
@@ -149,7 +134,7 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	
 	public static void addRecipe(ItemStack input, ItemStack input2, ItemStack input3, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {input,input2,input3})), new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input,input2,input3})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
 	}
 	
 
@@ -159,7 +144,7 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 
 	public static void addRecipe(ItemStack input, ItemStack input3, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {input,input3})), new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input,input3})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
 	}
 
 	@Override

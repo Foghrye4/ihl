@@ -26,7 +26,6 @@ import ic2.core.IHasGui;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.IHLMod;
 import ihl.utils.IHLInvSlotDischarge;
 
@@ -184,7 +183,7 @@ public class ChargerEjectorTileEntity extends TileEntityInventory implements IEn
     		List<EntityItem> eItemsList = this.getEItemsList();
             if(eItemsList!=null && eItemsList.size()>0)
             {
-            	Iterator ei = eItemsList.iterator();
+            	Iterator<EntityItem> ei = eItemsList.iterator();
             	while(ei.hasNext())
             	{
             		EntityItem entity=(EntityItem) ei.next();
@@ -413,7 +412,8 @@ public class ChargerEjectorTileEntity extends TileEntityInventory implements IEn
     	}
     }
     
-    protected List<EntityItem> getEItemsList()
+    @SuppressWarnings("unchecked")
+	protected List<EntityItem> getEItemsList()
     {
         double range = 0.2D;
         AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.xCoord-range,this.yCoord,this.zCoord-range,this.xCoord+1.0D+range,this.yCoord+1.0D+range,this.zCoord+1.0D+range);
@@ -477,6 +477,7 @@ public class ChargerEjectorTileEntity extends TileEntityInventory implements IEn
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void callCollectors()
 	{
         double range = 64D;

@@ -2,7 +2,6 @@ package ihl.processing.chemistry;
 
 import org.lwjgl.opengl.GL11;
 
-import ihl.utils.IHLRenderUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,9 +18,6 @@ public class GaedesMercuryRotaryPumpGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
-
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.renderEngine.bindTexture(tex);
             int i1;
@@ -38,11 +34,6 @@ public class GaedesMercuryRotaryPumpGui extends GuiContainer {
             	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(27),27);
             	this.drawTexturedModalRect(17, 30, getFrameX(i1), getFrameY(i1),24,24);
-            }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-                this.mc.renderEngine.bindTexture(tex);
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 79, 37, xOffset, yOffset);
             }
     }
 

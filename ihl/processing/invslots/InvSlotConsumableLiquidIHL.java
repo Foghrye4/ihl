@@ -225,11 +225,11 @@ public class InvSlotConsumableLiquidIHL extends InvSlotConsumableLiquid{
                         return true;
                     }
 
-                    Iterator containerItem1 = this.getPossibleFluids().iterator();
+                    Iterator<Fluid> containerItem1 = this.getPossibleFluids().iterator();
 
                     while (containerItem1.hasNext())
                     {
-                        Fluid prevFluid = (Fluid)containerItem1.next();
+                        Fluid prevFluid = containerItem1.next();
 
                         if (FluidContainerRegistry.fillFluidContainer(new FluidStack(prevFluid, Integer.MAX_VALUE), stack) != null)
                         {
@@ -250,11 +250,11 @@ public class InvSlotConsumableLiquidIHL extends InvSlotConsumableLiquid{
                         }
 
                         ItemStack singleStack = StackUtil.copyWithSize(stack, 1);
-                        Iterator i$ = this.getPossibleFluids().iterator();
+                        Iterator<Fluid> i$ = this.getPossibleFluids().iterator();
 
                         while (i$.hasNext())
                         {
-                            Fluid fluid = (Fluid)i$.next();
+                            Fluid fluid = i$.next();
 
                             if (containerItem2.fill(singleStack, new FluidStack(fluid, Integer.MAX_VALUE), false) > 0)
                             {

@@ -44,14 +44,13 @@ public class CollectorEntity extends EntityFlying {
     public double waypointY;
     public double waypointZ;
     private IHL3dPathFinder pathFinder3D;
-    private int stuckCooldown=0;
     private boolean clientSideNeedEnergyUpdate = true;
     public int hopperx;
     public int hoppery;
     public int hopperz;
 	protected int energyConsume=1;
 	protected Item thisItem=IHLMod.collectorItem;
-	protected List<EntityItem> eItemIgnoreList = new ArrayList();
+	protected List<EntityItem> eItemIgnoreList = new ArrayList<EntityItem>();
 	public Tasks currentTask=Tasks.IDLE;
 	private int teUpdateTimer = 0;
 	private double[] last5TickPosX = new double[5];
@@ -145,7 +144,8 @@ public class CollectorEntity extends EntityFlying {
         return !this.isDead;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void onUpdate()
     {
         super.onUpdate();
@@ -186,7 +186,7 @@ public class CollectorEntity extends EntityFlying {
         if(this.charger==null && teUpdateTimer==20)
         {
 			List<TileEntity> teList = this.worldObj.loadedTileEntityList;
-			Iterator teIterator=teList.iterator();
+			Iterator<TileEntity> teIterator=teList.iterator();
 			while(teIterator.hasNext())
 			{
 				TileEntity te = (TileEntity) teIterator.next();
@@ -283,7 +283,7 @@ public class CollectorEntity extends EntityFlying {
    		if(this.hopper==null && teUpdateTimer==10)
 		{
 			List<TileEntity> teList = this.worldObj.loadedTileEntityList;
-			Iterator teIterator=teList.iterator();
+			Iterator<TileEntity> teIterator=teList.iterator();
 			while(teIterator.hasNext())
 			{
 				TileEntity te = (TileEntity) teIterator.next();
@@ -450,7 +450,7 @@ public class CollectorEntity extends EntityFlying {
         	        		}
         	        		else
         	        		{
-        	            	Iterator ei = eItemsList.iterator();
+        	            	Iterator<EntityItem> ei = eItemsList.iterator();
         	            	while(ei.hasNext())
         	            	{
         	            		EntityItem newTarget=(EntityItem) ei.next();
@@ -583,30 +583,6 @@ public class CollectorEntity extends EntityFlying {
 		return false;
 	}
 
-	/**
-     * True if the ghast has an unobstructed line of travel to the waypoint.
-     */
-    private boolean isCourseTraversable(double par1, double par3, double par5, double par7)
-    {
-        double var9 = (par1 - this.posX) / par7;
-        double var11 = (par3 - this.posY) / par7;
-        double var13 = (par5 - this.posZ) / par7;
-        AxisAlignedBB var15 = this.boundingBox.copy();
-
-        for (int var16 = 1; var16 < par7; ++var16)
-        {
-            var15.offset(var9, var11, var13);
-
-            if (!this.worldObj.getCollidingBoundingBoxes(this, var15).isEmpty())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
 	public int getStored() 
 	{
 		return this.energy;
@@ -616,37 +592,21 @@ public class CollectorEntity extends EntityFlying {
 	{
 		this.energy=value;
 	}
-	
-    private double mov(double motion)
-    {
-    	double max=0.1D;
-    	if(motion>max)
-    	{
-    		return max;
-    	}
-    	else if(motion<-max)
-    	{
-    		return -max;
-    	}
-    	else
-    	{
-    		return 0D;
-    	}
-    }
     
     public ItemStack getVisibleItemStack()
     {
     	return this.dataWatcher.getWatchableObjectItemStack(18);
     }
     
-    private void harvest()
+    @SuppressWarnings("unchecked")
+	private void harvest()
     {
         double range = 1D;
         AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.posX-range,this.posY-range-1D,this.posZ-range,this.posX+range,this.posY+range,this.posZ+range);
   		List<EntityItem> eItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, searchArea);
         if(eItemsList!=null && eItemsList.size()>0)
            	{
-           		Iterator itemIterator = eItemsList.iterator();
+           		Iterator<EntityItem> itemIterator = eItemsList.iterator();
            		while(itemIterator.hasNext())
            		{
            			EntityItem eItem = (EntityItem) itemIterator.next();
@@ -937,7 +897,8 @@ public class CollectorEntity extends EntityFlying {
     	this.setDead();
     }
     
-    protected List<EntityItem> getEItemsList()
+    @SuppressWarnings("unchecked")
+	protected List<EntityItem> getEItemsList()
     {
         double range = 32D;
         AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.lastItemX-range,this.lastItemY-range,this.lastItemZ-range,this.lastItemX+range,this.lastItemY+range,this.lastItemZ+range);

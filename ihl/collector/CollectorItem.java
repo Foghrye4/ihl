@@ -163,13 +163,14 @@ public class CollectorItem extends Item implements IElectricItem, IItemHudInfo {
 
 	@Override
 	public List<String> getHudInfo(ItemStack itemStack) {
-        LinkedList info = new LinkedList();
+        LinkedList<String> info = new LinkedList<String>();
         info.add(ElectricItem.manager.getToolTip(itemStack));
         info.add("Power Tier: " + this.tier);
         return info;
 	}
 	
-    @Override
+	@Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean b)
     {
         info.add("PowerTier: " + this.tier);
@@ -177,6 +178,7 @@ public class CollectorItem extends Item implements IElectricItem, IItemHudInfo {
     
     @Override
 	@SideOnly(Side.CLIENT)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
         itemList.add(this.getItemStack(this.maxCharge));

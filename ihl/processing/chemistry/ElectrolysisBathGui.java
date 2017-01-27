@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import ic2.core.network.NetworkManager;
 import ihl.collector.GuiMultiTextureButton;
 import ihl.utils.IHLRenderUtils;
 
@@ -25,6 +24,7 @@ public class ElectrolysisBathGui extends GuiContainer {
             this.container=container1;
     }
     
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui()
     {

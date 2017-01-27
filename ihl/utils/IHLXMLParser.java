@@ -3,15 +3,7 @@ package ihl.utils;
 import ihl.IHLMod;
 import ihl.guidebook.IHLGuidebookGui;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,9 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-
-import com.google.common.io.Files;
-
 
 public class IHLXMLParser {
 
@@ -55,7 +44,7 @@ public class IHLXMLParser {
 	      else if(e.getTagName().equals("itemstack"))
 	      {
 	        	String[] innername = IHLUtils.trim(e.getTextContent()).split(":");
-	        	ihlGuidebookGui.addItemStack(IHLUtils.getOtherModItemStackWithDamage(innername[0], innername[1], Integer.parseInt(e.getAttribute("damage"))));
+	        	ihlGuidebookGui.addItemStack(IHLUtils.getOtherModItemStackWithDamage(innername[0], innername[1], Integer.parseInt(e.getAttribute("damage")),1));
 	      }
 	      else if(e.getTagName().equals("text"))
 	      {
@@ -100,42 +89,4 @@ public class IHLXMLParser {
 		Document doc = db.parse(IHLMod.class.getResourceAsStream("/assets/ihl/config/ihl-guidebook.xml"));
 	    visit(doc, 0, sectionNumber, ihlGuidebookGui); 
 	} 
-	
-    private File getGuidebookFile() throws IOException
-    {
-        File folder = new File(IHLMod.proxy.getMinecraftDir(), "config");
-        folder.mkdirs();
-        File file = new File(folder, "ihl-guidebook.xml");
-        if(!file.exists())
-        {
-        	InputStream in = IHLMod.class.getResourceAsStream("/assets/ihl/config/ihl-guidebook.xml");
-	        InputStreamReader isReader = new InputStreamReader(in, "UTF-8");
-	        LineNumberReader reader = new LineNumberReader(isReader);
-        	OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-			BufferedWriter writer = new BufferedWriter(osWriter);
-	        String line;
-			while ((line = reader.readLine()) != null)
-			{
-				writer.append(line);
-				writer.newLine();
-			}
-			writer.close();
-			osWriter.close();
-			in = IHLMod.class.getResourceAsStream("/assets/ihl/config/adress.xsd");
-	        isReader = new InputStreamReader(in, "UTF-8");
-	        reader = new LineNumberReader(isReader);
-	        file = new File(folder, "adress.xsd");
-        	osWriter = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-			writer = new BufferedWriter(osWriter);
-			while ((line = reader.readLine()) != null)
-			{
-				writer.append(line);
-				writer.newLine();
-			}
-			writer.close();
-			osWriter.close();
-        }
-        return file;
-    }
-	
 }

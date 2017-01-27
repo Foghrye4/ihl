@@ -1,18 +1,10 @@
 package ihl.flexible_cable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.core.ExplosionIC2;
-import ic2.core.IC2;
-import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityInventory;
 import ihl.IHLMod;
 import ihl.flexible_cable.IHLGrid;
@@ -20,16 +12,10 @@ import ihl.flexible_cable.NodeEntity;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.utils.IHLUtils;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInventory implements IEnergyNetNode{
 
@@ -43,7 +29,7 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	public FlexibleCableHolderBaseTileEntity()
 	{
 		super();
-		cableList=new HashSet();
+		cableList=new HashSet<NBTTagCompound>();
 	}
 	
     @Override
@@ -57,6 +43,7 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
         }
     }
     
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setFacing(short facing1)
 	{
@@ -70,7 +57,7 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 		setConnectionZ(this.zCoord+0.5D);
 		if(!nodeList.isEmpty())
 		{
-			Iterator ei = nodeList.iterator();
+			Iterator<NodeEntity> ei = nodeList.iterator();
         	while(ei.hasNext())
         	{
         		NodeEntity ne=(NodeEntity) ei.next();
@@ -174,7 +161,6 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 		if(newGridID!=-1)
 		{
 			this.gridID=newGridID;
-			IHLGrid newGrid = IHLMod.enet.getGrid(newGridID);
 			IHLMod.enet.getGrid(newGridID).add(this);
 		}
 		else

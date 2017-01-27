@@ -80,7 +80,8 @@ public class CryogenicDistillerRecipeHandler extends MachineRecipeHandler
         return "cryogenicDistiller";
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void drawExtras(int recipeNumber)
     {
     	MachineRecipeHandler.CachedIORecipe recipe = (MachineRecipeHandler.CachedIORecipe) this.arecipes.get(recipeNumber);

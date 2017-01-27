@@ -35,7 +35,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.reactor.IReactor;
 import ic2.core.Ic2Items;
 import ihl.IHLCreativeTab;
-import ihl.IHLMod;
 import ihl.IHLModInfo;
 import ihl.flexible_cable.SetOfDiesMiniGUI;
 import ihl.interfaces.IHasTemperature;
@@ -44,12 +43,11 @@ import ihl.interfaces.ItemMiniGUI;
 import ihl.utils.IHLUtils;
 public class IHLTool extends Item implements IItemHasMiniGUI{
 
-	private static Map<Integer, IIcon> iconMap = new HashMap();
-	private static Map<Integer, String> nameMap = new HashMap();
-	private static Map<Integer, String> hintMap = new HashMap();
-	private static Map<Integer, Integer> maxToolDamageMap = new HashMap();
-	private static Map<Integer, Boolean> isWeaponMap = new HashMap();
-	private static Map<Integer, Float> damageVersusEntityMap = new HashMap();
+	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
+	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
+	private static Map<Integer, String> hintMap = new HashMap<Integer, String>();
+	private static Map<Integer, Boolean> isWeaponMap = new HashMap<Integer, Boolean>();
+	private static Map<Integer, Float> damageVersusEntityMap = new HashMap<Integer, Float>();
 	public static Item instance;
 	
 	private IIcon dice240;
@@ -163,7 +161,8 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
 
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	@SuppressWarnings({ "rawtypes", "unchecked" }) 
+	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
 		Type[] var1 = Type.values();
 		for(int i=0;i<var1.length;i++)
@@ -259,6 +258,7 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
 	}
 	
     @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" }) 
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
        	info.add(EnumChatFormatting.WHITE+StatCollector.translateToLocal("ihl.durability") +EnumChatFormatting.GREEN + (IHLUtils.getMaxDamageValueViaNBTTag(itemStack) - IHLUtils.getDamageValueViaNBTTag(itemStack))+" / "+IHLUtils.getMaxDamageValueViaNBTTag(itemStack));

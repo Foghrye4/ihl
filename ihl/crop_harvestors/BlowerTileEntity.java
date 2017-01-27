@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
@@ -34,7 +33,6 @@ import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlotUpgrade;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ic2.core.upgrade.IUpgradableBlock;
 import ic2.core.upgrade.UpgradableProperty;
 import ihl.IHLMod;
@@ -52,16 +50,13 @@ public class BlowerTileEntity extends TileEntityInventory implements IEnergySink
     private double energyConsume=5D;
     private int defaultAirSpeedBase=100;
     public int airSpeedBase=100;
-    private boolean shouldCalculateAirFlow=true;
     private int sCAFCount=0;
     public boolean addedToEnergyNet = false;
-    private boolean hasEntityInFlow=false;
-    private ArrayList<AirSpeedZone> aszlist = new ArrayList();
+    private ArrayList<AirSpeedZone> aszlist = new ArrayList<AirSpeedZone>();
     public final InvSlotUpgrade upgradeSlot;
     public final IHLInvSlotDischarge dischargeSlot;
 	public int updateChecksum=-1;
     private final float lambda=0.00001F;
-    private Random rand = new Random();
     public int operationRange=-1;
     public int lastOperationRange=0;
     
@@ -254,7 +249,8 @@ public class BlowerTileEntity extends TileEntityInventory implements IEnergySink
     }
     	
     	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void updateEntityServer()
     {
     	
@@ -650,12 +646,7 @@ public class BlowerTileEntity extends TileEntityInventory implements IEnergySink
 			return false;
 		}
 	}
-	
-	private boolean isCNE(int x,int y,int z,int x1,int y1,int z1)
-	{
-		return x!=x1||y!=y1||z!=z1;
-	}
-	
+		
 	private boolean isAirPassable(int x,int y,int z)
 	{
 		Block block = worldObj.getBlock(x,y,z);

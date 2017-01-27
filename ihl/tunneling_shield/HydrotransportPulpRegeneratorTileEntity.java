@@ -40,7 +40,6 @@ public class HydrotransportPulpRegeneratorTileEntity extends BasicElectricMotorT
         this.drainInputSlot = new InvSlotConsumableLiquidIHL(this, "drainInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.TOP, InvSlotConsumableLiquid.OpType.Drain);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 1);
 		this.outputSlot = new InvSlotOutput(this, "output", 3, 12);
-		this.isGuiScreenOpened=true;
 		this.operationLength=26;
 	}
 	
@@ -211,9 +210,10 @@ public class HydrotransportPulpRegeneratorTileEntity extends BasicElectricMotorT
 	
 	private boolean isMachineOperational()
 	{
-		return this.engine.correctContent() && this.energy>=this.energyConsume/this.engine.getEfficiency();
+		return this.energy>=this.energyConsume;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List[] getInput() 
 	{

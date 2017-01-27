@@ -86,7 +86,7 @@ public class AchesonFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
     public List<PositionedStack> getAdditionalIngredients()
     {
-    	List<PositionedStack> ps = new ArrayList();
+    	List<PositionedStack> ps = new ArrayList<PositionedStack>();
     	RecipeInputOreDictionaryList ari = new RecipeInputOreDictionaryList(new String[] {"stickCoal","stickGraphite"});
     	ps.add(new PositionedStack(ari.getInputs(),16-5,41-11));
     	ps.add(new PositionedStack(ari.getInputs(),52-5,41-11));

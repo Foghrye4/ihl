@@ -13,16 +13,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class MirrorBlock extends Block implements ITileEntityProvider {
 
-	private String unlocalizedName;
-	private IIcon blockIconSide;
-	
 	public MirrorBlock(String unlocalizedName1) 
 	{
 		super(Material.glass);
@@ -36,7 +32,7 @@ public class MirrorBlock extends Block implements ITileEntityProvider {
 	
 	public static void init()
 	{
-		MirrorBlock mblock = new MirrorBlock("mirror");
+		new MirrorBlock("mirror");
 		GameRegistry.registerTileEntity(MirrorTileEntity.class, "mirror");
 	}
 
@@ -76,8 +72,6 @@ public class MirrorBlock extends Block implements ITileEntityProvider {
     	{
    		MirrorTileEntity ate = (MirrorTileEntity) te;
         int var2 = ate.getFacing() & 7;
-        float var4 = 0.375F;
-        float var5 = 0.625F;
         float var6 = 0.5F;
         float var7 = 0.09F;
         if (var2 == 0)
@@ -111,8 +105,6 @@ public class MirrorBlock extends Block implements ITileEntityProvider {
     private void setBlockBoundsBasedOnFacing(int facing)
     {
         int var2 = facing & 7;
-        float var4 = 0.375F;
-        float var5 = 0.625F;
         float var6 = 0.5F;
         float var7 = 0.09F;
         if (var2 == 0)
@@ -205,18 +197,4 @@ public class MirrorBlock extends Block implements ITileEntityProvider {
 	{
 		this.dropBlockAsItem(world, x, y, z, IHLUtils.getThisModItemStack("dustGlass"));
 	}
-	/*	@Override
-	public boolean onBlockActivated(World world,int x,int y,int z,EntityPlayer player,int i,float pos_x,float pos_y,float pos_z){
-		TileEntity te = world.getTileEntity(x,y,z);
-		if(IC2.platform.isRendering())
-		{
-			MirrorTileEntity rtu = (MirrorTileEntity)te;
-			if(player.getCurrentEquippedItem()==null)
-			{
-				IC2.platform.messagePlayer(player, "ic2.tooltip.mode", new Object[] {"Facing " + rtu.getFacing()});
-			}
-		}
-		return  false;
-	}
-	*/
 }

@@ -24,12 +24,10 @@ public class GlassBoxRender extends TileEntitySpecialRenderer {
 			double x, double y, double z, float par8) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y+0.5F, (float)z + 0.5F);
-		float rotation=0F;
 		for(int i=0;i<te.invSlot.size();i++)
 		{
 			if(te.invSlot.get(i)!=null)
 	    	{
-				rotation+=(randomPosMatrix[i*3]-0.5F)*90F; 
 				GL11.glRotatef((randomPosMatrix[i*3]-0.5F)*90F, 0F, 1F, 0F);
 				if(te.invSlot.get(i).getItem().isFull3D())
 				{

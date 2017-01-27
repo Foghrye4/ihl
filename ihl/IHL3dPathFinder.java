@@ -1,7 +1,7 @@
 package ihl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -70,7 +70,7 @@ public class IHL3dPathFinder {
         int y=Math.round((float)toY);
         int z=Math.round((float)toZ);
 		int xyz[] = {0,0,1,0,0,-1,0,0};
-		List list = new ArrayList();
+		Set<Long> list = new HashSet<Long>();
 		for(int thread=0;thread<=256;thread++)
 		{
 			if(this.isCourseTraversable(x+0.5D, y+0.5D, z+0.5D, this.entity.posX, this.entity.posY, this.entity.posZ))

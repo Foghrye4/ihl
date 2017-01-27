@@ -25,7 +25,6 @@ import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
-import ic2.core.network.NetworkManager;
 import ihl.interfaces.IHasTemperature;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.chemistry.ChemicalReactorTileEntity;
@@ -125,7 +124,6 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
        	}
    		temperature=(short) (this.fluidTank.getTemperature()-273);
    		IHLUtils.handleFluidSlotsBehaviour(fillInputSlot, drainInputSlot, emptyFluidItemsSlot, fluidTank);
-        boolean needsInvUpdate = false;
         if (this.canOperate())
         {
             this.setActive(true);
@@ -138,7 +136,6 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
             if (this.progress >= this.operationLength)
             {
                 this.operate();
-                needsInvUpdate = true;
                 this.progress = 0;
                 IC2.network.get().initiateTileEntityEvent(this, 2, true);
             }
@@ -179,57 +176,6 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 	@Override
 	public String getInventoryName() {
 		return "impregnatingMachine";
-	}
-	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
 	}
 	
 	public float getRenderLiquidLevel()
@@ -273,6 +219,7 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
     	return ImpregnatingMachineTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
+	@SuppressWarnings("rawtypes")
 	public List[] getInput()
 	{
 		for(int i=0;i<fluidTank.getNumberOfFluids();i++)
@@ -365,7 +312,7 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 
 	public static void addQuenchingRecipe(String nameHot, String nameQuenched) 
 	{
-		addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {new FluidStack(FluidRegistry.WATER, 50)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack(nameHot)})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack(nameQuenched)}),2));
+		addRecipe(new UniversalRecipeInput((new FluidStack[] {new FluidStack(FluidRegistry.WATER, 50)}), (new ItemStack[] {IHLUtils.getThisModItemStack(nameHot)})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getThisModItemStack(nameQuenched)}),2));
 	}
 
 	public IHLFluidTank getFluidTank() 

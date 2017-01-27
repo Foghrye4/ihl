@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class GaedesMercuryRotaryPumpContainer extends ContainerBase {
+public class GaedesMercuryRotaryPumpContainer extends ContainerBase<GaedesMercuryRotaryPumpTileEntity> {
 
     protected GaedesMercuryRotaryPumpTileEntity tileEntity;
     private final static int height=166;
@@ -28,7 +28,7 @@ public class GaedesMercuryRotaryPumpContainer extends ContainerBase {
         {
             this.addSlotToContainer(new Slot(entityPlayer.inventory, col, 8 + col * 18, height + -24));
         }
-            this.addSlotToContainer(new SlotInvSlot(tileEntity1.engine, 0, 61, 36));
+            this.addSlotToContainer(new SlotInvSlot(tileEntity1.dischargeSlot, 0, 61, 36));
     }
 
     @Override

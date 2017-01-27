@@ -1,34 +1,22 @@
 package ihl.flexible_cable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.core.IC2;
 import ic2.core.IC2DamageSource;
 import ic2.core.item.armor.ItemArmorHazmat;
 import ihl.IHLMod;
 import ihl.IHLModInfo;
-import ihl.interfaces.IDataCableHolder;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.utils.IHLUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.server.S26PacketMapChunkBulk;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
@@ -56,6 +44,8 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 		return !worldObj.isRemote && !this.noClip;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -191,7 +181,7 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	public Set<NBTTagCompound> getCableList() {
 		if(cableList==null)
 		{
-			cableList=new HashSet(1);
+			cableList=new HashSet<NBTTagCompound>(1);
 			if(this.cable!=null)
 			{
 				cableList.add(this.cable);

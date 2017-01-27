@@ -38,10 +38,10 @@ public class LightBulbBlock extends Block implements ITileEntityProvider
 	public static void init()
 	{
 		glowningAir = new GlowningAirBlock();
+		new LightBulbBlock("lightBulb");
+		new SpotlightBlock("spotlight");
 		GameRegistry.registerBlock(glowningAir, "glowningAir");
-		LightBulbBlock mblock = new LightBulbBlock("lightBulb");
 		GameRegistry.registerTileEntity(LightBulbTileEntity.class, "lightBulb");
-		SpotlightBlock sblock = new SpotlightBlock("spotlight");
 		GameRegistry.registerTileEntity(SpotlightTileEntity.class, "spotlight");
 		SpotlightTileEntity.createLightSphereVectors();
 	}

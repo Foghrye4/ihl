@@ -1,11 +1,9 @@
 package ihl.processing.invslots;
 
-import java.util.Iterator;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.util.ForgeDirection;
 import ic2.core.Ic2Items;
 import ic2.core.block.invslot.InvSlot;
-import ihl.IHLMod;
 import ihl.datanet.Contact;
 import ihl.datanet.RedstoneSignalConverterTileEntity;
 import ihl.interfaces.IDataNode;

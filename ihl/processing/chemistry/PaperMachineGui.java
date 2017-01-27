@@ -54,11 +54,6 @@ public class PaperMachineGui extends GuiContainer {
             {
             	IHLRenderUtils.instance.renderIHLFluidTank(this.container.tileEntity.getFluidTank(), 102, 28, 114, 59, zLevel, par1, par2, xOffset, yOffset);
             }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-                this.mc.renderEngine.bindTexture(background);
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 26, 34, xOffset, yOffset);
-            }
     }
 
     @Override

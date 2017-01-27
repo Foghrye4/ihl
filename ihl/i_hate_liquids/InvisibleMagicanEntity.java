@@ -14,14 +14,13 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class InvisibleMagicanEntity extends Entity {
 	private int entityAge=0;
-	private int timer=0;
 	private int viscosityTimer=0;
 	private int viscosity=5;
 	public int x0=0;
 	public int y0=0;
 	public int z0=0;
-    public List<XYZ> flowXYZ = new ArrayList();
-    public List<Block> blockList = new ArrayList();
+    public List<XYZ> flowXYZ = new ArrayList<XYZ>();
+    public List<Block> blockList = new ArrayList<Block>();
     private Block block;
     private int lowestPointsCounter=0;
     
@@ -103,7 +102,6 @@ public class InvisibleMagicanEntity extends Entity {
     				xyz = this.flowXYZ.remove(0);
     	    		if(this.flowXYZ.isEmpty())
     	    		{
-    	    			this.timer=0;
     	    			Block block1=this.blockList.get(0);
     	    			//System.out.println("Trying to create new source");
     	    			if(this.setBlock(xyz.x, xyz.y, xyz.z, block1))
@@ -182,115 +180,6 @@ public class InvisibleMagicanEntity extends Entity {
     	return  block.getMaterial().isLiquid() ? this.worldObj.getBlockMetadata(par2, par3, par4) : -1;
     }
     
-    private boolean writeLowestFlowPoint()
-    {
-    	int startx = this.x0;
-    	int starty = this.y0;
-    	int startz = this.z0;
-    	int currentFlowDecay=getFlowDecay(startx, starty, startz);
-    	for (int i=0; i<64;i++)
-    			{
-    		//Go search up, if possible.
-    			if(getFlowDecay(startx, starty+1, startz)>=0)
-    			{
-    				starty++;
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			
-    			else if(getFlowDecay(startx+1, starty+1, startz)>=0)
-    			{
-    				starty++;
-    				startx++;						
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			
-    			else if(getFlowDecay(startx-1, starty+1, startz)>=0)
-    			{
-    				starty++;
-    				startx--;						
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			
-    			else if(getFlowDecay(startx, starty+1, startz+1)>=0)
-    			{
-    				starty++;
-    				startz++;						
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			
-    			else if(getFlowDecay(startx, starty+1, startz-1)>=0)
-    			{
-    				starty++;
-    				startz--;						
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			//Start checking neighbor blocks to lower flow decay.
-    			else if(getFlowDecay(startx-1, starty, startz)<currentFlowDecay&&getFlowDecay(startx-1, starty, startz)!=-1)
-    				{
-    					startx--;
-    					currentFlowDecay=getFlowDecay(startx, starty, startz);
-    				}
-    			else if(getFlowDecay(startx, starty, startz+1)<currentFlowDecay&&getFlowDecay(startx, starty, startz+1)!=-1)
-    				{
-    					startz++;
-    					currentFlowDecay=getFlowDecay(startx, starty, startz);
-    				}
-    			else if(getFlowDecay(startx, starty, startz-1)<currentFlowDecay&&getFlowDecay(startx, starty, startz-1)!=-1)
-    				{
-    					startz--;
-    					currentFlowDecay=getFlowDecay(startx, starty, startz);
-    				}
-    			else if(getFlowDecay(startx+1, starty, startz)<currentFlowDecay&&getFlowDecay(startx+1, starty, startz)!=-1)
-    			{
-    				startx++;
-    				currentFlowDecay=getFlowDecay(startx, starty, startz);
-    			}
-    			else if(currentFlowDecay==0)
-    			{
-    				break;
-    			}
-    			else if(getFlowDecay(startx-1, starty, startz)==currentFlowDecay&&getFlowDecay(startx-1, starty, startz)!=-1)
-				{
-					startx--;
-					currentFlowDecay=getFlowDecay(startx, starty, startz);
-				}
-    			else if(getFlowDecay(startx, starty, startz+1)==currentFlowDecay&&getFlowDecay(startx, starty, startz+1)!=-1)
-				{
-					startz++;
-					currentFlowDecay=getFlowDecay(startx, starty, startz);
-				}
-				else if(getFlowDecay(startx, starty, startz-1)==currentFlowDecay&&getFlowDecay(startx, starty, startz-1)!=-1)
-				{
-					startz--;
-					currentFlowDecay=getFlowDecay(startx, starty, startz);
-				}
-				else if(getFlowDecay(startx+1, starty, startz)==currentFlowDecay&&getFlowDecay(startx+1, starty, startz)!=-1)
-				{
-					startx++;
-					currentFlowDecay=getFlowDecay(startx, starty, startz);
-				}
-    			else {break;}
-    			}
-    	if(currentFlowDecay==0)
-    	{
-    		Block block1 = this.worldObj.getBlock(startx, starty, startz);
-    		if(this.replaceBlock(startx, starty, startz, block1))
-    		{
-    			this.block=block1;
-   				return true;
-    		}
-    	}
-    	else if(currentFlowDecay>=7)
-    	{
-    		this.worldObj.setBlockToAir(startx, starty, startz);
-    	}
-    	else
-    	{
-    		this.worldObj.setBlockMetadataWithNotify(startx, starty, startz, currentFlowDecay+1, 0);
-    	}
-    	return false;
-    }
-
     public boolean replaceBlock(int x,int y,int z, Block block)
     {	   
 		if(!IHLMod.cccFiniteWater&&(block==Blocks.flowing_water || block==Blocks.water))
@@ -394,8 +283,7 @@ public class InvisibleMagicanEntity extends Entity {
         int x=x0;
         int y=y0; 
         int z=z0;
-        List list = new ArrayList();
-        list.clear();
+        List<Long> list = new ArrayList<Long>();
         this.flowXYZ.clear();
 		for(int thread=0;thread<=256;thread++)
 		{
@@ -502,7 +390,7 @@ public class InvisibleMagicanEntity extends Entity {
 				}
 				else {break;}
 			}
-		List<XYZ> xyzlist = new ArrayList();
+		List<XYZ> xyzlist = new ArrayList<XYZ>();
 		if(currentFlowDecay==0)
 		{
 			xyzlist.add(new XYZ(startx, starty, startz));

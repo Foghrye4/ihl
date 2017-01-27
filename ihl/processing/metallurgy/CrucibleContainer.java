@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.util.StackUtil;
@@ -44,7 +43,7 @@ public class CrucibleContainer extends ContainerBase<CrucibleInventory>
 
             if (stack != null)
             {
-                NBTTagCompound nbtTagCompoundSlot = StackUtil.getOrCreateNbtData(stack);
+                StackUtil.getOrCreateNbtData(stack);
 
                 if (this.box.isThisContainer(stack))
                 {

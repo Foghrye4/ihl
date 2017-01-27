@@ -4,17 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.mutable.MutableObject;
-
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
 import ic2.core.block.invslot.InvSlot;
-import ic2.core.block.invslot.InvSlotConsumableItemStack;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.block.invslot.InvSlot.InvSide;
 import ihl.IHLMod;
 import ihl.items_blocks.IHLTool;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
@@ -23,7 +19,6 @@ import ihl.recipes.IRecipeInputFluid;
 import ihl.recipes.RecipeInputDie;
 import ihl.recipes.RecipeInputFluidDictionary;
 import ihl.recipes.RecipeInputFluidStack;
-import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
@@ -36,7 +31,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -62,7 +56,6 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
 		fillInputSlot = new InvSlotConsumableLiquidIHL(this, "fillInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
         drainInputSlot = new InvSlotConsumableLiquidIHL(this, "drainInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Drain, "ingot");
 		dice = new ApparatusProcessableInvSlot(this, "dice", 3, Access.IO, 1, 64);
-		this.isGuiScreenOpened=true;
 		this.operationLength=600;
 	}
 	
@@ -142,7 +135,6 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
 		{
 			this.metalFluidTank.fill(rOutput.getFluidOutputs().get(0), true);
 		}
-		ForgeDirection dir = ForgeDirection.getOrientation(getFacing()).getRotation(ForgeDirection.DOWN);
 		TileEntity te = worldObj.getTileEntity(xCoord+ForgeDirection.getOrientation(getFacing()).offsetX,yCoord+ForgeDirection.getOrientation(getFacing()).offsetY,zCoord+ForgeDirection.getOrientation(getFacing()).offsetZ);
 		if(rOutputItemStack!=null && te instanceof IProductionLine)
 		{
@@ -156,6 +148,7 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List[] getInput()
 	{
@@ -169,12 +162,12 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
     
     public static void addRecipe(FluidStack moltenMetal, IRecipeInput inputDice,ItemStack output1)
     {	
-    	recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new IRecipeInputFluid[] {new RecipeInputFluidDictionary("lubricant", 1),new RecipeInputFluidDictionary("water", 1),new RecipeInputFluidStack(moltenMetal)}),Arrays.asList(new IRecipeInput[] {inputDice})),new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output1}),200));
+    	recipeManager.addRecipe(new UniversalRecipeInput((new IRecipeInputFluid[] {new RecipeInputFluidDictionary("lubricant", 1),new RecipeInputFluidDictionary("water", 1),new RecipeInputFluidStack(moltenMetal)}),(new IRecipeInput[] {inputDice})),new UniversalRecipeOutput(null,(new ItemStack[] {output1}),200));
     }
 
     public static void addRecipe(String string, FluidStack fluidStack) 
 	{
-    	recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new IRecipeInput [] {new RecipeInputOreDict(string)})),new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStack}),null,200));
+    	recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput [] {new RecipeInputOreDict(string)})),new UniversalRecipeOutput((new FluidStack[] {fluidStack}),null,200));
 	}
 
     

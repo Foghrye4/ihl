@@ -18,22 +18,21 @@ import net.minecraft.server.MinecraftServer;
 public class IHLGrid 
 {
 	private static final double powerLossLimitPerMeter=1.6D;
-	public final Set<IEnergyNetNode> telist = new HashSet();
+	public final Set<IEnergyNetNode> telist = new HashSet<IEnergyNetNode>();
 	public double energy=0D;
 	private IEnergyNetNode sink;
 	private IEnergyNetNode source;
 	private double voltage;
-	private short frequency=0;
 	private double lastVoltage;
 	public boolean isGridValid=true;
 	private double total20TicksEU;
 	private int lastTickCounter=0;
 	private int tickCounterFireStart=0;
-	public final List<IEnergyNetNode> calculatedSinks = new ArrayList();
-	public final List<IEnergyNetNode> calculatedSources = new ArrayList();
-	public final Set<NBTTagCompound> cablesOnFire = new HashSet();
-	private final Map<IEnergyNetNode, Double> energyLossSinkMap = new HashMap();
-	private final Map<IEnergyNetNode, Double> voltageSinkMap = new HashMap();
+	public final List<IEnergyNetNode> calculatedSinks = new ArrayList<IEnergyNetNode>();
+	public final List<IEnergyNetNode> calculatedSources = new ArrayList<IEnergyNetNode>();
+	public final Set<NBTTagCompound> cablesOnFire = new HashSet<NBTTagCompound> ();
+	private final Map<IEnergyNetNode, Double> energyLossSinkMap = new HashMap<IEnergyNetNode, Double>();
+	private final Map<IEnergyNetNode, Double> voltageSinkMap = new HashMap<IEnergyNetNode, Double>();
 	private double averageEUTransfered;
 	private double lastAverageEUTransfered=0D;
 	
@@ -151,10 +150,10 @@ public class IHLGrid
 		this.averageEUTransfered>this.lastAverageEUTransfered ||
 		this.voltage!=this.lastVoltage))
 		{
-			Map<IEnergyNetNode, NBTTagCompound> map = new HashMap();
-			Set<IEnergyNetNode> templist = new HashSet();
-			Set<IEnergyNetNode> processlist = new HashSet();
-			Set<IEnergyNetNode> templist2 = new HashSet();
+			Map<IEnergyNetNode, NBTTagCompound> map = new HashMap<IEnergyNetNode, NBTTagCompound>();
+			Set<IEnergyNetNode> templist = new HashSet<IEnergyNetNode>();
+			Set<IEnergyNetNode> processlist = new HashSet<IEnergyNetNode>();
+			Set<IEnergyNetNode> templist2 = new HashSet<IEnergyNetNode>();
 			templist.addAll(telist);
 			processlist.add(sink);
 			int threads=0;

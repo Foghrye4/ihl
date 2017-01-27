@@ -11,7 +11,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.items_blocks.FlexibleCableItem;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
@@ -47,7 +46,7 @@ public class VulcanizationExtrudingMoldTileEntity extends TileEntity implements 
 	
     public static void addRecipe(FluidStack inputFluid,ItemStack input,ItemStack output1)
     {
-    	recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {inputFluid}),Arrays.asList(new ItemStack[] {input})),new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output1}),200));
+    	recipeManager.addRecipe(new UniversalRecipeInput((new FluidStack[] {inputFluid}),(new ItemStack[] {input})),new UniversalRecipeOutput(null,(new ItemStack[] {output1}),200));
     }
 	
     public boolean enableUpdateEntity()

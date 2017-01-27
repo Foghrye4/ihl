@@ -2,6 +2,7 @@ package ihl.processing.metallurgy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.item.EntityItem;
@@ -41,7 +42,7 @@ public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler
 	
     public static void addRecipe(FluidStack input, ItemStack input1, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {input}),Arrays.asList(new ItemStack[] {input1})), new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[]{output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput((new FluidStack[] {input}),(new ItemStack[] {input1})), new UniversalRecipeOutput(null,(new ItemStack[]{output}),20));
 	}
 	
     @Override
@@ -66,7 +67,7 @@ public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler
     {
         return IC2.platform.isSimulating();
     }
-
+    
     @Override
 	public void updateEntity()
     {
@@ -78,13 +79,30 @@ public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler
     			if(formattedFluidName!="")
     			{
     				int fluidAmountPerItem = Details.getMeltingFluidAmount(this.resultSuffix);
-    				int fluidAmountPerItem2 = Details.getMeltingFluidAmount("nugget");
     				ArrayList<ItemStack> resultList = OreDictionary.getOres(this.resultSuffix+formattedFluidName);
-    				if(resultList.isEmpty())
+    				if(resultList.isEmpty() || fluidAmountPerItem<=0)
     				{
-    					resultList=new ArrayList();
-        				if(IHLUtils.getItemStackIfExist(this.resultSuffix+formattedFluidName)!=null)resultList.add(IHLUtils.getItemStackIfExist(this.resultSuffix+formattedFluidName));
+//    					IHLMod.log.info("Injection mold: resultList.isEmpty() || fluidAmountPerItem<=0");
+    					resultList=new ArrayList<ItemStack>();
+    					List<FluidStack> fi = Arrays.asList(new FluidStack[] {this.fluidTank.getFluid()});
+    					List<ItemStack> ii = Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStackWithDamage("injectionMold", this.resultSuffix.hashCode() & Integer.MAX_VALUE)});
+    					UniversalRecipeOutput ro = recipeManager.getOutputFor(fi, ii, false, false);
+    					if(ro!=null)
+    					{
+  //      					IHLMod.log.info("Injection mold: ro not null");
+    						ItemStack stack = ro.getItemOutputs().get(0).itemStack.copy();
+    						stack.stackSize=Math.round(ro.getItemOutputs().get(0).quantity);
+        					resultList.add(stack);
+        					UniversalRecipeInput ri = recipeManager.getRecipeInput(fi, ii);
+        					fluidAmountPerItem = ri.getFluidInputs().get(0).getAmount();
+    //    					IHLMod.log.info("fluidAmountPerItem="+fluidAmountPerItem);
+    					}
+    					else
+    					{
+      //  					IHLMod.log.info("Injection mold: ro is null. Input stack: "+ii.get(0).toString());
+    					}
     				}
+    				int fluidAmountPerItem2 = Details.getMeltingFluidAmount("nugget");
     				ArrayList<ItemStack> resultList2 = OreDictionary.getOres("nugget"+formattedFluidName);
     				if(!resultList.isEmpty())
     				{
@@ -132,10 +150,6 @@ public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler
 	
 	private String getFormattedMaterialName(String input)
 	{
-		if(input.length()<8)
-		{
-			return "";
-		}
    		String input2 = input.replace("molten.", "").replace(".molten", "");
    		String firstletter = String.valueOf(input2.charAt(0)).toUpperCase();
    		input2 = input2.replaceFirst(".", firstletter);

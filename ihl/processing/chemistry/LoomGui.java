@@ -3,7 +3,6 @@ package ihl.processing.chemistry;
 import org.lwjgl.opengl.GL11;
 
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.utils.IHLRenderUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;

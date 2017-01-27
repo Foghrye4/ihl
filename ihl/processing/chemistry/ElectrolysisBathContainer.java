@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ElectrolysisBathContainer extends ContainerBase {
+public class ElectrolysisBathContainer extends ContainerBase<ElectrolysisBathTileEntity> {
 
     protected ElectrolysisBathTileEntity tileEntity;
     public int lastFluidAmount = -1;

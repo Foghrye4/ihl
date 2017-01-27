@@ -5,7 +5,7 @@ import ic2.core.slot.SlotInvSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 
-public class DetonationSprayingMachineContainer extends ContainerBase {
+public class DetonationSprayingMachineContainer extends ContainerBase<DetonationSprayingMachineTileEntity> {
 
     protected DetonationSprayingMachineTileEntity tileEntity;
     public int lastFluidAmount = -1;

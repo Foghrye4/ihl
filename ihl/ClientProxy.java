@@ -2,14 +2,11 @@ package ihl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.lwjgl.opengl.ARBFramebufferObject;
-import org.lwjgl.opengl.EXTFramebufferObject;
-import org.lwjgl.opengl.GL30;
 
 import ihl.collector.ChargerEjectorModel;
 import ihl.collector.ChargerEjectorRender;
@@ -34,11 +31,16 @@ import ihl.enviroment.MirrorTileEntity;
 import ihl.enviroment.SpotlightModel;
 import ihl.enviroment.SpotlightRender;
 import ihl.enviroment.SpotlightTileEntity;
+import ihl.explosion.ExplosionEntityFX;
+import ihl.explosion.ExplosionRenderFX;
+import ihl.explosion.IHLEntityFallingPile;
+import ihl.explosion.IHLEntityFallingPileRender;
+import ihl.explosion.PileBlockRender;
+import ihl.explosion.PileTileEntity;
 import ihl.flexible_cable.AnchorTileEntity;
 import ihl.flexible_cable.BatterySwitchUnitModel;
 import ihl.flexible_cable.BatterySwitchUnitTileEntity;
 import ihl.flexible_cable.BlastEntityFX;
-import ihl.flexible_cable.IronWorkbenchModel;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.flexible_cable.IronWorkbenchRender;
 import ihl.flexible_cable.NodeEntity;
@@ -108,7 +110,6 @@ import ihl.tunneling_shield.DriverModel;
 import ihl.tunneling_shield.DriverRender;
 import ihl.tunneling_shield.DriverRenderEntity;
 import ihl.tunneling_shield.DriverTileEntity;
-import ihl.utils.EntityDropEventHandler;
 import ihl.utils.IHLRenderUtils;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid;
@@ -117,6 +118,8 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -124,11 +127,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -136,10 +139,8 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -148,18 +149,17 @@ public class ClientProxy extends ServerProxy {
 	
 	public boolean loadMirrorRender=true;
 	public IHLRenderUtils renderUtils;
-	public Map<MachineType,Integer> sharedBlockRenders = new HashMap();
-	public Map<Class<? extends TileEntity>,ISelectionBoxSpecialRenderer> selectionBoxSpecialRendererRegistry = new HashMap();
-
+	public Map<MachineType,Integer> sharedBlockRenders = new HashMap<MachineType,Integer>();
+	public Map<Class<? extends TileEntity>,ISelectionBoxSpecialRenderer> selectionBoxSpecialRendererRegistry = new HashMap<Class<? extends TileEntity>,ISelectionBoxSpecialRenderer>();
 	public ClientProxy() {}
 	
 	@Override
 	public void load() throws ParserConfigurationException 
 	{
-    	if(this.channel==null)
+    	if(channel==null)
     	{
-    		this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(IHLModInfo.MODID);
-    		this.channel.register(this);
+    		channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(IHLModInfo.MODID);
+    		channel.register(this);
     	}
 		this.renderUtils=new IHLRenderUtils();
 		MinecraftForge.EVENT_BUS.register(this.renderUtils);
@@ -169,12 +169,16 @@ public class ClientProxy extends ServerProxy {
 		registerBlockHandler(new SwitchBoxBlockRender(), MachineType.RedstoneSignalConverter);
 		registerBlockHandler(new RectifierTransformerUnitBlockRender(), MachineType.RectifierTransformerUnit);
 		registerBlockHandler(new IronWorkbenchBlockRender(), MachineType.IronWorkbench);
-
+		PileBlockRender pileBlockRender = new PileBlockRender();
+		RenderingRegistry.registerBlockHandler(pileBlockRender);
+		ClientRegistry.bindTileEntitySpecialRenderer(PileTileEntity.class, pileBlockRender.pileTileEntityRender);
+		
 		RenderingRegistry.registerEntityRenderingHandler(CollectorEntity.class, new CollectorRender(false));
 		MinecraftForgeClient.registerItemRenderer(IHLMod.collectorItem, new CollectorItemRender(false));
 		RenderingRegistry.registerEntityRenderingHandler(CollectorHeavyEntity.class, new CollectorRender(true));
 		MinecraftForgeClient.registerItemRenderer(IHLMod.collectorHeavyItem, new CollectorItemRender(true));
 		RenderingRegistry.registerEntityRenderingHandler(DriverEntity.class, new DriverRenderEntity());
+		RenderingRegistry.registerEntityRenderingHandler(IHLEntityFallingPile.class, new IHLEntityFallingPileRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargerEjectorTileEntity.class, new ChargerEjectorRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(DriverTileEntity.class, new DriverRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(SackTileEntity.class, new SackRender());
@@ -243,6 +247,7 @@ public class ClientProxy extends ServerProxy {
 		RenderingRegistry.registerEntityRenderingHandler(FlameEntityFX.class, new FlameRenderFX(IHLModInfo.MODID+":textures/particles/flameTongue.png"));
 		RenderingRegistry.registerEntityRenderingHandler(BlastEntityFX.class, new FlameRenderFX(IHLModInfo.MODID+":textures/particles/blast.png"));
 		RenderingRegistry.registerEntityRenderingHandler(BlobEntityFX.class, new BlobRenderFX());
+		RenderingRegistry.registerEntityRenderingHandler(ExplosionEntityFX.class, new ExplosionRenderFX(IHLModInfo.MODID+":textures/particles/explosion.png"));
 		RenderingRegistry.registerEntityRenderingHandler(NodeEntity.class, new NodeRender());
 		MinecraftForge.EVENT_BUS.register(new RenderGameOverlayEventHandler());
 		
@@ -269,12 +274,24 @@ public class ClientProxy extends ServerProxy {
 				BlastEntityFX blast = new BlastEntityFX(world,x,y,z,mx,my,mz,particleScale);
 		    	world.spawnEntityInWorld(blast);
 		    	break;
+			case 4:
+				world.spawnParticle("smoke",x,y,z,mx,my,mz);
+				break;
 			default:
 		    	FlameEntityFX flamePEFX2 = new FlameEntityFX(world,x,y,z,mx,my,mz,particleScale);
 		    	world.spawnEntityInWorld(flamePEFX2);
 		    	break;
 		}
 	}
+	
+	@Override
+	public void createExplosionEffect(World world, int x, int y, int z, float radius)
+	{
+		world.playSound(x, y, z, IHLModInfo.MODID+":explosion", 100f, 1f, false);
+		ExplosionEntityFX explosionFX = new ExplosionEntityFX(world, x, y, z, radius);
+    	world.spawnEntityInWorld(explosionFX);
+	}
+
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -329,6 +346,7 @@ public class ClientProxy extends ServerProxy {
     @SubscribeEvent
 	public void onPacketFromServerToClient(FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException
 	{
+    	World world = Minecraft.getMinecraft().theWorld;
     	ByteBuf data = event.packet.payload();
     	ByteBufInputStream byteBufInputStream = new ByteBufInputStream(data);
         switch(byteBufInputStream.read())
@@ -342,11 +360,11 @@ public class ClientProxy extends ServerProxy {
     			float my=byteBufInputStream.readFloat();
     			float mz=byteBufInputStream.readFloat();
     			float particleScale=byteBufInputStream.readFloat();
-    			this.spawnParticle(particleId, Minecraft.getMinecraft().theWorld, x, y, z, mx, my, mz, particleScale);
+    			this.spawnParticle(particleId, world, x, y, z, mx, my, mz, particleScale);
     			break;
         	case 1:
         		int entityId = byteBufInputStream.readInt();
-        		INetworkListener listener = (INetworkListener) Minecraft.getMinecraft().theWorld.getEntityByID(entityId);
+        		INetworkListener listener = (INetworkListener) world.getEntityByID(entityId);
         		if(listener!=null)
         		{
         			listener.recieveData(byteBufInputStream);
@@ -358,11 +376,44 @@ public class ClientProxy extends ServerProxy {
         			IHLMod.log.debug("Data delayed. Entity ID="+entityId);
         		}
     			break;
+        	case 2:
+        		int posX=byteBufInputStream.readInt();
+        		int posY=byteBufInputStream.readInt();
+        		int posZ=byteBufInputStream.readInt();
+    			float radius=byteBufInputStream.readFloat();
+    			this.createExplosionEffect(world, posX, posY, posZ, radius);
+    			break;
+        	case 3:
+        		int soundId = byteBufInputStream.read();
+        		x=byteBufInputStream.readFloat();
+    			y=byteBufInputStream.readFloat();
+    			z=byteBufInputStream.readFloat();
+    			float volume=byteBufInputStream.readFloat();
+    			float pitch=byteBufInputStream.readFloat();
+    			this.playSound(Minecraft.getMinecraft().theWorld, soundId, x, y, z, volume, pitch);
+    			break;
+        	case 4:
+        		int chunkNum = byteBufInputStream.read();
+        		for(int i=0;i<chunkNum;i++)
+        		{
+        			long chunkXZKey = byteBufInputStream.readLong();
+        			int chunkX = (int)(chunkXZKey & 0xFFFFFFFF);
+        			int chunkZ = (int)((chunkXZKey>>32) & 0xFFFFFFFF);
+        			Chunk chunk = world.getChunkProvider().provideChunk(chunkX, chunkZ);
+        			chunk.generateSkylightMap();
+        			Arrays.fill(chunk.updateSkylightColumns, true);
+        			chunk.func_150804_b(true);
+        		}
+        		break;
         }
         byteBufInputStream.close();
 	}
     
-    @Override
+    private void playSound(WorldClient world, int soundId, float x, float y, float z, float volume, float pitch) {
+		world.playSound(x, y, z, IHLModInfo.MODID+":fuse", 1f, 1f, false);
+	}
+
+	@Override
 	public boolean renderTESpecialSelectionBox(TileEntity te, EntityPlayer player,	ItemStack currentItem, MovingObjectPosition target,	float partialTicks) 
 	{
     	ISelectionBoxSpecialRenderer ssbr = selectionBoxSpecialRendererRegistry.get(te.getClass());
@@ -397,7 +448,29 @@ public class ClientProxy extends ServerProxy {
 		{
 			e.printStackTrace();
 		}
-
+    }
+    
+    @Override
+	public void requestTileEntityInitdataFromClientToServer(int x, int y, int z)
+    {
+    	EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+		ByteBuf bb = Unpooled.buffer(36); 
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(1);
+			byteBufOutputStream.writeInt(player.getEntityId());
+			byteBufOutputStream.writeInt(player.worldObj.provider.dimensionId);
+			byteBufOutputStream.writeInt(x);
+			byteBufOutputStream.writeInt(y);
+			byteBufOutputStream.writeInt(z);
+			channel.sendToServer(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
     }
 
 }

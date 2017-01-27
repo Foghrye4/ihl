@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.ContainerBase;
@@ -26,9 +25,7 @@ import ic2.core.IHasGui;
 import ic2.core.Ic2Items;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.IHLMod;
-import ihl.flexible_cable.NodeEntity;
 import ihl.interfaces.IDataCableHolder;
 import ihl.interfaces.IDataNode;
 import ihl.processing.invslots.InvSlotSignalProcessor;
@@ -63,7 +60,7 @@ public class RedstoneSignalConverterTileEntity extends TileEntityInventory imple
 	public RedstoneSignalConverterTileEntity()
 	{
 		sensorEmitterSlots = new InvSlotSignalProcessor(this, "sensorEmitterSlots", 0, Access.IO, 6, 2);
-		cableList = new ArrayList();
+		cableList = new ArrayList<NBTTagCompound>();
 		dischargeSlot = new IHLInvSlotDischarge(this, 2, Access.IO, 4);
 		contacts[0]=new Contact(this,0,null,-1,0);
 		contacts[1]=new Contact(this,1,null,-1,1);
@@ -163,8 +160,8 @@ public class RedstoneSignalConverterTileEntity extends TileEntityInventory imple
         super.updateEntityServer();
         if(this.linksOrInventoryChanged && this.energy>0)
         {
-			Set<Integer> checkedGrids = new HashSet();
-			Set<Integer> unCheckedGrids = new HashSet();
+			Set<Integer> checkedGrids = new HashSet<Integer>();
+			Set<Integer> unCheckedGrids = new HashSet<Integer>();
 			InvSlotSignalProcessor slots = this.sensorEmitterSlots;
     		for(int i=0;i<slots.size();i++)
     		{

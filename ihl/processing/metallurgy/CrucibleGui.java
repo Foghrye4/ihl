@@ -27,8 +27,6 @@ public class CrucibleGui extends GuiContainer
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
         fontRendererObj.drawString(title, 68, 0, 6171880);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }

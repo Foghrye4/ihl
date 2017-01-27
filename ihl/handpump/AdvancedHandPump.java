@@ -245,7 +245,7 @@ public class AdvancedHandPump extends IHLHandPump {
 				}
 				else {break;}
 			}
-		List<XYZ> xyzlist = new ArrayList();
+		List<XYZ> xyzlist = new ArrayList<XYZ>();
 		if(currentFlowDecay==0)
 		{
 			xyzlist.add(new XYZ(startx, starty, startz));

@@ -1,10 +1,14 @@
 package ihl.flexible_cable;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputFluidContainer;
 import ic2.core.IC2;
 import ic2.core.item.ItemUpgradeModule;
 import ihl.interfaces.IWire;
@@ -41,8 +45,9 @@ public class InvSlotProcessableIronWorkbench extends IronWorkbenchInvSlot {
 		}
     }
 
-	public void substract(List<IRecipeInput> materials, int multiplier) 
+	public Set<ItemStack> substract(List<IRecipeInput> materials, int multiplier) 
 	{
+		Set<ItemStack> output = new HashSet<ItemStack>();
 		Iterator<IRecipeInput> i1  = materials.iterator();
 		while(i1.hasNext())
 		{
@@ -59,6 +64,25 @@ public class InvSlotProcessableIronWorkbench extends IronWorkbenchInvSlot {
 							is.stackSize=0;
 						}
 					}
+					else if(is1 instanceof RecipeInputFluidContainer)
+					{
+						if(is.stackSize==1)
+						{
+							output.add(FluidContainerRegistry.drainFluidContainer(is));
+							is.stackSize=0;
+						}
+						else
+						{
+							is.stackSize-=is1.getAmount()*multiplier;
+							ItemStack iscopy = is.copy();
+							iscopy.stackSize=1;
+							ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(iscopy);
+							if(emptyContainer!=null)
+							{
+								output.add(emptyContainer);
+							}
+						}
+					}
 					else
 					{
 						is.stackSize-=is1.getAmount()*multiplier;
@@ -71,6 +95,7 @@ public class InvSlotProcessableIronWorkbench extends IronWorkbenchInvSlot {
 				}
 			}
 		}
+		return output;
 	}
 
 	public int getAmountOf(ItemStack rubber) 

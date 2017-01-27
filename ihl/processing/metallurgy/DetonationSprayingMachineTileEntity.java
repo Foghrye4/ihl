@@ -23,7 +23,6 @@ import ic2.core.audio.AudioSource;
 import ic2.core.audio.PositionSpec;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
@@ -76,58 +75,6 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
 		return "detonationSprayingMachine";
 	}
 	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
-	}
-	
-
 	@Override
 	public void onNetworkEvent(int event) 
 	{
@@ -158,7 +105,7 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
     	return DetonationSprayingMachineTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
-	public List[] getInput()
+	public List<?>[] getInput()
 	{
 		return new List[] {null,this.input.getItemStackList()};
 	}
@@ -226,11 +173,11 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
 	
 	public static void addRecipe(ItemStack input, ItemStack output) 
 	{
-		List<IRecipeInput> dsmInputs1 = new ArrayList();
-		dsmInputs1.add(new RecipeInputItemStack(input));
-		dsmInputs1.add(new RecipeInputOreDict("dustDiamond"));
-		dsmInputs1.add(new RecipeInputOreDict("dustGunpowder"));
-		recipeManager.addRecipe(new UniversalRecipeInput(null, dsmInputs1), new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output}),1));
+		IRecipeInput[] dsmInputs1 = new IRecipeInput[3];
+		dsmInputs1[0]=new RecipeInputItemStack(input);
+		dsmInputs1[1]=new RecipeInputOreDict("dustDiamond");
+		dsmInputs1[2]=new RecipeInputOreDict("dustGunpowder");
+		recipeManager.addRecipe(new UniversalRecipeInput(null, dsmInputs1), new UniversalRecipeOutput(null,new ItemStack[] {output},1));
 	}
 	
 	public static void addRecipe(UniversalRecipeInput input, UniversalRecipeOutput output) 

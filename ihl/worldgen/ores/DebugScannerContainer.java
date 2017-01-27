@@ -5,7 +5,7 @@ import ic2.core.slot.SlotInvSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 
-public class DebugScannerContainer extends ContainerBase {
+public class DebugScannerContainer extends ContainerBase<DebugScannerTileEntity> {
 
     protected DebugScannerTileEntity tileEntity;
     public int lastFluidAmount = -1;

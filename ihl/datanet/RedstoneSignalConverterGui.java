@@ -12,15 +12,12 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import ic2.core.network.NetworkManager;
 import ihl.collector.GuiMultiTextureButton;
 
 @SideOnly(Side.CLIENT)
 public class RedstoneSignalConverterGui extends GuiContainer {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIRedstoneSignalConverter.png");
 	private RedstoneSignalConverterContainer container;
-	private GuiInvisibleButton batterySlotPlus;
-	private GuiInvisibleButton batterySlotMinus;
 	private GuiInvisibleButton[] sensorsEmittersPlus = new GuiInvisibleButton[6];
 	private GuiInvisibleButton[] sensorsEmittersMinus = new GuiInvisibleButton[6];
 	private GuiInvisibleButton[][] cableContacts = new GuiInvisibleButton[4][8];
@@ -37,15 +34,16 @@ public class RedstoneSignalConverterGui extends GuiContainer {
             this.xSize=RedstoneSignalConverterContainer.width;
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void initGui()
     {
     	super.initGui();
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         int i,i1;
-        batterySlotPlus = new GuiInvisibleButton(0, x+24, y+121, 3, 3, linksCoordinatesMap, buttonList);
-        batterySlotMinus = new GuiInvisibleButton(1, x+24, y+124, 3, 3, linksCoordinatesMap, buttonList);
+        new GuiInvisibleButton(0, x+24, y+121, 3, 3, linksCoordinatesMap, buttonList); //battery plus
+        new GuiInvisibleButton(1, x+24, y+124, 3, 3, linksCoordinatesMap, buttonList); //battery minus
         for(i=0;i<sensorsEmittersPlus.length;i++)
         {
         	sensorsEmittersPlus[i]=new GuiInvisibleButton(i+2, x+24, y+13+18*i, 3, 3, linksCoordinatesMap, buttonList);

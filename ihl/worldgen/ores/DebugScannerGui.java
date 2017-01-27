@@ -24,8 +24,6 @@ public class DebugScannerGui extends GuiContainer {
     
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
         List<String> ode = container.tileEntity.oreDictionaryEntries;
         int verticalOffset = 31;
 		for(int i=0;i<ode.size();i++)

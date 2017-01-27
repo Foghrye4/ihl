@@ -17,9 +17,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import ic2.core.IC2;
 import ic2.core.block.TileEntityInventory;
-import ic2.core.network.NetworkManager;
 import ihl.IHLMod;
 import ihl.utils.IHLFluidTank;
+import ihl.utils.IHLUtils;
 
 public class SackTileEntity extends TileEntityInventory implements IFluidHandler
 {
@@ -307,7 +307,7 @@ public class SackTileEntity extends TileEntityInventory implements IFluidHandler
     		meta=worldObj.getBlockMetadata(xCoord+mX(), yCoord-h, zCoord+mZ());
     		if(!isLogBlock(block, meta))
     		{
-    			if(block==Blocks.dirt)
+    			if(IHLUtils.isBlockRegisteredInOreDictionaryAs(block, "blockDirt"))
     			{
     				return true;
     			}

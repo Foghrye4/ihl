@@ -4,14 +4,13 @@ import java.util.Arrays;
 import java.util.Map;
 
 import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
-import ihl.IHLMod;
 import ihl.processing.chemistry.GaedesMercuryRotaryPumpTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
-import ihl.tunneling_shield.IMultiBlock;
-import ihl.tunneling_shield.MultiBlockSpacerBlock;
 import ihl.utils.IHLFluidTank;
 import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
@@ -24,13 +23,12 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class VacuumInductionMeltingFurnaceTileEntity extends MachineBaseTileEntity implements INetworkClientTileEntityEventListener, IMultiBlock{
+public class VacuumInductionMeltingFurnaceTileEntity extends MachineBaseTileEntity implements INetworkClientTileEntityEventListener{
 
 	protected static UniversalRecipeManager recipeManager = new UniversalRecipeManager("vacuuminductionmeltingfurnace");
 	public final IHLFluidTank fluidTank = new IHLFluidTank(864);
 	public boolean vacuumPumpConnected=false;
 	private GaedesMercuryRotaryPumpTileEntity lastGMRP;
-	private int minX,minY,minZ,maxX,maxY,maxZ;
 	
 	public VacuumInductionMeltingFurnaceTileEntity()
 	{
@@ -42,27 +40,6 @@ public class VacuumInductionMeltingFurnaceTileEntity extends MachineBaseTileEnti
 	{
 		short facing2 = (short) Math.max(facing1, 2);
 		super.setFacing(facing2);
-		switch(facing2)
-		{
-			case 0:
-				setupMultiblockStructure(-1,-2,0);
-    			break;
-			case 1:
-				setupMultiblockStructure(-1,0,0);
-    			break;
-			case 2:
-				setupMultiblockStructure(-1,0,-2);
-    			break;
-			case 3:
-				setupMultiblockStructure(-1,0,0);
-    			break;
-			case 4:
-				setupMultiblockStructure(-2,0,-1);
-    			break;
-			case 5:
-				setupMultiblockStructure(0,0,-1);
-    			break;
-		}
 	}
 	
 	@Override
@@ -159,9 +136,9 @@ public class VacuumInductionMeltingFurnaceTileEntity extends MachineBaseTileEnti
 		return IHLUtils.getThisModItemStack("vacuumInductionMeltingFurnace");
 	}
 	
-	public static void addRecipe(ItemStack input, FluidStack output) 
+	public static void addRecipe(String input, int amount, String input2, int amount2, FluidStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack [] {input})),new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {output}),null,20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput [] {new RecipeInputOreDict(input,amount),new RecipeInputOreDict(input2,amount2)})),new UniversalRecipeOutput((new FluidStack[] {output}),null,20));
 	}
 	
 
@@ -220,41 +197,4 @@ public class VacuumInductionMeltingFurnaceTileEntity extends MachineBaseTileEnti
 	        this.fluidTank.writeToNBT(fluidTankTag);
 	        nbttagcompound.setTag("fluidTank", fluidTankTag);
 	    }
-	    
-	    private void setupMultiblockStructure(int x0,int y0,int z0)
-	    {
-			minX=xCoord+x0;
-			maxX=xCoord+x0+3;
-			minY=yCoord+y0;
-			maxY=yCoord+y0+3;
-			minZ=zCoord+z0;
-			maxZ=zCoord+z0+3;
-			for(int ix=xCoord+x0;ix<xCoord+x0+3;ix++)
-			{
-				for(int iy=yCoord+y0;iy<yCoord+y0+3;iy++)
-				{
-					for(int iz=zCoord+z0;iz<zCoord+z0+3;iz++)
-					{
-						if(!(worldObj.getTileEntity(ix, iy, iz) instanceof VacuumInductionMeltingFurnaceTileEntity))
-						{
-							worldObj.setBlock(ix, iy, iz, IHLMod.multiBlockSpacerBlock);
-						}
-					}					
-				}
-			}
-			MultiBlockSpacerBlock.teList.add(this);
-	    }
-
-		@Override
-		public boolean isAPartOfStructure(int x, int y, int z, boolean onBlockBeak) 
-		{
-			return x>=minX && x<=maxX && y>=minY && y<=maxY && z>=minZ && z<=maxZ;
-		}
-
-		@Override
-		public boolean getIsInvalid() 
-		{
-			return this.isInvalid();
-		}
-	    
 }

@@ -39,7 +39,6 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
     public final InvSlotOutput emptyFluidItemsSlot;
 	private final IHLFluidTank fluidTank = new IHLFluidTank(8000);
 	public short temperature=20;
-	private int fractionalOutputAmount=0;
     
 	public PaperMachineTileEntity() {
 		super();
@@ -47,7 +46,6 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
         this.drainInputSlot = new InvSlotConsumableLiquidIHL(this, "drainInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.TOP, InvSlotConsumableLiquid.OpType.Drain);
         this.fillInputSlot = new InvSlotConsumableLiquidIHL(this, "fillInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 1);
-		this.isGuiScreenOpened=true;
 	}
 	
     @Override
@@ -64,7 +62,6 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
         NBTTagCompound fluidTankTag = new NBTTagCompound();
         this.fluidTank.writeToNBT(fluidTankTag);
         nbttagcompound.setTag("fluidTank", fluidTankTag);
-        NBTTagCompound fractionalOutputNBT = new NBTTagCompound();
     }
     
 	@Override
@@ -115,69 +112,12 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
 		return "chemicalReactor";
 	}
 	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
-	}
-	
 	public float getRenderLiquidLevel()
 	{
 		return (float)this.fluidTank.getFluidAmount()/(float)this.fluidTank.getCapacity();
 	}
 
 	@Override
-	public void onNetworkEvent(EntityPlayer player, int event) 
-	{
-		// TODO Auto-generated method stub
-	}
-
-    @Override
 	public int gaugeProgressScaled(int i)
     {
         return this.progress * i / operationLength;
@@ -235,6 +175,7 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
     }
 
 	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List[] getInput()
 	{
 		return new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid()}), null};
@@ -304,12 +245,12 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
 
 	public static void addRecipe(FluidStack fluidStackInput1, ItemStack itemStackOutput1) 
 	{
-		addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {itemStackOutput1}),200));
+		addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput(null, (new ItemStack[] {itemStackOutput1}),200));
 	}
 
 	public static void addSpecialConditionsRecipe(FluidStack fluidStackInput1, FluidStack fluidStackInput2, ItemStack itemStackInput, FluidStack fluidStackOutput, ItemStack itemStackOutput1, ItemStack itemStackOutput2) 
 	{
-		addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1, fluidStackInput2}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}), Arrays.asList(new ItemStack[] {itemStackOutput1, itemStackOutput2}),200, true));
+		addRecipe(new UniversalRecipeInput(new FluidStack[] {fluidStackInput1, fluidStackInput2}, (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}), (new ItemStack[] {itemStackOutput1, itemStackOutput2}),200, true));
 	}
 	
 	public IHLFluidTank getFluidTank() 

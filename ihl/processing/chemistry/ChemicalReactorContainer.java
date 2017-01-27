@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ChemicalReactorContainer extends ContainerBase {
+public class ChemicalReactorContainer extends ContainerBase<ChemicalReactorTileEntity> {
 
     protected ChemicalReactorTileEntity tileEntity;
     public int lastFluidAmount = -1;
@@ -44,7 +44,7 @@ public class ChemicalReactorContainer extends ContainerBase {
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.input, 1, 122, 15));
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.outputSlot, 0, 122-18, 51));
             this.addSlotToContainer(new SlotInvSlot(tileEntity1.outputSlot, 1, 122, 51));
-            this.addSlotToContainer(new SlotInvSlot(tileEntity1.engine, 0, 8, 33));
+            this.addSlotToContainer(new SlotInvSlot(tileEntity1.dischargeSlot, 0, 8, 33));
     }
 
     @Override

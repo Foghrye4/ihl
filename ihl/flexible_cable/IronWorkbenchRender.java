@@ -2,15 +2,11 @@ package ihl.flexible_cable;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import ic2.api.tile.IWrenchable;
-import ihl.IHLModInfo;
 import ihl.utils.IHLItemRenderer;
 
 public class IronWorkbenchRender extends TileEntitySpecialRenderer{
-private final float scale=1F/16F;
 private IHLItemRenderer itemRenderer=new IHLItemRenderer(true);
 
 public IronWorkbenchRender(){}

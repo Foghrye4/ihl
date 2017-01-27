@@ -7,13 +7,13 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ChargerEjectorContainer extends ContainerBase {
+public class ChargerEjectorContainer extends ContainerBase<ChargerEjectorTileEntity> {
 
     protected ChargerEjectorTileEntity tileEntity;
     public int lastStorage = -1;
     private final static int height=166;
     
-    public ChargerEjectorContainer(EntityPlayer entityPlayer, ChargerEjectorTileEntity tileEntity1){
+	public ChargerEjectorContainer(EntityPlayer entityPlayer, ChargerEjectorTileEntity tileEntity1){
             super(tileEntity1);
             this.tileEntity = tileEntity1;
             int col;
@@ -55,7 +55,6 @@ public class ChargerEjectorContainer extends ContainerBase {
                 icrafting.sendProgressBarUpdate(this, 0, (this.tileEntity.getStored()>>15) & Short.MAX_VALUE);
                 icrafting.sendProgressBarUpdate(this, 1, (short)(this.tileEntity.getStored() & Short.MAX_VALUE));
             }
-            short st = Short.MAX_VALUE;
         }
 
         this.lastStorage = this.tileEntity.getStored();

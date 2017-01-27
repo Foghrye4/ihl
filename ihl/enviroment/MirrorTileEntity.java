@@ -22,11 +22,10 @@ import ihl.utils.IHLUtils;
 
 public class MirrorTileEntity extends TileEntityBlock
 {
-	public final List<BlockWithCoordinates> bwc = new ArrayList();
-	public final List<Entity> reflectedEntity = new ArrayList();
-	public final List<TileEntity> reflectedTileEntity = new ArrayList();
+	public final List<BlockWithCoordinates> bwc = new ArrayList<BlockWithCoordinates>();
+	public final List<Entity> reflectedEntity = new ArrayList<Entity>();
+	public final List<TileEntity> reflectedTileEntity = new ArrayList<TileEntity>();
 	private int bwcListPos=0;
-	private int reflectedEntityListPos=0;
 	private int reflectedTileEntityListPos=0;
 	private int reflectionVolumePos=0;
 	boolean firstTick=true;
@@ -52,7 +51,8 @@ public class MirrorTileEntity extends TileEntityBlock
 	public MirrorTileEntity() 
 	{}
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void updateEntityClient()
     {
     	super.updateEntityClient();
@@ -189,24 +189,6 @@ public class MirrorTileEntity extends TileEntityBlock
 		}
 	}
 
-	private void dropMirrorStatusByDirection(ForgeDirection direction) 
-	{
-		for(int i=1;i<=IHLMod.config.mirrorReflectionRange+2;i++)
-		{
-			TileEntity t = worldObj.getTileEntity(xCoord+direction.offsetX*i,yCoord+direction.offsetY*i, zCoord+direction.offsetZ*i);
-			if(t instanceof MirrorTileEntity)
-			{
-				MirrorTileEntity te = (MirrorTileEntity) t;
-				te.firstTick=false;
-			}
-			else
-			{
-				break;
-			}
-		}
-		
-	}
-
 	private boolean isBlockVisible(Block block, int x, int y, int z) 
 	{
 		if(block instanceof MirrorBlock)
@@ -329,7 +311,6 @@ public class MirrorTileEntity extends TileEntityBlock
     	}
     	if(reflectionVolumeSize>0)
     	{
-			int range=IHLMod.config.mirrorReflectionRange;
 			//reflectionVolumePos = x+y*maxX+z*maxX*maxY;
     		int z = reflectionVolumePos / (maxX-minX) / (maxY-minY);
     		int y = (reflectionVolumePos % ((maxX-minX) * (maxY-minY)))/ (maxX-minX);

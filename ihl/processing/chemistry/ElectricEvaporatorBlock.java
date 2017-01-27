@@ -185,7 +185,6 @@ public class ElectricEvaporatorBlock extends Block implements ITileEntityProvide
 		@SideOnly(Side.CLIENT)
 		public IIcon getIcon(int side, int meta) 
 		{
-			IIcon sideIcon = this.blockIcon;
 			switch (side)
 			{
 			case 0:

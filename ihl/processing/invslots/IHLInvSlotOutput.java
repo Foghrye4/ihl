@@ -18,11 +18,12 @@ import ihl.utils.IHLUtils;
 
 public class IHLInvSlotOutput extends InvSlotOutput{
 
-	private final Map<Long,Float> substanceAmount = new HashMap();
+	private final Map<Long,Float> substanceAmount = new HashMap<Long,Float>();
 	public IHLInvSlotOutput(TileEntityInventory base1, String name1, int oldStartIndex1, int count) {
 		super(base1, name1, oldStartIndex1, count);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean canAdd(List itemOutputs) 
 	{
@@ -82,7 +83,6 @@ public class IHLInvSlotOutput extends InvSlotOutput{
 
 	public boolean objectMatchesSlot(Object obj, int slot)
 	{
-		boolean matches=true;
 		if(this.get(slot)==null)
 		{
 			return true;
@@ -131,6 +131,7 @@ public class IHLInvSlotOutput extends InvSlotOutput{
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public int add(List itemOutputs) 
 	{
 		if(itemOutputs==null || itemOutputs.isEmpty())
@@ -196,7 +197,6 @@ public class IHLInvSlotOutput extends InvSlotOutput{
     {
 		super.writeToNbt(nbtTagCompound);
     	NBTTagList sAmountsList = new NBTTagList();
-    	int i = 0;
     	Iterator<Entry<Long, Float>> entrySetIterator = this.substanceAmount.entrySet().iterator();
     	while(entrySetIterator.hasNext())
     	{

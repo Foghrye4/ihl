@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
-import ic2.core.network.NetworkManager;
 
 @SideOnly(Side.CLIENT)
 public class DriverGui extends GuiContainer {
@@ -23,7 +22,8 @@ public class DriverGui extends GuiContainer {
             this.container=container1;
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void initGui()
     {
         super.initGui();

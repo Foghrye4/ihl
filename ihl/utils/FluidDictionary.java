@@ -10,8 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FluidDictionary 
 {
-	private Map<String,List<FluidStack>> nameToStack = new HashMap();
-	private Map<Fluid,String> fluidToName = new HashMap();
+	private Map<String,List<FluidStack>> nameToStack = new HashMap<String,List<FluidStack>>();
+	private Map<Fluid,String> fluidToName = new HashMap<Fluid,String>();
 	public FluidDictionary(){}
 	
 	public List<FluidStack> getFluids(String fdName)
@@ -27,7 +27,7 @@ public class FluidDictionary
 		}
 		else
 		{
-			List<FluidStack> list = new ArrayList();
+			List<FluidStack> list = new ArrayList<FluidStack>();
 			list.add(fstack);
 			nameToStack.put(fdName, list);
 		}

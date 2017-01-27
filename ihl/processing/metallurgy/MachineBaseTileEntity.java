@@ -6,10 +6,8 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
-import ic2.core.audio.AudioSource;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.recipes.UniversalRecipeOutput;
 import java.util.List;
@@ -26,9 +24,6 @@ public abstract class MachineBaseTileEntity extends TileEntityInventory implemen
 {     
 	public short progress;
 	protected short operationLength=200;
-	private AudioSource startAS;
-    private AudioSource loopAS;
-    private AudioSource stopAS;
     protected double energy;
     public int maxStorage;
     public int energyConsume;
@@ -222,6 +217,7 @@ public abstract class MachineBaseTileEntity extends TileEntityInventory implemen
     
     public abstract UniversalRecipeOutput getOutput();
 
+	@SuppressWarnings("rawtypes")
 	public List[] getInput()
 	{
 		return new List[]{null, this.input.getItemStackList()};

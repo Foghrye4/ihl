@@ -1,5 +1,7 @@
 package ihl.metallurgy.constants;
 
+import ihl.IHLMod;
+
 public enum Details {
 	block(1296),
 	highPressureVessel(432),
@@ -33,21 +35,21 @@ public enum Details {
 	ring(36),
 	toolHeadPickaxe(432),
 	gearSmall(144),
+	nozzle(864),
 	wire(48);
 	Details(int moltenAmount1)
 	{
-		moltenAmount=moltenAmount1;
+		IHLMod.moltenAmounts.put(this.name(), moltenAmount1);
 	}
-	private int moltenAmount;
 	public static int getMeltingFluidAmount(String name)
 	{
-		if(Details.valueOf(name)==null)
+		if(IHLMod.moltenAmounts.containsKey(name))
 		{
-			return 0;
+			return IHLMod.moltenAmounts.get(name);
 		}
 		else
 		{
-			return Details.valueOf(name).moltenAmount;
+			return 0;
 		}
 	}
 }

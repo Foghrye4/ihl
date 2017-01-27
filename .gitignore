@@ -16,7 +16,4 @@ codechicken/
 gregtech/
 
 # Files backup
-*.json~
-*.lang~
-*.xml~
-*.cfg~
+*~

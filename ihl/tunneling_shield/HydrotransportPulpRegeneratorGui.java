@@ -44,10 +44,6 @@ public class HydrotransportPulpRegeneratorGui extends GuiContainer {
             	IHLRenderUtils.instance.renderIHLFluidTank(this.container.tileEntity.fluidTank, 57, 16, 69, 63, zLevel, par1, par2, xOffset, yOffset);
             }
             this.mc.renderEngine.bindTexture(background);
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 26, 33, xOffset, yOffset);
-            }
     }
 
     @Override

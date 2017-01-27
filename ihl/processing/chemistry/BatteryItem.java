@@ -27,9 +27,9 @@ public class BatteryItem extends Item implements IElectricItem, IItemHudInfo
     public int maxCharge=65536;
     public int transferLimit = 4096;
     public int tier = 4;	
-    private static Map<Integer, IIcon> iconMap = new HashMap();
-	private static Map<Integer, String> nameMap = new HashMap();
-	private static Map<Integer, String> descriptionMap = new HashMap();
+    private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
+	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
+	private static Map<Integer, String> descriptionMap = new HashMap<Integer, String>();
 
     public BatteryItem()
     {
@@ -96,7 +96,7 @@ public class BatteryItem extends Item implements IElectricItem, IItemHudInfo
     @Override
 	public List<String> getHudInfo(ItemStack itemStack)
     {
-        LinkedList info = new LinkedList();
+        LinkedList<String> info = new LinkedList<String>();
         info.add(ElectricItem.manager.getToolTip(itemStack));
         return info;
     }
@@ -125,11 +125,8 @@ public class BatteryItem extends Item implements IElectricItem, IItemHudInfo
 		return nameMap.get(0);//stack.getItemDamage());
 	}
 
-    @SideOnly(Side.CLIENT)
-
-    /**
-     * This returns the sub items
-     */
+	@SideOnly(Side.CLIENT)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void func_150895_a(Item item, CreativeTabs par2CreativeTabs, List itemList)
     {
         ItemStack itemStack = new ItemStack(this, 1);
@@ -158,6 +155,7 @@ public class BatteryItem extends Item implements IElectricItem, IItemHudInfo
     }
     
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(BatteryItem.descriptionMap.containsKey(0))//itemStack.getItemDamage()))

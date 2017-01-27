@@ -6,7 +6,6 @@ import java.util.List;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.utils.IHLUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ public class FractionatorCoverTileEntity extends TileEntity implements IWrenchab
 	@Override
     public List<String> getNetworkedFields()
     {
-		List<String> fields = new ArrayList();
+		List<String> fields = new ArrayList<String>();
 		fields.add("facing");
 		return fields;
     }

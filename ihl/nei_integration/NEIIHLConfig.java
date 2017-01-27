@@ -19,7 +19,6 @@ import ihl.processing.metallurgy.MuffleFurnaceGui;
 import ihl.processing.metallurgy.RollingMachineGui;
 import ihl.processing.metallurgy.WireMillGui;
 import ihl.processing.metallurgy.WoodenRollingMachineGui;
-import ihl.utils.IHLUtils;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.api.ItemInfo;

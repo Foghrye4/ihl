@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class LeadOvenContainer extends ContainerBase {
+public class LeadOvenContainer extends ContainerBase<LeadOvenTileEntity> {
 
     protected LeadOvenTileEntity tileEntity;
     public int lastFluidAmount = -1;

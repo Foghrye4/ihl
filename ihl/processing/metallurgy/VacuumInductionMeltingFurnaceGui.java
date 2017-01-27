@@ -1,7 +1,6 @@
 package ihl.processing.metallurgy;
 
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.collector.GuiMultiTextureButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -22,6 +21,7 @@ public class VacuumInductionMeltingFurnaceGui extends GuiContainer {
             this.container=vacuumInductionMeltingFurnaceContainer;
     }
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui()
     {
@@ -46,8 +46,6 @@ public class VacuumInductionMeltingFurnaceGui extends GuiContainer {
     
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             fontRendererObj.drawString(StatCollector.translateToLocal("ihl.gui.muffleFurnace"), 40, 12, 14722081);
             this.mc.renderEngine.bindTexture(background);

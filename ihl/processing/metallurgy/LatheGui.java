@@ -2,7 +2,6 @@ package ihl.processing.metallurgy;
 
 import org.lwjgl.opengl.GL11;
 
-import ihl.utils.IHLRenderUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -20,9 +19,6 @@ public class LatheGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
-
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             fontRendererObj.drawString(StatCollector.translateToLocal("ihl.gui.lathe"), 50, 10, 14722081);
             this.mc.renderEngine.bindTexture(tex);
@@ -39,11 +35,6 @@ public class LatheGui extends GuiContainer {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(50),50);
             	this.drawTexturedModalRect(64, 63, 197, 0, i1 + 1, 13);
-            }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-                this.mc.renderEngine.bindTexture(tex);
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 47, 56, xOffset, yOffset);
             }
     }
 

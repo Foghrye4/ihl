@@ -25,7 +25,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.oredict.OreDictionary;
 import ic2.api.item.IItemHudInfo;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputOreDict;
@@ -62,7 +61,7 @@ public class Crucible extends Item implements IHandHeldInventory, IFluidContaine
 	
 	public static void addRecipe(String string, FluidStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new IRecipeInput[] {new RecipeInputOreDict(string)})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {output}),null,20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, new IRecipeInput[] {new RecipeInputOreDict(string)}), new UniversalRecipeOutput(new FluidStack[] {output},null,20));
 	}
 
 	@Override
@@ -84,7 +83,8 @@ public class Crucible extends Item implements IHandHeldInventory, IFluidContaine
     /**
      * allows items to add custom lines of information to the mouseover description
      */
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean b)
     {
         super.addInformation(itemStack, player, info, b);
@@ -103,7 +103,7 @@ public class Crucible extends Item implements IHandHeldInventory, IFluidContaine
     @Override
 	public List<String> getHudInfo(ItemStack itemStack)
     {
-        LinkedList info = new LinkedList();
+        LinkedList<String> info = new LinkedList<String>();
         FluidStack fs = this.getFluid(itemStack);
 
         if (fs != null)
@@ -249,29 +249,7 @@ public class Crucible extends Item implements IHandHeldInventory, IFluidContaine
             }
         }
     }
-	private String getFormattedFluidNameFromMaterialName(String input)
-	{
-		if(input.length()<6)
-		{
-			return "";
-		}
-   		String input2 = input.substring(5);
-   		return "molten."+input2.toLowerCase();
-	}
-	
-	private String getOreName(ItemStack stack)
-	{
-		int[] arrayIDs = OreDictionary.getOreIDs(stack);
-		for(int i=0; i<arrayIDs.length;i++)
-		{
-			if(OreDictionary.getOreName(arrayIDs[i]).startsWith("ingot"))
-			{
-				return OreDictionary.getOreName(arrayIDs[i]);
-			}
-		}
-		return "";
-	}
-	
+    
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) 

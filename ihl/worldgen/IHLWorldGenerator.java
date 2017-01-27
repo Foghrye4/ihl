@@ -36,9 +36,9 @@ public class IHLWorldGenerator implements IWorldGenerator {
 	saltwaterGenerator,
 	bischofiteGenerator;
 	private WorldGenMinableMeta currentGenerator;
-	protected final Map<Long,Set<int[]>> oreCoordinatesToChunkCoordinates = new HashMap();
-	protected final Map<Long,WorldGenMinableMeta> blockToOreCoordinates = new HashMap();
-	public final Set<Long> precalculatedChunkChache = new HashSet();
+	protected final Map<Long,Set<int[]>> oreCoordinatesToChunkCoordinates = new HashMap<Long,Set<int[]>>();
+	protected final Map<Long,WorldGenMinableMeta> blockToOreCoordinates = new HashMap<Long,WorldGenMinableMeta>();
+	public final Set<Long> precalculatedChunkChache = new HashSet<Long>();
 	public static IHLWorldGenerator instance;
 	
 	
@@ -67,7 +67,6 @@ public class IHLWorldGenerator implements IWorldGenerator {
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		int x1 = 0,y1 = 0,z1 = 0;
 		for(int ix=-16+chunkX;ix<=16+chunkX;ix++)
 		{
 			for(int iz=-16+chunkZ;iz<=16+chunkZ;iz++)
@@ -104,10 +103,7 @@ public class IHLWorldGenerator implements IWorldGenerator {
 						int y0 = oreCoordinate[1];
 						int z0 = oreCoordinate[2];
 						long oreCoordinatesKey = (x0<<30)+(y0<<15)+z0;
-						if(this.blockToOreCoordinates.get(oreCoordinatesKey).generate(world, random, x0, y0, z0))
-						{
-							x1=x0;y1=y0;z1=z0;
-						}
+						this.blockToOreCoordinates.get(oreCoordinatesKey).generate(world, random, x0, y0, z0);
 				}
 			}
 		}

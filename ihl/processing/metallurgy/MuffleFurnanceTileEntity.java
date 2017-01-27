@@ -110,7 +110,7 @@ public class MuffleFurnanceTileEntity extends MachineBaseTileEntity{
 	
 	public static void addRecipe(ItemStack input1, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack [] {input1})),new UniversalRecipeOutput(null, Arrays.asList(new ItemStack [] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack [] {input1})),new UniversalRecipeOutput(null, (new ItemStack [] {output}),20));
 	}
 	
 
@@ -130,6 +130,6 @@ public class MuffleFurnanceTileEntity extends MachineBaseTileEntity{
 	}
 
 	public static void addRecipe(ItemStack input1, ItemStack output, float f) {
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack [] {input1})),new UniversalRecipeOutput(null, Arrays.asList(new RecipeOutputItemStack [] {new RecipeOutputItemStack(output,f)}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack [] {input1})),new UniversalRecipeOutput(null, (new RecipeOutputItemStack [] {new RecipeOutputItemStack(output,f)}),20));
 	}
 }

@@ -1,30 +1,24 @@
 package ihl.model;
 
-import ic2.api.tile.IWrenchable;
-import ihl.flexible_cable.AnchorTileEntity;
 import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
 import ihl.interfaces.ISelectionBoxSpecialRenderer;
-import ihl.utils.IHLUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 
 import org.lwjgl.opengl.GL11;
 
 public class RectifierTransformerUnitSelectionBoxSpecialRenderer implements ISelectionBoxSpecialRenderer
 {
-    public void drawSelectionBox(EntityPlayer player, ItemStack currentItem, MovingObjectPosition movingObjectPosition, float partialTick)
+    @Override
+	public void drawSelectionBox(EntityPlayer player, ItemStack currentItem, MovingObjectPosition movingObjectPosition, float partialTick)
     {
-        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)partialTick;
-        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)partialTick;
-        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)partialTick;
+        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTick;
+        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTick;
+        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTick;
         RectifierTransformerUnitTileEntity tile = (RectifierTransformerUnitTileEntity) Minecraft.getMinecraft().theWorld.getTileEntity(movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ);
 		if(tile!=null && tile.getWorldObj() != null)
 		{

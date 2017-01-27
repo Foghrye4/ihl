@@ -3,10 +3,8 @@ package ihl.recipes;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import ic2.api.recipe.IRecipeInput;
 
 public class RecipeInputFluidStack implements IRecipeInputFluid 
 {
@@ -37,5 +35,11 @@ public class RecipeInputFluidStack implements IRecipeInputFluid
 	public List<FluidStack> getInputs() {
 		return Arrays.asList(new FluidStack[] {new FluidStack(fluid,amount)});
 	}
+	
+    @Override
+	public String toString()
+    {
+        return "RInputFluidStack<" + this.amount + "x" + this.fluid.getName();
+    }
 
 }

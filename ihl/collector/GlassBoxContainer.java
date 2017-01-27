@@ -5,7 +5,7 @@ import ic2.core.slot.SlotInvSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 
-public class GlassBoxContainer extends ContainerBase {
+public class GlassBoxContainer extends ContainerBase<GlassBoxTileEntity> {
 
     protected GlassBoxTileEntity tileEntity;
     public int lastStorage = -1;

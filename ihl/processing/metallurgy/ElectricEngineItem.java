@@ -18,8 +18,8 @@ import ihl.IHLModInfo;
 public class ElectricEngineItem extends Item{
 	
 	public Type type;
-	public static List<ElectricEngineItem> instances = new ArrayList();
-	private static Map<Type, IIcon> iconMap = new HashMap();
+	public static List<ElectricEngineItem> instances = new ArrayList<ElectricEngineItem> ();
+	private static Map<Type, IIcon> iconMap = new HashMap<Type, IIcon>();
 
 
 	public ElectricEngineItem(Type type1) 

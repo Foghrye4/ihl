@@ -3,7 +3,6 @@ package ihl.trans_dimensional_item_teleporter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
@@ -42,7 +41,6 @@ import ihl.utils.IHLInvSlotDischarge;
 
 public class TDITTileEntity extends TileEntityInventory implements IEnergySink, IHasGui, IUpgradableBlock
 {
-    private int startUpCounter=0;
     private int tier=4;
     private int defaultTier=4;
     public int maxStorage=12000;
@@ -56,7 +54,6 @@ public class TDITTileEntity extends TileEntityInventory implements IEnergySink, 
     public final InvSlot inputSlot;
 
 	public int updateChecksum=-1;
-    private Random rand = new Random();
     
     private AudioSource startAS;
 	public boolean targetSet=false;
@@ -427,7 +424,7 @@ public class TDITTileEntity extends TileEntityInventory implements IEnergySink, 
 				if(te!=null && te instanceof TDITTileEntity)
 				{
 					TDITTileEntity tdit = (TDITTileEntity) te;
-					List<ItemStack> itemStackList = new ArrayList();
+					List<ItemStack> itemStackList = new ArrayList<ItemStack>();
 					for(int i=0;i<this.inputSlot.size();i++)
 					{
 						if(this.inputSlot.get(i)!=null)

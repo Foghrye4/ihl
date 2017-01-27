@@ -2,6 +2,7 @@ package ihl;
 
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputFluidContainer;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.util.StackUtil;
@@ -33,8 +34,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLModConfig 
 {
@@ -287,12 +290,12 @@ public class IHLModConfig
 	    			recipeOutput=parameter;
 	    		}
 	    	}
-    		List<IRecipeInput> recipeInputsItems = new ArrayList();
-    		List<IRecipeInput> recipeInputsTools = new ArrayList();
-    		List<ItemStack> recipeInputsMachines = new ArrayList();
+    		List<IRecipeInput> recipeInputsItems = new ArrayList<IRecipeInput>();
+    		List<IRecipeInput> recipeInputsTools = new ArrayList<IRecipeInput>();
+    		List<ItemStack> recipeInputsMachines = new ArrayList<ItemStack>();
 	    	if(recipeInput!=null)
 	    	{
-	    		List<FluidStack> recipeInputsFluids = new ArrayList();
+	    		List<FluidStack> recipeInputsFluids = new ArrayList<FluidStack>();
 		    	String[] rifunctionAndParameters = extractFunctionAndParameters(recipeInput);
 		    	List<String> riparameters = splitParameters(rifunctionAndParameters[1]);
 		    	Iterator<String> riparametersi=riparameters.iterator();
@@ -304,9 +307,18 @@ public class IHLModConfig
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
 				    	String[] modAndItemName = riItemStackparameters.get(0).split(":");
-				    	ItemStack stack = IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], Integer.parseInt(riItemStackparameters.get(2)));
-				    	stack.stackSize = Integer.parseInt(riItemStackparameters.get(1));
-				    	recipeInputsItems.add(new RecipeInputItemStack(stack,stack.stackSize));
+				    	int iDamage = 0;
+				    	int iQuantity = Integer.parseInt(riItemStackparameters.get(1));
+				    	String sDamage = riItemStackparameters.get(2);
+				    	if(sDamage.startsWith("hash"))
+				    	{
+				    		iDamage=extractFunctionAndParameters(sDamage)[1].hashCode() & Integer.MAX_VALUE;
+				    	}
+				    	else
+				    	{
+				    		iDamage=Integer.parseInt(sDamage);
+				    	}
+				    	recipeInputsItems.add(new RecipeInputItemStack(IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], iDamage, iQuantity),iQuantity));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("die"))
 			    	{
@@ -334,18 +346,27 @@ public class IHLModConfig
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
 				    	recipeInputsItems.add(new RecipeInputOreDict(riItemStackparameters.get(0),Integer.parseInt(riItemStackparameters.get(1))));
 			    	}
+			    	else if(riItemFunctionAndParameters[0].startsWith("fluidcontainer"))
+			    	{
+				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
+				    	recipeInputsItems.add(new RecipeInputFluidContainer(FluidRegistry.getFluid(riItemStackparameters.get(0)),Integer.parseInt(riItemStackparameters.get(1))));
+			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("toolitemstack"))
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
 				    	String[] modAndItemName = riItemStackparameters.get(0).split(":");
-				    	ItemStack stack = IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], Integer.parseInt(riItemStackparameters.get(2)));
-				    	stack.stackSize = Integer.parseInt(riItemStackparameters.get(1));
+				    	ItemStack stack = IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], Integer.parseInt(riItemStackparameters.get(2)), Integer.parseInt(riItemStackparameters.get(1)));
+					    stack.stackTagCompound = new NBTTagCompound();
+					    NBTTagCompound gtTagCompound = new NBTTagCompound();
+					    gtTagCompound.setInteger("Damage",0);
+					    gtTagCompound.setInteger("MaxDamage",2000);
+					    stack.stackTagCompound.setTag("GT.ToolStats", gtTagCompound);
 				    	recipeInputsTools.add(new RecipeInputItemStack(stack,stack.stackSize));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("tooloredict"))
 			    	{
-				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
-				    	recipeInputsTools.add(new RecipeInputOreDict(riItemStackparameters.get(0),Integer.parseInt(riItemStackparameters.get(1))));
+				    	recipeInputsTools.add(new RecipeInputOreDict(splitParameters(riItemFunctionAndParameters[1]).get(0)));
+				    	
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("machine"))
 			    	{
@@ -359,13 +380,13 @@ public class IHLModConfig
 				    	recipeInputsFluids.add(IHLUtils.getFluidStackWithSize(riFluidStackparameters.get(0),Integer.parseInt(riFluidStackparameters.get(1))));
 			    	}
 		    	}
-		    	uRecipeInput = new UniversalRecipeInput(recipeInputsFluids,recipeInputsItems);
+		    	uRecipeInput = new UniversalRecipeInput(recipeInputsFluids.toArray(),recipeInputsItems.toArray());
 	    	}
-    		List<ItemStack> recipeOutputsItems = new ArrayList();
-    		List<RecipeOutputItemStack> recipeOutputsRecipeOut = new ArrayList();
+    		List<ItemStack> recipeOutputsItems = new ArrayList<ItemStack>();
+    		List<RecipeOutputItemStack> recipeOutputsRecipeOut = new ArrayList<RecipeOutputItemStack>();
 	    	if(recipeOutput!=null)
 	    	{
-	    		List<FluidStack> recipeOutputsFluids = new ArrayList();
+	    		List<FluidStack> recipeOutputsFluids = new ArrayList<FluidStack>();
 		    	String[] rifunctionAndParameters = extractFunctionAndParameters(recipeOutput);
 		    	List<String> riparameters = splitParameters(rifunctionAndParameters[1]);
 		    	Iterator<String> riparametersi=riparameters.iterator();
@@ -377,31 +398,49 @@ public class IHLModConfig
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
 				    	String[] modAndItemName = riItemStackparameters.get(0).split(":");
-				    	ItemStack stack = IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], Integer.parseInt(riItemStackparameters.get(2)));
-				    	stack.stackSize = Integer.parseInt(riItemStackparameters.get(1));
+				    	String sDamage = riItemStackparameters.get(2);
+				    	int iDamage = 0;
+				    	if(sDamage.startsWith("hash"))
+				    	{
+				    		iDamage=extractFunctionAndParameters(sDamage)[1].hashCode() & Integer.MAX_VALUE;
+				    	}
+				    	else
+				    	{
+				    		iDamage=Integer.parseInt(sDamage);
+				    	}
+				    	ItemStack stack = IHLUtils.getOtherModItemStackWithDamage(modAndItemName[0], modAndItemName[1], iDamage,Integer.parseInt(riItemStackparameters.get(1)));
+			    		if(stack==null)
+			    		{
+			    			throw new java.lang.IllegalArgumentException("Item not found: "+parameter);
+			    		}
+				    	if(riItemStackparameters.size()>3){
+				    		stack.stackTagCompound = new NBTTagCompound();
+				    		String[] fp = extractFunctionAndParameters(riItemStackparameters.get(3));
+				    		Iterator<String> iparams2 = splitParameters(fp[1]).iterator();
+				    		while(iparams2.hasNext()){
+					    		decodeNBT(iparams2.next(), stack.stackTagCompound);
+				    		}
+				    	}
 				    	recipeOutputsItems.add(stack);
-				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(stack,Float.parseFloat(riItemStackparameters.get(1))));
+				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(stack.copy(),Float.parseFloat(riItemStackparameters.get(1))));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("fiber"))
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
-				    	ItemStack stack = IHLUtils.getThisModWireItemStackWithLength(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)));
-				    	recipeOutputsItems.add(stack);
-				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(stack,1));
+				    	recipeOutputsItems.add(IHLUtils.getThisModWireItemStackWithLength(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1))));
+				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(IHLUtils.getThisModWireItemStackWithLength(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1))),1));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("wire"))
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
-				    	ItemStack stack = IHLUtils.getUninsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2)));
-				    	recipeOutputsItems.add(stack);
-				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(stack,1));
+				    	recipeOutputsItems.add(IHLUtils.getUninsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2))));
+				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(IHLUtils.getUninsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2))),1));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("cable"))
 			    	{
 				    	List<String> riItemStackparameters = splitParameters(riItemFunctionAndParameters[1]);
-				    	ItemStack stack = IHLUtils.getInsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2)),riItemStackparameters.get(3),Integer.parseInt(riItemStackparameters.get(4)));
-				    	recipeOutputsItems.add(stack);
-				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(stack,1));
+				    	recipeOutputsItems.add(IHLUtils.getInsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2)),riItemStackparameters.get(3),Integer.parseInt(riItemStackparameters.get(4))));
+				    	recipeOutputsRecipeOut.add(new RecipeOutputItemStack(IHLUtils.getInsulatedWire(riItemStackparameters.get(0), Integer.parseInt(riItemStackparameters.get(1)), Integer.parseInt(riItemStackparameters.get(2)),riItemStackparameters.get(3),Integer.parseInt(riItemStackparameters.get(4))),1));
 			    	}
 			    	else if(riItemFunctionAndParameters[0].startsWith("fluidstack"))
 			    	{
@@ -421,6 +460,10 @@ public class IHLModConfig
     			{
     				UniversalRecipeManager.machineRecipeManagers.get(machineName).addRecipe(uRecipeInput, uRecipeOutput);
     			}
+    		}
+    		else if(action.equalsIgnoreCase("addcasting"))
+    		{
+    			IHLMod.moltenAmounts.put(parameters.get(0),Integer.parseInt(parameters.get(1)));
     		}
     		else if(action.equalsIgnoreCase("removerecipe"))
     		{
@@ -449,48 +492,70 @@ public class IHLModConfig
     		}
 	    }
 
-		private List<String> splitParameters(String string) {
-			ArrayList result = new ArrayList();
+	private void decodeNBT(String string, NBTTagCompound out) {
+		String[] fp = extractFunctionAndParameters(string);
+		List<String> params = splitParameters(fp[1]);
+		if(fp[0].equalsIgnoreCase("string")){
+			out.setString(params.get(0), params.get(1));
+		}
+		else if(fp[0].equalsIgnoreCase("boolean")){
+			out.setBoolean(params.get(0), Boolean.getBoolean(params.get(1)));
+		}
+		else if(fp[0].equalsIgnoreCase("float")){
+			out.setFloat(params.get(0), Float.parseFloat(params.get(1)));
+		}
+		else if(fp[0].equalsIgnoreCase("double")){
+			out.setDouble(params.get(0), Double.parseDouble(params.get(1)));
+		}
+		else if(fp[0].equalsIgnoreCase("integer")){
+			out.setInteger(params.get(0), Integer.parseInt(params.get(1)));
+		}
+		else if(fp[0].equalsIgnoreCase("long")){
+			out.setLong(params.get(0), Long.parseLong(params.get(1)));
+		}
+		else if(fp[0].equalsIgnoreCase("nbt")){
+			NBTTagCompound out2 = new NBTTagCompound();
+			for(int i = 1; i <  params.size(); i++){
+				decodeNBT(params.get(i), out2);
+			}
+			out.setTag(params.get(0), out2);
+		}
+	}
+	
+	
+
+	private List<String> splitParameters(String string) {
+		ArrayList<String> result = new ArrayList<String>();
 	        int bracketCounter=0;
 	        boolean modificatorStart=false;
-	        String function = null;
-	        String parameters = null;
 	        StringBuffer currentModificator = new StringBuffer("");
            	for(int i=0;i<string.length();i++)
            	{
            		char c = string.charAt(i);
            		if(c==',')
            		{
-           	        if(!modificatorStart)
-           	        {
-           	        	result.add(currentModificator.toString());
-               			currentModificator.delete(0, currentModificator.length());
-           	        }
-           		}
-           		else if(c=='(')
-           		{
-           	        bracketCounter++;
+	           	        if(!modificatorStart) {
+	           	        	result.add(currentModificator.toString());
+	               			currentModificator.delete(0, currentModificator.length());
+	           	        }
+           		} else if(c=='(') {
+	           	        bracketCounter++;
           			modificatorStart=true;
+           		} else if(c==')') {
+           		        bracketCounter--;
            		}
-           		else if(c==')')
-           		{
-           	        bracketCounter--;
-           		}
-           		if(bracketCounter==0 && modificatorStart)
-           		{
+           		if(bracketCounter==0 && modificatorStart) {
           			modificatorStart=false;
            		}
-       	        if(c!=',' || modificatorStart)
-       	        {
-               		currentModificator.append(c);
-       	        }
+       	        	if(c!=',' || modificatorStart) {
+               			currentModificator.append(c);
+       	        	}
            	}
         	result.add(currentModificator.toString());
 			return result;
-		}
+	}
 
-		private String[] extractFunctionAndParameters(String string) 
-		{
+	private String[] extractFunctionAndParameters(String string) {
 	        int bracketCounter=0;
 	        boolean modificatorStart=false;
 	        String function = null;
@@ -530,7 +595,7 @@ public class IHLModConfig
         loadRecipeConfig(is, false);
 	}
 
-	public void CheckLists()
+	public void checkLists()
 	{
 	       for(int i6=0;i6<this.ts02BlockBlackListString.length;i6++)
 	        {

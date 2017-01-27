@@ -4,7 +4,6 @@ import ihl.utils.IHLRenderUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class RenderGameOverlayEventHandler 

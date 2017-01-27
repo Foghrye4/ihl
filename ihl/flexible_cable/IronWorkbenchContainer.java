@@ -1,13 +1,13 @@
 package ihl.flexible_cable;
 
 import ic2.core.ContainerBase;
-import ic2.core.slot.SlotInvSlot;
 import ihl.processing.invslots.SlotInvSlotOutputInProgress;
+import ihl.processing.invslots.SlotInvSlotIronWorkbench;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class IronWorkbenchContainer extends ContainerBase {
+public class IronWorkbenchContainer extends ContainerBase<IronWorkbenchTileEntity> {
 
     protected IronWorkbenchTileEntity tileEntity;
     private int lastProgress1 = -1;
@@ -37,14 +37,14 @@ public class IronWorkbenchContainer extends ContainerBase {
         {
             for(col=0;col<=1;col++)
             {
-            	this.addSlotToContainer(new SlotInvSlot(tileEntity1.tools, row+col*6, 26+col*18, 8+row*18));
+            	this.addSlotToContainer(new SlotInvSlotIronWorkbench(tileEntity1.tools, row+col*6, 26+col*18, 8+row*18));
             }
         }
        for(row=0;row<6;row++)
        {
            for(col=0;col<=1;col++)
            {
-        	   this.addSlotToContainer(new SlotInvSlot(tileEntity1.inputMaterial, row+col*6, 65+col*18, 8+row*18));
+        	   this.addSlotToContainer(new SlotInvSlotIronWorkbench(tileEntity1.inputMaterial, row+col*6, 65+col*18, 8+row*18));
            }
        }
        for (row = 0; row<6; ++row)

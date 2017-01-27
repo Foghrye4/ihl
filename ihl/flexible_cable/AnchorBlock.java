@@ -1,10 +1,5 @@
 package ihl.flexible_cable;
-import ic2.core.IC2;
-import ic2.core.item.tool.ItemToolWrench;
-import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
-import ihl.enviroment.LightBulbTileEntity;
-import ihl.utils.IHLUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,19 +7,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class AnchorBlock extends Block implements ITileEntityProvider {
 
-	private String unlocalizedName;
 	private IIcon blockIconSide;
 	
 	public AnchorBlock(String unlocalizedName1) 
@@ -170,7 +160,6 @@ public class AnchorBlock extends Block implements ITileEntityProvider {
     	{
     		AnchorTileEntity ate = (AnchorTileEntity) te;
     		float portSize=0.1f;
-    		boolean firstBB=false;
     		float bbMinX = 1f;
     		float bbMaxX = 0f;
     		float bbMinY = 1f;

@@ -37,6 +37,7 @@ public class BoneBlock extends Block {
 	}
 	
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{

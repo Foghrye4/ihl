@@ -127,57 +127,6 @@ public class GasWeldingStationTileEntity extends TileEntityInventory implements 
 		return "detonationSprayingMachine";
 	}
 	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
-	}
-	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public GuiScreen getGui(EntityPlayer player, boolean arg1) {
@@ -225,12 +174,12 @@ public class GasWeldingStationTileEntity extends TileEntityInventory implements 
 
 	public UniversalRecipeInput getInput()
 	{
-		return new UniversalRecipeInput(Arrays.asList(new FluidStack[] {this.flammableGasTank.getLigthestFluid(), this.oxygenTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get(0),this.input.get(1),this.input.get(2)}));
+		return new UniversalRecipeInput(new FluidStack[] {this.flammableGasTank.getLigthestFluid(), this.oxygenTank.getFluid()}, new ItemStack[]{this.input.get(0),this.input.get(1),this.input.get(2)});
 	}
 	
 	public static void addGasRecipe(ItemStack input, FluidStack inputFluid, FluidStack output, FluidStack output2) 
 	{
-		acetyleneRecipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {inputFluid}), Arrays.asList(new ItemStack[] {input})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {output, output2}),Arrays.asList(new ItemStack [] {}),20));
+		acetyleneRecipeManager.addRecipe(new UniversalRecipeInput(new FluidStack[] {inputFluid},new ItemStack[] {input}), new UniversalRecipeOutput(new FluidStack [] {output, output2},new ItemStack [] {}, 20));
 	}
 	
 	public static Map<UniversalRecipeInput, UniversalRecipeOutput> getGasRecipes() {

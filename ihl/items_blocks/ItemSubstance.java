@@ -5,20 +5,29 @@ import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
+import ihl.explosion.DetonatorMiniGUI;
+import ihl.interfaces.IItemHasMiniGUI;
+import ihl.interfaces.ItemMiniGUI;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid.IHLFluidType;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -27,11 +36,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemSubstance extends Item {
+public class ItemSubstance extends Item implements IItemHasMiniGUI{
 	
-	private static Map<Integer, IIcon> iconMap = new HashMap();
-	private static Map<Integer, String> nameMap = new HashMap();
-	private static Map<Integer, String> descriptionMap = new HashMap();
+	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
+	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
+	private static Map<Integer, String> descriptionMap = new HashMap<Integer, String>();
 	public static ItemSubstance instance;
 	
 	public ItemSubstance() 
@@ -118,6 +127,7 @@ public class ItemSubstance extends Item {
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
@@ -126,6 +136,11 @@ public class ItemSubstance extends Item {
 		for(int i=0;i<var1.length;i++)
 		{
 			ItemStack stack = IHLUtils.getThisModItemStack(var1[i].unLocalizedName);
+			if(var1[i]==Type.Detonator)
+			{
+				stack.stackTagCompound=new NBTTagCompound();
+				stack.stackTagCompound.setInteger("detonator_delay", 5);
+			}
 	        itemList.add(stack);
 		}
 		IHLFluidType[] var2 = IHLFluidType.values();
@@ -173,16 +188,33 @@ public class ItemSubstance extends Item {
 	}
 	
     @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(ItemSubstance.descriptionMap.containsKey(itemStack.getItemDamage()))
         {
         	info.add(ItemSubstance.descriptionMap.get(itemStack.getItemDamage()));
         }
+        if(itemStack.stackTagCompound!=null && itemStack.stackTagCompound.hasKey("detonator_delay"))
+        {
+        	info.add(StatCollector.translateToLocal("ihl.detonator_delay")+" "+itemStack.stackTagCompound.getInteger("detonator_delay")+StatCollector.translateToLocal("ihl.seconds"));
+        }
     }
 	
 	public enum Type
 	{
+		Detonator(194, "detonator"),
+		dustPentaerythritolTetranitrate(193,"dustPentaerythritolTetranitrate",true,"C(CH\u2082ONO\u2082)\u2084"),
+		DustPentaerythritol(192, "dustPentaerythritol",true,"C(CH\u2082OH)\u2084"),
+		DustPotassiumOxide(191, "dustPotassiumOxide",true,"K\u2082O"),
+		IngotPotassium(190, "ingotPotassium",true,"K"),
+		catalystIron(189, "catalystIron",false,"Fe (foam) + Al\u2082O\u2083 + K\u2082O"),
+		catalystIronOxide(188, "catalystIronOxide",false,"Fe\u2082O\u2083 + Al\u2082O\u2083 + K\u2082O"),
+		catalystRawIronOxide(187, "catalystRawIronOxide",false,"Fe\u2082O\u2083 + Al\u2082O\u2083 + K\u2082O"),
+		IronOxideCatalystMix(186, "dustIronOxideCatalystMix",false,"Fe\u2082O\u2083 + Al\u2082O\u2083 + K\u2082O"),
+		SodiumFormate(185, "dustSodiumFormate",true,"HCO\u2082Na"),
+		MercuryChloride(184, "dustMercuryChloride",true,"HgCl\u2082"),
+		CalciumAcetate(183, "dustCalciumAcetate",true,"Ca(CH\u2083COO)\u2082"),
 		TinySiliconDioxide(182, "dustTinySiliconDioxide",true,"SiO\u2082"),
 		TinyIronOxide(181, "dustTinyIronOxide",true,"Fe\u2082O\u2083"),
 		TinyManganeseOxide(180, "dustTinyManganeseOxide",true,"Mn\u2083O\u2084"),
@@ -387,6 +419,17 @@ public class ItemSubstance extends Item {
 		public String description;
 		public String textureName;
 		public boolean registerInOreDictionary=false;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public ItemMiniGUI getMiniGUI(GuiContainer gui, Slot slot)
+	{
+		if(slot.getHasStack() && slot.getStack().getItemDamage()==Type.Detonator.damage && slot.getStack().stackTagCompound!=null)
+		{
+			return new DetonatorMiniGUI(gui, slot);
+		}
+		return null;
 	}
 
 }

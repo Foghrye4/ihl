@@ -4,7 +4,6 @@ import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.item.tool.ItemToolCutter;
-import ic2.core.item.tool.ItemToolWrench;
 import ihl.IHLCreativeTab;
 import ihl.IHLMod;
 import ihl.IHLModInfo;
@@ -63,7 +62,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -78,7 +76,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MachineBaseBlock extends Block implements ITileEntityProvider{
 	
 	MachineType type;
-	private static List<MachineBaseBlock> instances = new ArrayList();
+	private static List<MachineBaseBlock> instances = new ArrayList<MachineBaseBlock>();
 	
 	@SideOnly(Side.CLIENT)
 	IIcon textureSide, 
@@ -203,6 +201,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 		super.onBlockPreDestroy(world, x, y, z, meta);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity entity)
     {
@@ -468,14 +467,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) 
 	{
 		int facing=3;
-		int mask[] = {
-				0,1,2,3,4,5,
-				1,0,3,2,4,5,
-				2,3,0,1,4,5,
-				2,3,1,0,4,5,
-				2,3,5,4,0,1,
-				2,3,4,5,1,0
-				};
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof IWrenchable)
 		{
@@ -793,7 +784,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     	BronzeTub("tubBronze",ImpregnatingMachineTileEntity.class, false, true, null),
     	AchesonFurnace("achesonFurnance",AchesonFurnanceTileEntity.class, true, new ItemStack(Items.brick)),
     	MuffleFurnace("muffleFurnance",MuffleFurnanceTileEntity.class, true, new ItemStack(Items.brick));
-    	MachineType(String unlocalizedName1, Class teclass1, boolean isNormalBlock1,ItemStack itemDroppedOnBlockDestroy1)
+    	MachineType(String unlocalizedName1, Class<? extends TileEntity> teclass1, boolean isNormalBlock1,ItemStack itemDroppedOnBlockDestroy1)
     	{
     		unlocalizedName=unlocalizedName1;
     		teclass=teclass1;
@@ -808,7 +799,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     		}
     		itemDroppedOnBlockDestroy=itemDroppedOnBlockDestroy1;
     	}
-    	MachineType(String unlocalizedName1, Class teclass1, boolean isNormalBlock1,boolean hasSpecialBlockRenderer1, ItemStack itemDroppedOnBlockDestroy1)
+    	MachineType(String unlocalizedName1, Class<? extends TileEntity> teclass1, boolean isNormalBlock1,boolean hasSpecialBlockRenderer1, ItemStack itemDroppedOnBlockDestroy1)
     	{
     		unlocalizedName=unlocalizedName1;
     		teclass=teclass1;
@@ -818,7 +809,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     		
     	}
 		String unlocalizedName;
-		Class teclass;
+		Class<? extends TileEntity> teclass;
 		boolean isNormalBlock=true;
 		boolean hasSpecialBlockRenderer=false;
 		int specialBlockRendererId=-2;

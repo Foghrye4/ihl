@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ic2.api.recipe.IRecipeInput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import ic2.api.recipe.IRecipeInput;
 import ihl.utils.IHLUtils;
 
 public class UniversalRecipeManager {
@@ -25,7 +25,8 @@ public class UniversalRecipeManager {
 		machineRecipeManagers.put(machine1, this);
 	}
 
-	private final Map<UniversalRecipeInput, UniversalRecipeOutput> recipes = new HashMap();
+	private final Map<UniversalRecipeInput, UniversalRecipeOutput> recipes = new HashMap<UniversalRecipeInput, UniversalRecipeOutput>();
+	private final Map<String, UniversalRecipeInput> keywordMap = new HashMap<String, UniversalRecipeInput>();
 	
     public void addRecipe(UniversalRecipeInput input, UniversalRecipeOutput output)
     {
@@ -41,31 +42,53 @@ public class UniversalRecipeManager {
             }
         }
 
-            Iterator var8 = this.recipes.keySet().iterator();
+            Iterator<UniversalRecipeInput> var8 = this.recipes.keySet().iterator();
 
             while (var8.hasNext())
             {
             	UniversalRecipeInput existingInput = (UniversalRecipeInput)var8.next();
                     if (existingInput.matches(input))
                     {
-                    	Iterator<IRecipeInput> ilist1 = existingInput.getItemInputs().iterator();
-                    	Iterator<IRecipeInput> ilist2 = input.getItemInputs().iterator();
-                    	while(ilist1.hasNext())
+                    	StringBuffer ssError =new StringBuffer(255);
+                    	ssError.append("Ambiguous recipe. \n");
+                    	ssError.append("Existing input: \n");
+                    	Iterator<IRecipeInput> iii1 = existingInput.getItemInputs().iterator();
+                    	Iterator<IRecipeInputFluid> fii1 = existingInput.getFluidInputs().iterator();
+                    	while(iii1!=null && iii1.hasNext())
                     	{
-                    		IRecipeInput is = ilist1.next();
+                    		ssError.append(iii1.next().toString());
+                    		ssError.append(" \n");
                     	}
-                    	System.out.println("recipe 2:");
-                    	while(ilist2.hasNext())
+                    	while(fii1!=null && fii1.hasNext())
                     	{
-                    		IRecipeInput is = ilist2.next();
+                    		ssError.append(fii1.next().toString());
+                    		ssError.append(" \n");
                     	}
-                        throw new RuntimeException("Ambiguous recipe.");
+                    	ssError.append("New input: \n");
+                    	Iterator<IRecipeInput> iii2 = input.getItemInputs().iterator();
+                    	Iterator<IRecipeInputFluid> fii2 = input.getFluidInputs().iterator();
+                    	while(iii2!=null && iii2.hasNext())
+                    	{
+                    		ssError.append(iii2.next().toString());
+                    		ssError.append(" \n");
+                    	}
+                    	while(fii2!=null && fii2.hasNext())
+                    	{
+                    		ssError.append(fii2.next().toString());
+                    		ssError.append(" \n");
+                    	}
+                        throw new RuntimeException(ssError.toString());
                     }
             }
 
             this.recipes.put(input, output);
      }
     
+    public void addRecipe(String keyword, UniversalRecipeInput input, UniversalRecipeOutput output)
+    {
+    	this.addRecipe(input, output);
+    	this.keywordMap.put(keyword, input);
+    }
 
     public UniversalRecipeOutput getOutputFor(List<FluidStack> fluidInputs, List<ItemStack> itemInputs, boolean adjustInput, boolean inputAffectOutput)
     {
@@ -75,14 +98,14 @@ public class UniversalRecipeManager {
         }
         else
         {
-            Iterator i$ = this.recipes.entrySet().iterator();
+            Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.recipes.entrySet().iterator();
 
             while (true)
             {
                 if (i$.hasNext())
                 {
-                    Entry entry = (Entry)i$.next();
-                    UniversalRecipeInput recipeInput = (UniversalRecipeInput)entry.getKey();
+                	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                    UniversalRecipeInput recipeInput = entry.getKey();
 
                     if (!recipeInput.matches(fluidInputs, itemInputs))
                     {
@@ -91,7 +114,7 @@ public class UniversalRecipeManager {
 
                     if (recipeInput.adjustAmounts(fluidInputs, itemInputs,true, false))
                     {
-                        UniversalRecipeOutput output = (UniversalRecipeOutput)entry.getValue();
+                        UniversalRecipeOutput output = entry.getValue();
                         if (adjustInput)
                         {
                         	if(inputAffectOutput)
@@ -121,14 +144,14 @@ public class UniversalRecipeManager {
 
 	public UniversalRecipeInput getRecipeInput(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1) {
         {
-            Iterator i$ = this.recipes.entrySet().iterator();
+            Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.recipes.entrySet().iterator();
 
             while (true)
             {
                 if (i$.hasNext())
                 {
-                    Entry entry = (Entry)i$.next();
-                    UniversalRecipeInput recipeInput = (UniversalRecipeInput)entry.getKey();
+                	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                    UniversalRecipeInput recipeInput = entry.getKey();
 
                     if (!recipeInput.matches(fluidInputs1,itemInputs1))
                     {
@@ -147,12 +170,14 @@ public class UniversalRecipeManager {
 	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public UniversalRecipeOutput getOutputFor(List[] input,  boolean adjustInput, boolean inputAffectOutput) 
 	{
 		return this.getOutputFor(input[0], input[1], adjustInput, inputAffectOutput);
 	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public UniversalRecipeInput getRecipeInput(List[] input) 
 	{
 		return this.getRecipeInput(input[0], input[1]);
@@ -161,36 +186,34 @@ public class UniversalRecipeManager {
 
 	public void removeRecipeByInput(UniversalRecipeInput uRecipeInput) 
 	{
-		Entry entryToRemove = null;
 		List<FluidStack> fluidInputs = IHLUtils.convertRecipeInputToFluidStackList(uRecipeInput.getFluidInputs());
 		List<ItemStack> itemInputs = IHLUtils.convertRecipeInputToItemStackList(uRecipeInput.getItemInputs());
         {
-            Iterator i$ = this.recipes.entrySet().iterator();
+            Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.recipes.entrySet().iterator();
             while (i$.hasNext())
             {
-                    Entry entry = (Entry)i$.next();
-                    UniversalRecipeInput recipeInput = (UniversalRecipeInput)entry.getKey();
-                    if (recipeInput.matches(fluidInputs, itemInputs))
-                    {
-                    	i$.remove();
-                    	break;
-                    }
+            	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                UniversalRecipeInput recipeInput = entry.getKey();
+                if (recipeInput.matches(fluidInputs, itemInputs))
+                {
+                   	i$.remove();
+                   	break;
+                }
             }
         }
 	}
 
 	public void removeRecipeByOutput(UniversalRecipeOutput uRecipeOutput) 
 	{
-		Entry entryToRemove = null;
-		Iterator i$ = this.recipes.entrySet().iterator();
+		Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.recipes.entrySet().iterator();
         while (i$.hasNext())
         {
-             Entry entry = (Entry)i$.next();
-             UniversalRecipeOutput recipeOutput = (UniversalRecipeOutput)entry.getValue();
-             if (recipeOutputHasCommonEntries(recipeOutput,uRecipeOutput))
-             {
-               	i$.remove();
-             }
+        	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+            UniversalRecipeOutput recipeOutput = entry.getValue();
+            if (recipeOutputHasCommonEntries(recipeOutput,uRecipeOutput))
+            {
+              	i$.remove();
+            }
         }
 	}
 	

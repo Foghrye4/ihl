@@ -21,10 +21,8 @@ import ihl.utils.IHLUtils;
 
 public class FlexiblePipeItem extends Item implements IWire {
     
-	private static Map<Integer, IIcon> iconMap = new HashMap();
-	private static Map<Integer, String> nameMap = new HashMap();
-	private static Map<Integer, String> infoMap = new HashMap();
-	private static Map<Integer, Type> materialMap = new HashMap();
+	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
+	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
 
 	public FlexiblePipeItem() 
 	{
@@ -46,7 +44,8 @@ public class FlexiblePipeItem extends Item implements IWire {
 		}
 	}
 	
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
@@ -62,6 +61,7 @@ public class FlexiblePipeItem extends Item implements IWire {
     }
 	
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(itemStack.stackTagCompound!=null)

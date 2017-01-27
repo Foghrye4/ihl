@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class WireMillContainer extends ContainerBase {
+public class WireMillContainer extends ContainerBase<WireMillTileEntity> {
 
 	public WireMillTileEntity tileEntity;
     public int lastProgress = -1;
@@ -51,7 +51,7 @@ public class WireMillContainer extends ContainerBase {
         this.addSlotToContainer(new SlotInvSlot(tileEntity.drainInputSlot, 0, 26+18, 14));
         this.addSlotToContainer(new SlotInvSlot(tileEntity.fillInputSlot, 0, 26+18, 50));
         this.addSlotToContainer(new SlotInvSlot(tileEntity.emptyFluidItemsSlot, 0, 26+18, 32));
-        this.addSlotToContainer(new SlotInvSlot(tileEntity.engine,0, 8, 14));	
+        this.addSlotToContainer(new SlotInvSlot(tileEntity.dischargeSlot,0, 8, 14));	
 	}
 
 	   @Override

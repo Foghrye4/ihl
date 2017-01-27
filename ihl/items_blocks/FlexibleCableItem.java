@@ -1,34 +1,23 @@
 package ihl.items_blocks;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.tile.IEnergyTile;
@@ -60,7 +49,7 @@ public class FlexibleCableItem extends Item implements IWire {
 	insulatedIronRuber,
 	insulatedThickIronRuber;
 	public static FlexibleCableItem instance; 
-	public final Set<String> yellowColoredWires = new HashSet(3);
+	public final Set<String> yellowColoredWires = new HashSet<String>(3);
 	public boolean isDataCable=false;
 	
     public FlexibleCableItem() 
@@ -77,6 +66,7 @@ public class FlexibleCableItem extends Item implements IWire {
 
 	@Override
 	@SideOnly(Side.CLIENT)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
         itemList.add(IHLUtils.getUninsulatedWire("Copper", 160, 15));
@@ -98,7 +88,8 @@ public class FlexibleCableItem extends Item implements IWire {
 		GameRegistry.registerItem(new FlexibleCableItem(),"copperWire");
 	}
 	
-	 public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+	 @Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
 	 {
 		 	TileEntity t = world.getTileEntity(x, y, z);
         	short facing = IHLUtils.getFacingFromPlayerView(player, true);
@@ -173,11 +164,11 @@ public class FlexibleCableItem extends Item implements IWire {
                 		{
         	        		if(t2 instanceof IMultiPowerCableHolder)
         	        		{
-        	        			te = ((IMultiPowerCableHolder)t).getEnergyNetNode(facing);
+        	        			te = ((IMultiPowerCableHolder)t2).getEnergyNetNode(facing);
         	        		}
         	        		else
         	        		{
-        		        		te = (ICableHolder)t;
+        		        		te = (ICableHolder)t2;
         	        		}
         	        		te.setCableCheck(true);
                 		}
@@ -447,6 +438,7 @@ public class FlexibleCableItem extends Item implements IWire {
 	}
 
 	@Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(itemStack.stackTagCompound!=null)

@@ -5,8 +5,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import ic2.api.recipe.IRecipeInput;
-import ihl.interfaces.IWire;
-import ihl.items_blocks.FlexibleCableItem;
 import ihl.utils.IHLUtils;
 
 public class RecipeInputObjectInstance implements IRecipeInput

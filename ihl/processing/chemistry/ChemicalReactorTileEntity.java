@@ -50,7 +50,6 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
         this.fillInputSlot = new InvSlotConsumableLiquidIHL(this, "fillInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 1);
 		this.input = new ApparatusProcessableInvSlot(this, "input", 3, Access.IO, 2, 64);
-		this.isGuiScreenOpened=true;
 	}
 	
     @Override
@@ -131,69 +130,12 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 		return "chemicalReactor";
 	}
 	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
-	}
-	
 	public float getRenderLiquidLevel()
 	{
 		return (float)this.fluidTank.getFluidAmount()/(float)this.fluidTank.getCapacity();
 	}
 
 	@Override
-	public void onNetworkEvent(EntityPlayer player, int event) 
-	{
-		// TODO Auto-generated method stub
-	}
-
-    @Override
 	public int gaugeProgressScaled(int i)
     {
         return this.progress * i / operationLength;
@@ -245,11 +187,13 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
     	return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public UniversalRecipeOutput getOutput()
     {
     	return ChemicalReactorTileEntity.recipeManager.getOutputFor(this.getInput()[0],this.getInput()[1], false, false);
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List[] getInput()
 	{
@@ -270,6 +214,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 	}
 	
 	@Override
+	@SuppressWarnings({ "unchecked"})
 	public void operate() 
 	{
 		UniversalRecipeInput recipeInput = ChemicalReactorTileEntity.recipeManager.getRecipeInput(this.getInput()[0],this.getInput()[1]);
@@ -285,7 +230,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 	    	if(te instanceof CryogenicDistillerTileEntity)
 	    	{
 	    		CryogenicDistillerTileEntity cgte = (CryogenicDistillerTileEntity)te;
-	    		int filled = cgte.fill(ForgeDirection.getOrientation(this.getFacing()), recipeInput.getFluidInputs().get(1).getInputs().get(0), true);
+	    		cgte.fill(ForgeDirection.getOrientation(this.getFacing()), recipeInput.getFluidInputs().get(1).getInputs().get(0), true);
 	    	}
 		}
 		this.fluidTank.drain(recipeInput.getFluidInputs(), true);
@@ -347,12 +292,12 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 
 	public static void addRecipe(FluidStack fluidStackInput1, FluidStack fluidStackInput2, ItemStack itemStackInput, FluidStack fluidStackOutput, ItemStack itemStackOutput1, ItemStack itemStackOutput2) 
 	{
-		addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1, fluidStackInput2}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}), Arrays.asList(new ItemStack[] {itemStackOutput1, itemStackOutput2}),200));
+		addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1, fluidStackInput2}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}), (new ItemStack[] {itemStackOutput1, itemStackOutput2}),200));
 	}
 
 	public static void addSpecialConditionsRecipe(FluidStack fluidStackInput1, FluidStack fluidStackInput2, ItemStack itemStackInput, FluidStack fluidStackOutput, ItemStack itemStackOutput1, ItemStack itemStackOutput2) 
 	{
-		addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1, fluidStackInput2}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}), Arrays.asList(new ItemStack[] {itemStackOutput1, itemStackOutput2}),200, true));
+		addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1, fluidStackInput2}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}), (new ItemStack[] {itemStackOutput1, itemStackOutput2}),200, true));
 	}
 	
 	public IHLFluidTank getFluidTank() 

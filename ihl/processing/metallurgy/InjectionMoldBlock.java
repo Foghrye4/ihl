@@ -24,7 +24,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,8 +33,7 @@ public class InjectionMoldBlock extends Block implements ITileEntityProvider{
 	IIcon textureSide;
 	
 	public static InjectionMoldBlock instance;
-	public static int moldDamageForRecipe=0;
-	public static String[] materials = new String[] {"Bronze","Steel","Gold","Magnesium", "Lithium", "TarPitch"};
+	public static String[] materials = new String[] {"Bronze","Steel","Gold","Magnesium", "Lithium", "TarPitch", "Potassium", "Sodium"};
 
 	public InjectionMoldBlock() 
 	{
@@ -60,7 +58,8 @@ public class InjectionMoldBlock extends Block implements ITileEntityProvider{
 	}
 	
 
- 	@Override
+ 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
 	public void getSubBlocks(Item item, CreativeTabs par2CreativeTabs, List itemList) 
 	{
     	ItemStack result = new ItemStack(item);
@@ -183,7 +182,6 @@ public class InjectionMoldBlock extends Block implements ITileEntityProvider{
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) 
 	{
-		IIcon sideIcon = this.blockIcon;
 		switch (side)
 		{
 		case 1:
@@ -225,29 +223,25 @@ public class InjectionMoldBlock extends Block implements ITileEntityProvider{
 	
 	public static void registerRecipes(String result1,ItemStack stack1)
 	{
-		if (Loader.isModLoaded("NotEnoughItems")) 
+		for(int i=0;i<materials.length;i++)
 		{
-			for(int i=0;i<materials.length;i++)
+			String material = InjectionMoldBlock.materials[i];
+			ItemStack stack = IHLUtils.getItemStackIfExist(result1+material);
+			if(stack!=null)
 			{
-				String material = InjectionMoldBlock.materials[i];
-				ItemStack stack = IHLUtils.getItemStackIfExist(result1+material);
-				if(stack!=null)
+				material=material.toLowerCase(Locale.ROOT);
+				FluidStack fluidstack = IHLUtils.getFluidStackIfExist("molten."+material,Details.getMeltingFluidAmount(result1));
+				if(fluidstack!=null)
 				{
-					material=material.toLowerCase(Locale.ROOT);
-					FluidStack fluidstack = IHLUtils.getFluidStackIfExist("molten."+material,Details.getMeltingFluidAmount(result1));
-					if(fluidstack!=null)
-					{
-						stack1.setItemDamage(++moldDamageForRecipe);
-						InjectionMoldTileEntity.addRecipe(fluidstack,stack1,stack);
-						//System.out.println("Recipe added for "+fluidstack.getLocalizedName() + " and "+ stack.getDisplayName());
-					}
-					else
-					{
-						//System.out.println("No such fluid: "+"molten."+material);
-					}
+					// Cap hash to positive integer range.
+					stack1.setItemDamage(result1.hashCode() & Integer.MAX_VALUE);
+/*					IHLMod.log.info("Setting damage for injection mold to: "
+							+result1.toLowerCase(Locale.ROOT).hashCode()
+							+" using hash code of "+result1
+							+" Result of lower case: "+result1.toLowerCase(Locale.ROOT));*/
+					InjectionMoldTileEntity.addRecipe(fluidstack,stack1,stack);
 				}
 			}
-			
 		}
 	}
 

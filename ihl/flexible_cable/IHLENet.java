@@ -12,8 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLENet {
 	
-	public Map<Integer, IHLGrid> grids = new HashMap();
-	public Map<Integer, IHLGrid> cablesToGrids = new HashMap();
+	public Map<Integer, IHLGrid> grids = new HashMap<Integer, IHLGrid>();
+	public Map<Integer, IHLGrid> cablesToGrids = new HashMap<Integer, IHLGrid>();
 	
 	private int griduid=0;
 	

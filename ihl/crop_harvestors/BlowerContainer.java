@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class BlowerContainer extends ContainerBase {
+public class BlowerContainer extends ContainerBase<BlowerTileEntity> {
 
     protected BlowerTileEntity tileEntity;
     public int lastStorage = -1;

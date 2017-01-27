@@ -48,12 +48,4 @@ public class LightBulbModel extends ModelBase
         BaseON.drawFromInside = false;
         BaseON.addTube("SpyralNorth", -0.5F, -0.5F, 0.5F, 1, 1, 7, 0f, 1f, ForgeDirection.NORTH);
   }
-  
-  private void setRotation(IHLModelRenderer model, float x, float y, float z)
-  {
-    model.rotateAngleX = x;
-    model.rotateAngleY = y;
-    model.rotateAngleZ = z;
-  }
-  
 }

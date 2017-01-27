@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class GasWeldingStationContainer extends ContainerBase {
+public class GasWeldingStationContainer extends ContainerBase<GasWeldingStationTileEntity> {
 
     protected GasWeldingStationTileEntity tileEntity;
     public short lastProgress2 = -1;

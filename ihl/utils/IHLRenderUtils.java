@@ -44,15 +44,12 @@ public class IHLRenderUtils
    private final int guiContainerHeight = 176;
    private float lastPlayerYaw;
    private float lastPlayerPitch;
-   private double lastPlayerPosY;
-   private double lastPlayerPosZ;
-   private double lastPlayerPosX;
-   private double renderMinX=0d;
-   private double renderMaxX=1d;
-   private double renderMinY=0d;
-   private double renderMaxY=1d;
-   private double renderMinZ=0d;
-   private double renderMaxZ=1d;
+   public double renderMinX=0d;
+   public double renderMaxX=1d;
+   public double renderMinY=0d;
+   public double renderMaxY=1d;
+   public double renderMinZ=0d;
+   public double renderMaxZ=1d;
    public boolean renderFromInside=false;
    private float rotationPointX;
    private float rotationPointY;
@@ -77,7 +74,7 @@ public class IHLRenderUtils
    {
 	   instance=this;
 	   colorBuffer = GLAllocation.createDirectFloatBuffer(16);
-	   frameTooltipMap = new HashMap();
+	   frameTooltipMap = new HashMap<Long, Integer>();
    }
    
    public  void renderIHLFluidTank(IHLFluidTank fluidTank, int x1, int y1, int x2, int y2, float zLevel, int par1, int par2, int xOffset, int yOffset)
@@ -323,9 +320,6 @@ public class IHLRenderUtils
     {
     	lastPlayerYaw = Minecraft.getMinecraft().renderViewEntity.prevRotationYaw;
     	lastPlayerPitch = Minecraft.getMinecraft().renderViewEntity.prevRotationPitch;
-    	lastPlayerPosX = Minecraft.getMinecraft().renderViewEntity.prevPosX;
-    	lastPlayerPosY = Minecraft.getMinecraft().renderViewEntity.prevPosY;
-    	lastPlayerPosZ = Minecraft.getMinecraft().renderViewEntity.prevPosZ;
     }
     
     public void drawKnee(double xPos, double yPos, double zPos, ForgeDirection direction12, ForgeDirection direction22, double radius1, double radius2, IIcon icon)
@@ -539,7 +533,6 @@ public class IHLRenderUtils
     
     public void drawSquare(double xPos, double yPos, double zPos, double[][] vertexes, IIcon icon)
     {
-        Tessellator var9 = Tessellator.instance;
         double u1 = icon.getInterpolatedU(this.renderMinZ * 16.0D);
         double u2 = icon.getInterpolatedU(this.renderMaxZ * 16.0D);
         double v2 = icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
@@ -554,16 +547,23 @@ public class IHLRenderUtils
             v2 = icon.getMinV();
             v1 = icon.getMaxV();
         }
+        this.drawSquare(xPos, yPos, zPos, u1, u2, v1, v2, vertexes);
+    }
+    
+
+    public void drawSquare(double xPos, double yPos, double zPos, double u1, double u2, double v1, double v2, double[][] vertexes)
+    {
+        Tessellator var9 = Tessellator.instance;
         double[] us = new double[]{u1,u1,u2,u2};
         double[] vs = new double[]{v1,v2,v2,v1};
         double xDelta=this.renderMaxX-this.renderMinX;
         double yDelta=this.renderMaxY-this.renderMinY;
         double zDelta=this.renderMaxZ-this.renderMinZ;
         int startFrom=0;
-        int endTo=3;
+        int endTo=vertexes.length-1;
         if(this.renderFromInside)
         {
-        	startFrom=3;
+        	startFrom=vertexes.length-1;
             endTo=0;
         }
         for(int i=startFrom;(i<=endTo&&!this.renderFromInside)||(i>=endTo&&this.renderFromInside);i+=(endTo-startFrom)/3)
@@ -617,6 +617,7 @@ public class IHLRenderUtils
     	 	var9.addVertexWithUV(xPos+vX, yPos+vY, zPos+vZ, us[i], vs[i]);
         }
     }
+
 	
 	public void setRenderBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
 	{
@@ -735,9 +736,6 @@ public class IHLRenderUtils
 		{
 			this.rotationZ=rotationZ1;
 		}
-//		this.rotationX=rotationX1;
-	//	this.rotationY=rotationY1;
-		//this.rotationZ=rotationZ1;
 	}
 	
 	public void reset()
@@ -762,10 +760,9 @@ public class IHLRenderUtils
 	
 	public List<String> splitStringByWidth(String string, int stringWidth)
 	{
-		List<String> output = new ArrayList();
+		List<String> output = new ArrayList<String>();
 		StringBuffer sb = new StringBuffer();
 		String[] splittedBySpaces = string.split(" ");
-		int arrayIndex=0;
 		for(String word:splittedBySpaces)
 		{
 			if(!word.contains("/n") && getStringWidth(sb)+getStringWidth(word)<stringWidth)
@@ -777,7 +774,6 @@ public class IHLRenderUtils
 			{
 				output.add(sb.toString());
 				sb.delete(0, sb.length());
-				arrayIndex++;
 				if(!word.contains("/n"))
 				{
 					sb.append(word);

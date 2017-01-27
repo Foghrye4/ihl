@@ -138,7 +138,6 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
 	public void updateEntityServer()
     {
         super.updateEntityServer();
-        boolean needsInvUpdate = false;
         if (this.needsFluid())
         {
        		IHLUtils.handleFluidSlotsBehaviour(fillItemsSlot, fluidItemsSlot, emptyFluidItemsSlot, fluidTank);
@@ -146,11 +145,6 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
         if (this.fuel <= 0 && this.canOperate())
         {
             this.fuel = this.maxFuel = ((InvSlotConsumableFuel) this.fuelSlot).consumeFuel();
-
-            if (this.fuel > 0)
-            {
-                needsInvUpdate = true;
-            }
         }
 
         if (this.isBurning() && this.canOperate())
@@ -161,7 +155,6 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
             {
                 this.progress = 0;
                 this.operate();
-                needsInvUpdate = true;
             }
         }
         else
@@ -177,7 +170,6 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
         if (this.getActive() != this.isBurning())
         {
             this.setActive(this.isBurning());
-            needsInvUpdate = true;
         }
     }
     
@@ -219,7 +211,7 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
     }
 
     @Override
-	public ContainerBase getGuiContainer(EntityPlayer entityPlayer)
+	public ContainerBase<? extends EvaporatorTileEntity> getGuiContainer(EntityPlayer entityPlayer)
     {
         return new EvaporatorContainer(entityPlayer, this);
     }
@@ -277,7 +269,7 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
     
     public static void addRecipe(FluidStack input, ItemStack output)
     {
-        recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack [] {input}),null), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {output}),20));
+        recipeManager.addRecipe(new UniversalRecipeInput((new FluidStack [] {input}),null), new UniversalRecipeOutput(null, (new ItemStack[] {output}),20));
     }
     
     public UniversalRecipeOutput getOutput()

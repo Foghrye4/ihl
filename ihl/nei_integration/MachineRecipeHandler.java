@@ -61,6 +61,13 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     {
     	MachineRecipeHandler.CachedIORecipe recipe = (CachedIORecipe) this.arecipes.get(recipeNumber);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        for(PositionedStack stack:recipe.ingredients)
+        {
+        	if(stack.item.stackSize==0)
+        	{
+            	GuiDraw.fontRenderer.drawStringWithShadow("0.001", stack.relx+3, stack.rely+9, 16777215);
+        	}
+        }
         if(recipe.output instanceof IHLPositionedStack)
         {
         	IHLPositionedStack rOutput = (IHLPositionedStack) recipe.output;
@@ -112,12 +119,12 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     {
         if (outputId.equals(this.getRecipeId()))
         {
-            Iterator i$ = this.getRecipeList().entrySet().iterator();
+            Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
 
             while (i$.hasNext())
             {
-                Entry entry = (Entry)i$.next();
-                this.arecipes.add(new MachineRecipeHandler.CachedIORecipe((UniversalRecipeInput)entry.getKey(), (UniversalRecipeOutput)entry.getValue(),getAdditionalIngredients()));
+            	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                this.arecipes.add(new MachineRecipeHandler.CachedIORecipe(entry.getKey(), entry.getValue(),getAdditionalIngredients()));
             }
         }
         else
@@ -129,7 +136,7 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     @Override
 	public void loadCraftingRecipes(ItemStack result)
     {
-        Iterator i$ = this.getRecipeList().entrySet().iterator();
+        Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
         FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(result);
         if(fluidStack==null && result.getItem() instanceof IFluidContainerItem)
         {
@@ -152,11 +159,11 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
       	{
             while (i$.hasNext())
             {
-                Entry entry = (Entry)i$.next();
-                Iterator i$1 = ((UniversalRecipeOutput)entry.getValue()).getFluidOutputs().iterator();
+            	Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                Iterator<FluidStack> i$1 = ((UniversalRecipeOutput)entry.getValue()).getFluidOutputs().iterator();
                 while (i$1.hasNext())
                 {
-                     FluidStack output = (FluidStack)i$1.next();
+                     FluidStack output = i$1.next();
                      if (output!=null && output.getFluid()==fluidStack.getFluid())
                      {
                          this.arecipes.add(new MachineRecipeHandler.CachedIORecipe((UniversalRecipeInput)entry.getKey(), (UniversalRecipeOutput)entry.getValue(),getAdditionalIngredients()));
@@ -169,8 +176,8 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
         {
             while (i$.hasNext())
             {
-                Entry entry = (Entry)i$.next();
-                Iterator<RecipeOutputItemStack> i$1 = ((UniversalRecipeOutput)entry.getValue()).getItemOutputs().iterator();
+                 Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
+                Iterator<RecipeOutputItemStack> i$1 = (entry.getValue()).getItemOutputs().iterator();
 
                 while (i$1.hasNext())
                 {
@@ -178,7 +185,7 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
 
                     if (NEIServerUtils.areStacksSameTypeCrafting(output.itemStack, result) || IHLUtils.isItemsHaveSameOreDictionaryEntry(output.itemStack, result))
                     {
-                        this.arecipes.add(new MachineRecipeHandler.CachedIORecipe((UniversalRecipeInput)entry.getKey(), (UniversalRecipeOutput)entry.getValue(),getAdditionalIngredients()));
+                        this.arecipes.add(new MachineRecipeHandler.CachedIORecipe(entry.getKey(), entry.getValue(),getAdditionalIngredients()));
                         break;
                     }
                 }
@@ -195,7 +202,7 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     @Override
 	public void loadUsageRecipes(ItemStack ingredient)
     {
-        Iterator i$ = this.getRecipeList().entrySet().iterator();
+        Iterator<Entry<UniversalRecipeInput, UniversalRecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
         FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(ingredient);
         if(fluidStack==null && ingredient.getItem() instanceof IFluidContainerItem)
         {
@@ -219,10 +226,10 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     	{
         	while (i$.hasNext())
         	{
-        		Entry entry = (Entry)i$.next();
+        		Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
             	if (((UniversalRecipeInput)entry.getKey()).containFluidStack(fluidStack))
             	{
-            		this.arecipes.add(new MachineRecipeHandler.CachedIORecipe((UniversalRecipeInput)entry.getKey(), (UniversalRecipeOutput)entry.getValue(),getAdditionalIngredients()));
+            		this.arecipes.add(new MachineRecipeHandler.CachedIORecipe(entry.getKey(), entry.getValue(),getAdditionalIngredients()));
             	}
         	}
     	}
@@ -230,10 +237,10 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
         {
         	while (i$.hasNext())
         	{
-        		Entry entry = (Entry)i$.next();
+        		Entry<UniversalRecipeInput, UniversalRecipeOutput> entry = i$.next();
             	if (((UniversalRecipeInput)entry.getKey()).containItemStack(ingredient))
             	{
-            		this.arecipes.add(new MachineRecipeHandler.CachedIORecipe((UniversalRecipeInput)entry.getKey(), (UniversalRecipeOutput)entry.getValue(),getAdditionalIngredients()));
+            		this.arecipes.add(new MachineRecipeHandler.CachedIORecipe(entry.getKey(), entry.getValue(),getAdditionalIngredients()));
             	}
         	}
         }
@@ -266,9 +273,9 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
 
     public class CachedIORecipe extends CachedRecipe
     {
-        private final List<PositionedStack> ingredients = new ArrayList();
+        private final List<PositionedStack> ingredients = new ArrayList<PositionedStack>();
         public PositionedStack output;
-        public final List<PositionedStack> otherStacks = new ArrayList();
+        public final List<PositionedStack> otherStacks = new ArrayList<PositionedStack>();
         public boolean specialConditions=false;
 
         @Override
@@ -307,16 +314,16 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
             else
             {
             	specialConditions=output1.specialConditions;
-                ArrayList<List<ItemStack>> items = new ArrayList();
-                ArrayList<List<ItemStack>> fluidItems = new ArrayList();
+                ArrayList<List<ItemStack>> items = new ArrayList<List<ItemStack>>();
+                ArrayList<List<ItemStack>> fluidItems = new ArrayList<List<ItemStack>>();
                 if(input.getFluidInputs()!=null && !input.getFluidInputs().isEmpty())
                 {
-                    Iterator i = input.getFluidInputs().iterator();
+                    Iterator<?> i = input.getFluidInputs().iterator();
                     while (i.hasNext())
                     {
                     	IRecipeInputFluid fstackRI = (IRecipeInputFluid)i.next();
                     	List<FluidStack> fstackList = fstackRI.getInputs();
-                    	List<ItemStack> fContainers = new ArrayList();
+                    	List<ItemStack> fContainers = new ArrayList<ItemStack>();
                     	for(FluidStack fstack:fstackList)
                     	{
                             ItemStack stack = Ic2Items.FluidCell.copy();
@@ -333,12 +340,12 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
                 
                 if(input.getItemInputs()!=null && !input.getItemInputs().isEmpty())
                 {
-                    Iterator i = input.getItemInputs().iterator();
+                    Iterator<?> i = input.getItemInputs().iterator();
                     while (i.hasNext())
                     {
                         IRecipeInput rInput = (IRecipeInput)i.next();
                         Iterator<ItemStack> rInputsi = rInput.getInputs().iterator();
-                        List<ItemStack> itemInputs = new ArrayList();
+                        List<ItemStack> itemInputs = new ArrayList<ItemStack>();
                         while(rInputsi.hasNext())
                         {
                         	ItemStack stack = rInputsi.next().copy();
@@ -407,7 +414,7 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
                     	x = MachineRecipeHandler.this.getFluidOutputPosX()[0];
                     	y = MachineRecipeHandler.this.getFluidOutputPosY()[0];
                     }
-                    Iterator i = output1.getFluidOutputs().iterator();
+                    Iterator<?> i = output1.getFluidOutputs().iterator();
                     if(skipOneFluidOutput)
                     {
                     	i.next();

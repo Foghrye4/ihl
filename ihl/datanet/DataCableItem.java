@@ -1,7 +1,6 @@
 package ihl.datanet;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,35 +9,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import ihl.IHLCreativeTab;
-import ihl.IHLMod;
 import ihl.IHLModInfo;
 import ihl.flexible_cable.NodeEntity;
-import ihl.flexible_cable.PowerCableNodeEntity;
 import ihl.interfaces.IDataCableHolder;
-import ihl.interfaces.IEnergyNetNode;
-import ihl.interfaces.IWire;
 import ihl.items_blocks.FlexibleCableItem;
 import ihl.utils.IHLUtils;
 
 public class DataCableItem extends FlexibleCableItem {
     
-	private static Map<Integer, IIcon> iconMap = new HashMap();
-	private static Map<Integer, String> nameMap = new HashMap();
-	private static Map<Integer, String> descriptionMap = new HashMap();
+	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
+	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
+	private static Map<Integer, String> descriptionMap = new HashMap<Integer, String>();
 	public static DataCableItem dataCableInstance; 
 	
     public DataCableItem() 
@@ -49,6 +37,7 @@ public class DataCableItem extends FlexibleCableItem {
 		dataCableInstance=this;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
@@ -121,7 +110,8 @@ public class DataCableItem extends FlexibleCableItem {
 	    }
 
 
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(itemStack.stackTagCompound!=null)

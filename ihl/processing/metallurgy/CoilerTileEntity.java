@@ -5,7 +5,6 @@ import java.util.List;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlotOutput;
-import ic2.core.network.NetworkManager;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,13 +18,11 @@ public class CoilerTileEntity extends BasicElectricMotorTileEntity implements IP
     public final InvSlotOutput output;
     private int activeTimer=0;
     public boolean hasCoil=false;
-	public boolean hasEngine=false;
 	
 	public CoilerTileEntity()
 	{
 		super();
 		this.output = new InvSlotOutput(this, "output", 1, 1);
-		this.isGuiScreenOpened=true;
 	}
 	
 
@@ -39,7 +36,6 @@ public class CoilerTileEntity extends BasicElectricMotorTileEntity implements IP
     {
 		List<String> fields = super.getNetworkedFields();
 		fields.add("hasCoil");
-		fields.add("hasEngine");
 		return fields;
     }
 	
@@ -89,34 +85,22 @@ public class CoilerTileEntity extends BasicElectricMotorTileEntity implements IP
 			this.hasCoil=true;
 			IC2.network.get().updateTileEntityField(this, "hasCoil");
         }
-        if(this.engine.isEmpty() && hasEngine==true)
-        {
-			this.hasEngine=false;
-			IC2.network.get().updateTileEntityField(this, "hasEngine");
-        }
-        else if(this.engine.correctContent() && hasEngine==false)
-        {
-			this.hasEngine=true;
-			IC2.network.get().updateTileEntityField(this, "hasEngine");
-        }
-        
     }
 
 	@Override
 	public void operate() 
 	{}
 
-
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List[] getInput() 
 	{
 		return null;
 	}
 
-
 	@Override
 	public boolean canProcess(ItemStack cable) {
-    	if(this.engine.correctContent() && this.energy>1D/this.engine.getEfficiency() && cable.getItem() instanceof IWire)
+    	if(this.energy>1D && cable.getItem() instanceof IWire)
     	{
     		if(this.output.isEmpty())
     		{
@@ -139,7 +123,7 @@ public class CoilerTileEntity extends BasicElectricMotorTileEntity implements IP
 	public void process(ItemStack cable) {
 	  	if(cable.getItem() instanceof IWire)
     	{
-    		this.energy-=1D/this.engine.getEfficiency();
+    		this.energy-=1D;
     		if(this.output.isEmpty())
     		{
     			setActive(true);

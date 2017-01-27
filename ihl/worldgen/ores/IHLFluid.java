@@ -16,7 +16,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
@@ -29,11 +28,11 @@ import net.minecraftforge.fluids.FluidStack;
 public class IHLFluid extends Fluid
 {
 	private IHLFluidType type;
-	private static List<Fluid> fluidInstances = new ArrayList();
-	private static Map<String, IHLFluidType> localFluidRegistry = new HashMap();
-	private static Map<String, Float> realDensityMap = new HashMap();
-	private static Map<String, String> condensationMap = new HashMap();
-	private static Map<String, List<String>> solutionMap = new HashMap();
+	private static List<Fluid> fluidInstances = new ArrayList<Fluid>();
+	private static Map<String, IHLFluidType> localFluidRegistry = new HashMap<String, IHLFluidType>();
+	private static Map<String, Float> realDensityMap = new HashMap<String, Float>();
+	private static Map<String, String> condensationMap = new HashMap<String, String>();
+	private static Map<String, List<String>> solutionMap = new HashMap<String, List<String>>();
 	public static final int maxGaseousStateVapoursDensity = 40;
 	
 	public IHLFluid(IHLFluidType type1) {
@@ -42,8 +41,8 @@ public class IHLFluid extends Fluid
 		this.setTemperature(type.temperature);
 		this.setDensity(Math.round(type.density));
 		realDensityMap.put(type1.fluidRegistryName, type.density);
-		this.setGaseous(type.isGaseous);
 		this.setUnlocalizedName(type.fluidRegistryName.replaceFirst("fluid", ""));
+		this.setGaseous(type.isGaseous);
 		Fluid instance = this;
         if (!FluidRegistry.registerFluid(instance))
         {
@@ -53,6 +52,7 @@ public class IHLFluid extends Fluid
 		{
 			instance.setBlock(new IHLFluidBlock(instance, type.blockMaterial, type.textureName, "fluid"+type.fluidName.replaceFirst("fluid", "")).setFlammable(type.flammable).setBlockName("block"+type.fluidName).setCreativeTab(IHLCreativeTab.tab));
 		}
+		instance.setGaseous(type.isGaseous);
 		if(type.haveBucket)
 		{
 			Item bucket = new ItemBucket(block).setTextureName(IHLModInfo.MODID+":bucket_"+type.fluidName).setUnlocalizedName("bucket_"+type.fluidName).setCreativeTab(IHLCreativeTab.tab);
@@ -151,6 +151,11 @@ public class IHLFluid extends Fluid
 	public enum IHLFluidType
 	{
 		//Methane("Methane","fluidAcetylene",10047, 293, 249, 373, 1150, "methane", Material.water, false, false, false, false),
+		Ammonia("Ammonia", 10051, 273, 273-78, 273-33, 0.772F, "ammonia", new MaterialLiquid(MapColor.airColor), false, false, true),
+		Acetaldehyde("Acetaldehyde",10050, 273, 273-123, 294, 784, "acetaldehyde", Material.water, false, false, false),
+		Formaldehyde("Formaldehyde",10049, 254, 273-118, 254, 815, "formaldehyde", Material.water, false, false, false),
+		TarWater("TarWater",10048, 293, 176, 338, 1032, "tarwater", Material.water, false, false, false),
+		Methanol("Methanol",10047, 293, 176, 338, 792, "methanol", Material.water, true, false, false),
 		LithiumChloride("LithiumChlorideDissolvedInWater",10046, 293, 249, 373, 1530, "solution.lithiumchloride", Material.water, false, false, false),
 		CalciumChloride("CalciumChlorideDissolvedInWater",10045, 293, 249, 373, 1630, "solution.calciumchloride", Material.water, false, false, false),
 		ZeolitePulp("ZeolitePulp","fluidPulpZeolite",10044, 293, 249, 373, 1150, "pulp.sodiumzeolite", Material.water, false, false, false),
@@ -165,11 +170,11 @@ public class IHLFluid extends Fluid
 		Fuel("Fuel", 10035, 293, 268, 633, 840, "fuel", Material.water, true, false, true),
 		MineralOil("MineralOil", 10034, 293, 238, 704, 845, "mineraloil", Material.water, true, false, true),
 		FuelOil("FuelOil", 10033, 293, 293, 693, 991, "fueloil", Material.water, true, false, true),
-		Oil("Oil", 10032, 293, 284, 773, 850, "oil", Material.water, true, false, true),
+		Oil("Oil","fluidOil", 10032, 293, 284, 773, 850f, "oil", Material.water, true, false, true, false),
 		Mercury("Mercury", 10031, 293, 234, 630, 13546),
 		VapourMercury("VapourMercury",10030, 630, 234, 630, 9.229F, "vapour.mercury", new MaterialLiquid(MapColor.cyanColor), false, false, false),
 		Hydrogen("Hydrogen", 10029, 293, 14, 20, 0.046F, "hydrogen", new MaterialLiquid(MapColor.blueColor), true, false, true),
-		SaltWater("SaltWater", 10028, 293, 253, 373, 1360),
+		SaltWater("SaltWater","fluidSaltWater", 10028, 293, 253, 373, 1360f,"saltwater", Material.water, true, false, false, false),
 		HydrogenChloride("HydrogenChloride", 10027, 293, 159, 188, 1.477F, "hydrogenchloride", new MaterialLiquid(MapColor.yellowColor), true, false, true),
 		NatriumTungstate("NatriumTungstateDissolvedInWater",10026, 293, 249, 373, 1730, "solution.natriumtungstate", Material.water, true, false, false),
 		Turpentine("Turpentine",10025, 293, 217, 453, 1470, "turpentine", Material.water, true, false, true),
@@ -192,7 +197,9 @@ public class IHLFluid extends Fluid
 		NickelSulfateDissolvedInWater("NickelSulfateDissolvedInWater",10009, 293, 253, 373, 1220, "solution.nickelsulfate", Material.water, true, false, false),
 		BlueVitriolDissolvedInWater("BlueVitriolDissolvedInWater",10008, 293, 253, 373, 1180, "solution.bluevitriol", Material.water, true, false, false),
 		MoltenRubberWithSulfur("MoltenRubberWithSulfur",10007, 600, 600, 1000, 1200, "molten.rubber", Material.lava, false, false, true),
+		MoltenPotassium("MoltenPotassium","fluidMolten",10042, 336, 336, 1047, 856, "molten.potassium", Material.lava, false, false, false, true),
 		MoltenLithium("MoltenLithium","fluidMolten",10042, 454, 454, 1613, 512, "molten.lithium", Material.lava, false, false, false),
+		MoltenPotassiumChloride("MoltenPotassiumChloride","fluidMolten",10006, 776+273, 776+273, 1407+273, 1556, "molten.potassiumchloride", Material.lava, false, false, false, true),
 		MoltenSodiumChloride("MoltenSodiumChloride","fluidMolten",10006, 1273, 1273, 1740, 1556, "molten.sodiumchloride", Material.lava, false, false, false),
 		MoltenGlass("MoltenGlass","fluidMolten",10048, 600, 600, 1950, 2270, "molten.glass", Material.lava, false, false, false, true),
 		MoltenMagnesium("MoltenMagnesium","fluidMolten",10006, 923, 923, 1623, 1584, "molten.magnesium", Material.lava, false, false, false),
@@ -295,7 +302,7 @@ public class IHLFluid extends Fluid
 		float density;
 		boolean isGaseous;
 		boolean flammable=false;
-		boolean noBlock=false;
+		boolean noBlock=true;
 		boolean haveBucket;
 		Material blockMaterial = Material.water;
 		int meltingPoint;
@@ -306,6 +313,7 @@ public class IHLFluid extends Fluid
 		public final int damage;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static FluidStack getCondensationResult(FluidStack condensatedGas) 
 	{
 		String fluidname = condensationMap.get(condensatedGas.getFluid().getName());

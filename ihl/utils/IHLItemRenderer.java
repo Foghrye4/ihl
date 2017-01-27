@@ -30,9 +30,9 @@ public class IHLItemRenderer {
     
 	public IHLItemRenderer(){}
 
-    public IHLItemRenderer(boolean b) 
+    public IHLItemRenderer(boolean noRotation1) 
     {
-    	noRotation=b;
+    	noRotation=noRotation1;
 	}
 
 	public void doRender(RenderManager renderManager, ItemStack stack, double x, double y, double z)

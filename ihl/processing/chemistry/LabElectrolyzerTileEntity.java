@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,7 +51,6 @@ public class LabElectrolyzerTileEntity extends BasicElectricMotorTileEntity impl
         this.fillInputSlotAnodeOutput = new InvSlotConsumableLiquidIHL(this, "fillInputAnodeOutput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
         this.fillInputSlotCathodeOutput = new InvSlotConsumableLiquidIHL(this, "fillInputCathodeOutput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 3);
-		this.isGuiScreenOpened=true;
 	}
 	
     @Override
@@ -142,12 +140,6 @@ public class LabElectrolyzerTileEntity extends BasicElectricMotorTileEntity impl
 		return "labElectrolizer";
 	}
 	
-	@Override
-	public void onNetworkEvent(EntityPlayer player, int event) 
-	{
-		// TODO Auto-generated method stub
-	}
-
     @Override
 	public int gaugeProgressScaled(int i)
     {
@@ -188,23 +180,12 @@ public class LabElectrolyzerTileEntity extends BasicElectricMotorTileEntity impl
     	return false; 
     }
     
-    private boolean checkSpecialConditions() 
-    {
-    	ForgeDirection dir = ForgeDirection.getOrientation(this.getFacing());
-    	TileEntity te = worldObj.getTileEntity(xCoord+dir.offsetX, yCoord, zCoord+dir.offsetZ);
-    	if(te instanceof CryogenicDistillerTileEntity)
-    	{
-    		CryogenicDistillerTileEntity cgte = (CryogenicDistillerTileEntity)te;
-    		return cgte.getFacing()==this.getFacing() && cgte.canProcess();
-    	}
-    	return false;
-	}
-
 	public UniversalRecipeOutput getOutput()
     {
     	return LabElectrolyzerTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List[] getInput()
 	{
@@ -282,11 +263,11 @@ public class LabElectrolyzerTileEntity extends BasicElectricMotorTileEntity impl
 	{
 		if(itemStackOutput1!=null)
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutputAnode, fluidStackOutputCathode}), Arrays.asList(new ItemStack[] {itemStackOutput1}),200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutputAnode, fluidStackOutputCathode}), (new ItemStack[] {itemStackOutput1}),200));
 		}
 		else
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutputAnode, fluidStackOutputCathode}), null,200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), null), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutputAnode, fluidStackOutputCathode}), null,200));
 		}
 	}
 

@@ -10,9 +10,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
@@ -28,31 +26,27 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 public class ServerProxy {
 
     protected static FMLEventChannel channel;
     public static final int updatePeriod = 1;
-    private static final int maxPacketDataLength = 128;
-    protected Map<Integer, INetworkListener> entityList = new HashMap();
-    protected Set<INetworkListener> entityServerList = new HashSet();
-    protected Map<Integer, ByteBuf> delayedEntityDataPacket = new HashMap();
-	public Map<Integer,Set<NodeEntity>> nodeEntityRegistry = new HashMap();
+    protected Map<Integer, INetworkListener> entityList = new HashMap<Integer, INetworkListener>();
+    protected Set<INetworkListener> entityServerList = new HashSet<INetworkListener>();
+    protected Map<Integer, ByteBuf> delayedEntityDataPacket = new HashMap<Integer, ByteBuf>();
+	public Map<Integer,Set<NodeEntity>> nodeEntityRegistry = new HashMap<Integer,Set<NodeEntity>>();
     
 	public ServerProxy() {}
 	
@@ -82,6 +76,48 @@ public class ServerProxy {
 			byteBufOutputStream.writeFloat((float) mz);
 			byteBufOutputStream.writeFloat(paticleScale);
 			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(world.provider.dimensionId, x, y, z, 32d));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void playSoundEffectFromServer(int soundId, World world, double x, double y, double z, float volume, float pitch)
+	{
+		ByteBuf bb = Unpooled.buffer(36); 
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(3);
+			byteBufOutputStream.write(soundId);
+			byteBufOutputStream.writeFloat((float) x);
+			byteBufOutputStream.writeFloat((float) y);
+			byteBufOutputStream.writeFloat((float) z);
+			byteBufOutputStream.writeFloat(volume);
+			byteBufOutputStream.writeFloat(pitch);
+			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(world.provider.dimensionId, x, y, z, volume+32d));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void createExplosionEffectFromServer(World world, int x, int y, int z, float radius)
+	{
+		ByteBuf bb = Unpooled.buffer(36); 
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(2);
+			byteBufOutputStream.writeInt(x);
+			byteBufOutputStream.writeInt(y);
+			byteBufOutputStream.writeInt(z);
+			byteBufOutputStream.writeFloat(radius);
+			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(world.provider.dimensionId, x, y, z, radius+32d));
 			byteBufOutputStream.close();
 		} 
 		catch (IOException e) 
@@ -163,7 +199,22 @@ public class ServerProxy {
         		ItemStack stack = ((Slot)player.openContainer.inventorySlots.get(containerSlotNumber)).getStack();
         		stack.stackTagCompound.setInteger(fieldName, fieldValue);
         		player.openContainer.detectAndSendChanges();
-    	    	System.out.println("Field now "+stack.stackTagCompound.getInteger(fieldName));
+        		break;
+        	case 1:
+        		playerEntityId = byteBufInputStream.readInt();
+        		worldDimensionId = byteBufInputStream.readInt();
+        		int x = byteBufInputStream.readInt();
+        		int y = byteBufInputStream.readInt();
+        		int z = byteBufInputStream.readInt();
+        		World world = MinecraftServer.getServer().worldServerForDimension(worldDimensionId);
+        		TileEntity te = world.getTileEntity(x, y, z);
+        		if(te!=null && !te.isInvalid())
+        		{
+            		NBTTagCompound nbt = new NBTTagCompound();
+            		te.writeToNBT(nbt);
+            		player = (EntityPlayerMP) world.getEntityByID(playerEntityId);
+            		player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(x,y,z,6,nbt));
+        		}
         		break;
         }
 
@@ -219,4 +270,31 @@ public class ServerProxy {
 	}
 	
 	public void sendItemStackNBTTagFromClientToServerPlayer(EntityPlayer player, int slotNumber, String fieldName, int fieldValue){}
+
+	public void createExplosionEffect(World world, int x, int y, int z, float radius){}
+	
+	public void requestTileEntityInitdataFromClientToServer(int x, int y, int z){}
+
+	public void sendChunksLightUpdateQuery(World world, int x, int y, int z, Set<Long> clientSideChunkXZKeySet) 
+	{
+		int chunkNum = clientSideChunkXZKeySet.size();
+		ByteBuf bb = Unpooled.buffer(8+(chunkNum<<3));
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(4);
+			byteBufOutputStream.write(chunkNum);
+			Iterator<Long> cluI = clientSideChunkXZKeySet.iterator();
+			while(cluI.hasNext())
+			{
+				byteBufOutputStream.writeLong(cluI.next());
+			}
+			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(world.provider.dimensionId, x, y, z, 256d));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 }

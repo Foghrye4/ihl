@@ -1,7 +1,6 @@
 package ihl.model;
 
 import ic2.api.tile.IWrenchable;
-import ihl.items_blocks.MachineBaseBlock;
 import ihl.utils.IHLRenderUtils;
 
 import org.lwjgl.opengl.GL11;

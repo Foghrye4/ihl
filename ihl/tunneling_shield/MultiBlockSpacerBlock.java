@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 
 public class MultiBlockSpacerBlock extends Block {
 	
-	public static Set<IMultiBlock> teList = new HashSet();
+	public static Set<IMultiBlock> teList = new HashSet<IMultiBlock>();
 	
 	public MultiBlockSpacerBlock() 
 	{
@@ -37,7 +37,12 @@ public class MultiBlockSpacerBlock extends Block {
 	{
 	return -2;
 	}
-
+	
+	@Override
+	public ArrayList<ItemStack> getDrops(World world,int x, int y, int z, int meta, int flag)
+	{
+		return new ArrayList<ItemStack>();
+	}
 	@Override
 	public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
 	{
@@ -100,14 +105,6 @@ public class MultiBlockSpacerBlock extends Block {
 		return null;
 	}
 	
-	@Override
-	public ArrayList<ItemStack> getDrops(World world,int x, int y, int z, int meta, int flag)
-	{
-		ArrayList<ItemStack> nothing = new ArrayList();
-		nothing.clear();
-		return nothing;
-	}
-
 	/**
 	* Is this block (a) opaque and (B) a full 1m cube? This determines whether or not to render the shared face of two
 	* adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.

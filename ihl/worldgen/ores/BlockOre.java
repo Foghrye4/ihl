@@ -24,8 +24,8 @@ import net.minecraftforge.oredict.OreDictionary;
 public class BlockOre extends Block
 {
 	private Type type;
-	private static List<BlockOre> instances = new ArrayList();
-	private static Map<Type, IIcon> iconMap = new HashMap();
+	private static List<BlockOre> instances = new ArrayList<BlockOre>();
+	private static Map<Type, IIcon> iconMap = new HashMap<Type, IIcon>();
 
 	public BlockOre(Type type1) 
 	{

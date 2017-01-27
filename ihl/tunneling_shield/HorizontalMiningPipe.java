@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 public class HorizontalMiningPipe extends Block {
 
-	public static ArrayList<DriverTileEntity> teList = new ArrayList();
+	public static ArrayList<DriverTileEntity> teList = new ArrayList<DriverTileEntity>();
 	
 	public HorizontalMiningPipe() {
 		super(Material.iron);

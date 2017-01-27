@@ -8,8 +8,6 @@ import ic2.api.energy.tile.IEnergySource;
 import ic2.core.ExplosionIC2;
 import ic2.core.IC2;
 import ic2.core.block.TileEntityBlock;
-import ihl.IHLMod;
-import ihl.interfaces.ICableHolder;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.utils.IHLUtils;
@@ -19,15 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -406,6 +400,7 @@ public class AnchorTileEntity extends TileEntityBlock implements IEnergySink, IE
 		}
 	}
 
+	@Override
 	public boolean isCableRemoved(int chainUniqueID) 
 	{
 		if(!checkCables)

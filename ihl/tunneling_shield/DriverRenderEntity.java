@@ -11,11 +11,8 @@ public class DriverRenderEntity extends Render{
 	
 	private DriverModel model = new DriverModel();
 	private ResourceLocation tex = new ResourceLocation(IHLModInfo.MODID+":textures/blocks/shield.png");
-	private float rotationSpeed=0F;
 	private float rotationAmount=1F;
 	private float rotationAmount2=0F;
-	private float shiftCorrection=0F;
-
 	public DriverRenderEntity() 
 	{
 		super();

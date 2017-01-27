@@ -1,19 +1,16 @@
 package ihl.processing.chemistry;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -23,17 +20,11 @@ import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
-import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
-import ic2.core.network.NetworkManager;
-import ihl.IHLMod;
 import ihl.flexible_cable.FlexibleCableHolderBaseTileEntity;
-import ihl.flexible_cable.IHLGrid;
-import ihl.flexible_cable.NodeEntity;
-import ihl.interfaces.IEnergyNetNode;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
 import ihl.recipes.UniversalRecipeInput;
@@ -77,7 +68,6 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
         NBTTagCompound fluidTankTag = new NBTTagCompound();
         this.fluidTank.writeToNBT(fluidTankTag);
         nbttagcompound.setTag("fluidTank", fluidTankTag);
-        NBTTagCompound fractionalOutputNBT = new NBTTagCompound();
     }
     
 	@Override
@@ -101,7 +91,6 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
         super.updateEntityServer();
     	temperature=(short) (this.fluidTank.getTemperature()-273);
    		IHLUtils.handleFluidSlotsBehaviour(fillInputSlot, drainInputSlot, emptyFluidItemsSlot, fluidTank);
-        boolean needsInvUpdate = false;
         if (this.canOperate())
         {
             this.setActive(true);
@@ -120,7 +109,6 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
             if (this.progress >= this.operationLength)
             {
                 this.operate();
-                needsInvUpdate = true;
                 this.progress = 0;
                 IC2.network.get().initiateTileEntityEvent(this, 2, true);
             }
@@ -209,6 +197,7 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
     	return ElectrolysisBathTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
+	@SuppressWarnings("rawtypes")
 	public List[] getInput()
 	{
 		for(int i=0;i<fluidTank.getNumberOfFluids();i++)

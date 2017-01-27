@@ -182,13 +182,14 @@ public class IHLHandPump extends Item implements IElectricItem, IBoxable, IItemH
 
 	@Override
 	public List<String> getHudInfo(ItemStack itemStack) {
-        LinkedList info = new LinkedList();
+        LinkedList<String> info = new LinkedList<String>();
         info.add(ElectricItem.manager.getToolTip(itemStack));
         info.add("Power Tier: " + this.tier);
         return info;
 	}
 	
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean b)
     {
         info.add("PowerTier: " + this.tier);
@@ -207,6 +208,7 @@ public class IHLHandPump extends Item implements IElectricItem, IBoxable, IItemH
     
     @Override
 	@SideOnly(Side.CLIENT)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
         itemList.add(this.getItemStack(this.maxCharge));

@@ -3,9 +3,11 @@ package ihl.flexible_cable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,29 +16,26 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.network.INetworkTileEntityEventListener;
 import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputItemStack;
 import ic2.core.ContainerBase;
-import ic2.core.IC2;
 import ic2.core.IHasGui;
-import ic2.core.Ic2Items;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
 import ihl.IHLMod;
 import ihl.interfaces.IWire;
-import ihl.items_blocks.FlexibleCableItem;
-import ihl.processing.chemistry.GaedesMercuryRotaryPumpTileEntity;
-import ihl.processing.metallurgy.GasWeldingStationTileEntity;
 import ihl.recipes.IronWorkbenchRecipe;
+import ihl.recipes.RecipeInputDetonator;
 import ihl.recipes.RecipeInputDie;
 import ihl.recipes.RecipeInputObjectInstance;
 import ihl.utils.IHLUtils;
 
 public class IronWorkbenchTileEntity extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, INetworkTileEntityEventListener{
 
-	public static List<IronWorkbenchRecipe> recipes = new ArrayList();
+	public static List<IronWorkbenchRecipe> recipes = new ArrayList<IronWorkbenchRecipe>();
 	public int progress;
 	public int currentSlot=-1;
 	public final int maxProgress;
@@ -49,7 +48,8 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 	private boolean outputDefined=false;
 	private EntityPlayer crafter;
 	public ContainerBase<?> container;
-	private Map<Integer, IronWorkbenchRecipe> slotRecipeMap = new HashMap();
+	private Map<Integer, IronWorkbenchRecipe> slotRecipeMap = new HashMap<Integer, IronWorkbenchRecipe>();
+	private boolean firstTick = true;
     
     public IronWorkbenchTileEntity()
     {
@@ -77,7 +77,18 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 	{
 		return IHLUtils.getThisModItemStack("ironWorkbench");
 	}
-    
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateEntityClient()
+	{
+		if(firstTick)
+		{
+			IHLMod.proxy.requestTileEntityInitdataFromClientToServer(xCoord, yCoord, zCoord);
+			this.firstTick=false;
+		}
+	}
+	
 	@Override
 	public void updateEntityServer()
 	{
@@ -102,6 +113,13 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 									newOutputs = ((RecipeInputDie)rinput).transformOutput(this.getMatchedItemStack(rinput),recipe.outputs);
 								}
 							}
+							for(IRecipeInput rinput:recipe.materials)
+							{
+								if(rinput instanceof RecipeInputDetonator)
+								{
+									newOutputs = ((RecipeInputDetonator)rinput).transformOutput(this.getMatchedItemStack(rinput),recipe.outputs);
+								}
+							}
 							int slot = this.output.put(newOutputs);
 							if(slot<0)break;
 							slotRecipeMap.put(slot, recipe);
@@ -109,7 +127,6 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 						}
 					}
 				}
-				List<ItemStack> processingMaterials = new ArrayList<ItemStack>();
 				for(int i=0; i<this.inputMaterial.size();i++)
 				{
 					ItemStack stack = this.inputMaterial.get(i);
@@ -136,7 +153,7 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 			}
 			else if(!this.output.isEmpty())
 			{
-				List<Integer> crafterEmptyInventorySlotsList = getCrafterEmptyInventorySlotsList();
+				Set<Integer> crafterEmptyInventorySlotsList = getCrafterEmptyInventorySlotsList();
 					if(startProcess && crafterEmptyInventorySlotsList.size()>=this.slotRecipeMap.get(currentSlot).outputs.size())
 					{
 						if(++this.progress>=this.maxProgress)
@@ -150,10 +167,8 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 							{
 								int slot = emptySlotsIterator.next();
 								ItemStack stack = optsi.next();
-								this.crafter.inventory.mainInventory[slot]=stack.copy();
 								if(stack.getItem() instanceof IWire)
 								{
-									System.out.println(multiplier);
 									this.crafter.inventory.mainInventory[slot]=IHLUtils.getWireItemStackCopyWithLengthMultiplied(stack,multiplier);
 								}
 								else
@@ -162,8 +177,23 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 									this.crafter.inventory.mainInventory[slot].stackSize*=multiplier;
 								}
 							}
+          					Iterator<ItemStack> emptyContainers = this.inputMaterial.substract(crecipe.materials, multiplier).iterator();
+          					while(emptyContainers.hasNext())
+          					{
+          						if(emptySlotsIterator.hasNext())
+          						{
+    								int slot = emptySlotsIterator.next();
+    								ItemStack stack = emptyContainers.next();
+    								this.crafter.inventory.mainInventory[slot]=stack.copy();
+   									this.crafter.inventory.mainInventory[slot].stackSize*=multiplier;
+          						}
+          						else
+          						{
+    								EntityItem eistack = new EntityItem(this.worldObj, this.xCoord, this.yCoord+1, this.zCoord, emptyContainers.next());
+    								this.worldObj.spawnEntityInWorld(eistack);
+    							}
+          					}
           					this.crafter.inventoryContainer.detectAndSendChanges();
-          					this.inputMaterial.substract(crecipe.materials, multiplier);
 							this.tools.damage(crecipe.tools);
 							if(!crecipe.workspaceElements.isEmpty())
 							{
@@ -196,9 +226,9 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 		return null;
 	}
 
-	private List<Integer> getCrafterEmptyInventorySlotsList()
+	private Set<Integer> getCrafterEmptyInventorySlotsList()
 	{
-		List<Integer> list = new ArrayList<Integer>();
+		Set<Integer> list = new HashSet<Integer>(4);
 		if(this.crafter!=null)
 		{
 			for (int var1 = 0; var1 < this.crafter.inventory.mainInventory.length; ++var1)
@@ -213,7 +243,7 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 	}
 	
     private List<RecipeInputObjectInstance> getListOfSameWires(ItemStack stack1) {
-    	List<RecipeInputObjectInstance> list = new ArrayList();
+    	List<RecipeInputObjectInstance> list = new ArrayList<RecipeInputObjectInstance>();
 		for(int i=0; i<this.inputMaterial.size();i++)
 		{
 			ItemStack stack = this.inputMaterial.get(i);
@@ -361,7 +391,12 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 				ri.remove();
 			}
 		}
-
 	}
+	
+	@Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+		this.readFromNBT(pkt.func_148857_g());
+    }
 
 }

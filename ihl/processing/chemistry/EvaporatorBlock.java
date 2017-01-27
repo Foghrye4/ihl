@@ -185,7 +185,6 @@ public class EvaporatorBlock extends Block implements ITileEntityProvider{
 		@SideOnly(Side.CLIENT)
 		public IIcon getIcon(int side, int meta) 
 		{
-			IIcon sideIcon = this.blockIcon;
 			switch (side)
 			{
 			case 0:

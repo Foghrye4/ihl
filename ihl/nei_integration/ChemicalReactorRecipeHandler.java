@@ -127,14 +127,4 @@ public class ChemicalReactorRecipeHandler extends MachineRecipeHandler
     {
         return ChemicalReactorTileEntity.getRecipes();
     }
-    
-    private int getFrameY(int number)
-    {
-    	return (number % 10) * 24 + 14;
-    }
-    
-    private int getFrameX(int number)
-    {
-    	return (number / 10) * 24 + 176;
-    }
 }

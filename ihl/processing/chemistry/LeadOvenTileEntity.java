@@ -24,6 +24,7 @@ import ic2.core.block.TileEntityLiquidTankInventory;
 import ic2.core.block.invslot.InvSlotConsumableFuel;
 import ic2.core.block.invslot.InvSlot.Access;
 import ihl.processing.invslots.IHLInvSlotOutput;
+import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
@@ -152,7 +153,6 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
         		}
         	}
         }
-        boolean needsInvUpdate = false;
         if (this.fuel <= 0 && this.canOperate())
         {
         	if(this.fuelSlot.get()!=null)
@@ -168,11 +168,6 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
         		}
         	}
             this.fuel = this.maxFuel = this.fuelSlot.consumeFuel();
-
-            if (this.fuel > 0)
-            {
-                needsInvUpdate = true;
-            }
         }
 
         if (this.isBurning() && this.canOperate())
@@ -183,7 +178,6 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
             {
                 this.progress = 0;
                 this.operate();
-                needsInvUpdate = true;
             }
         }
         else
@@ -199,7 +193,6 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
         if (this.getActive() != this.isBurning())
         {
             this.setActive(this.isBurning());
-            needsInvUpdate = true;
         }
     }
     
@@ -223,12 +216,12 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
     }
 
     @Override
-    public ContainerBase getGuiContainer(EntityPlayer entityPlayer)
+    public ContainerBase<LeadOvenTileEntity> getGuiContainer(EntityPlayer entityPlayer)
     {
         return new LeadOvenContainer(entityPlayer, this);
     }
     
-    @Override
+	@Override
 	@SideOnly(Side.CLIENT)
     public GuiScreen getGui(EntityPlayer entityPlayer, boolean isAdmin)
     {
@@ -269,6 +262,7 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
     	return LeadOvenTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
+	@SuppressWarnings("rawtypes")
 	public List[] getInput()
 	{
 		if(this.inputSlot.get(1)!=null)
@@ -287,7 +281,7 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
 		{
 			this.getFluidTank().fill(output2.get(0), true);
 		}
-		List itemOutputs = routput.getItemOutputs();
+		List<RecipeOutputItemStack> itemOutputs = routput.getItemOutputs();
 		if(itemOutputs!=null && !itemOutputs.isEmpty())
 		{
 			this.outputSlot.add(itemOutputs);
@@ -326,7 +320,7 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
 
 	public static void addRecipe(UniversalRecipeInput input, FluidStack fluidStackWithSize) 
 	{
-		recipeManager.addRecipe(input, new UniversalRecipeOutput(Arrays.asList(new FluidStack[]{fluidStackWithSize}),null,20));
+		recipeManager.addRecipe(input, new UniversalRecipeOutput((new FluidStack[]{fluidStackWithSize}),null,20));
 	}
 
 	public static Map<UniversalRecipeInput, UniversalRecipeOutput> getRecipes() {
@@ -334,10 +328,10 @@ public class LeadOvenTileEntity extends TileEntityLiquidTankInventory implements
 	}
 
 	public static void addRecipe(ItemStack input, FluidStack fluidStackOutput, ItemStack output) {
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {input})),new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}),Arrays.asList(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input})),new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}),(new ItemStack[] {output}),20));
 	}
 
 	public static void addRecipe(ItemStack input, ItemStack output) {
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {input})),new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input})),new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
 	}
 }

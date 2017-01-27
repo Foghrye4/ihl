@@ -35,14 +35,14 @@ public class RecipeInputOreDictionaryList  implements IRecipeInput
         this.meta = meta;
     }
 
-    @Override
+	@Override
 	public boolean matches(ItemStack subject)
     {
-        List inputs = this.getOres();
+        List<ItemStack> inputs = this.getOres();
         boolean useOreStackMeta = this.meta == null;
         Item subjectItem = subject.getItem();
         int subjectMeta = subject.getItemDamage();
-        Iterator i$ = inputs.iterator();
+        Iterator<ItemStack> i$ = inputs.iterator();
         Item oreItem;
         int metaRequired;
 
@@ -59,7 +59,7 @@ public class RecipeInputOreDictionaryList  implements IRecipeInput
                         return false;
                     }
 
-                    oreStack = (ItemStack)i$.next();
+                    oreStack = i$.next();
                     oreItem = oreStack.getItem();
                 }
                 while (oreItem == null);
@@ -82,13 +82,13 @@ public class RecipeInputOreDictionaryList  implements IRecipeInput
     @Override
 	public List<ItemStack> getInputs()
     {
-        List ores = this.getOres();
+        List<ItemStack> ores = this.getOres();
         boolean hasInvalidEntries = false;
-        Iterator ret = ores.iterator();
+        Iterator<ItemStack> ret = ores.iterator();
 
         while (ret.hasNext())
         {
-            ItemStack i$ = (ItemStack)ret.next();
+            ItemStack i$ = ret.next();
 
             if (i$.getItem() == null)
             {
@@ -103,12 +103,12 @@ public class RecipeInputOreDictionaryList  implements IRecipeInput
         }
         else
         {
-            ArrayList ret1 = new ArrayList(ores.size());
-            Iterator i$1 = ores.iterator();
+            ArrayList<ItemStack> ret1 = new ArrayList<ItemStack>(ores.size());
+            Iterator<ItemStack> i$1 = ores.iterator();
 
             while (i$1.hasNext())
             {
-                ItemStack stack = (ItemStack)i$1.next();
+                ItemStack stack = i$1.next();
 
                 if (stack.getItem() != null)
                 {
@@ -134,10 +134,10 @@ public class RecipeInputOreDictionaryList  implements IRecipeInput
         }
         else
         {
-        	this.ores = new ArrayList();
+        	this.ores = new ArrayList<ItemStack>();
         	for(int i=0;i<this.input.length;i++)
         	{
-                ArrayList ret = OreDictionary.getOres(this.input[i]);
+                ArrayList<ItemStack> ret = OreDictionary.getOres(this.input[i]);
                 if (ret != OreDictionary.EMPTY_LIST)
                 {
                 	this.ores.addAll(ret);

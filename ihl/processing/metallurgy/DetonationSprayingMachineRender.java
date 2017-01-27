@@ -49,7 +49,7 @@ public void renderAModelAt(DetonationSprayingMachineTileEntity tile, double x, d
 	bindTexture(tex); //texture
     GL11.glScalef(1F, -1F, -1F);
     GL11.glTranslatef(0F, -1.0F, 0F);
-	model.Base.render(1.0F/16.0F);
+	model.Base.render(scale);
 	GL11.glPopMatrix();
 }
 

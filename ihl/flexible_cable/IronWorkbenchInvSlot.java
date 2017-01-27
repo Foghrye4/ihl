@@ -15,7 +15,7 @@ public class IronWorkbenchInvSlot extends InvSlot {
 	
 	public List<ItemStack> getItemStackList()
 	{
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = new ArrayList<ItemStack>();
 		for(int i=0; i<this.size(); i++)
 		{
 			if(get(i)!=null)list.add(get(i));

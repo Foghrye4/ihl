@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class CoilerContainer extends ContainerBase {
+public class CoilerContainer extends ContainerBase<CoilerTileEntity> {
 
 	public CoilerTileEntity tileEntity;
 	private short lastEnergy = -1;
@@ -31,7 +31,7 @@ public class CoilerContainer extends ContainerBase {
             this.addSlotToContainer(new Slot(entityPlayer.inventory, col, 8 + col * 18, height + -24));
         }
         this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.output, 0, 69, 22));	
-        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.engine,0, 22, 55));	
+        this.addSlotToContainer(new SlotInvSlot(lathePart1TileEntity.dischargeSlot,0, 22, 55));	
 	}
 
 	   @Override

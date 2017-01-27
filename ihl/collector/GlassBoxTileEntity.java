@@ -17,14 +17,12 @@ import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot;
-import ic2.core.network.NetworkManager;
 import ihl.utils.IHLUtils;
 
 public class GlassBoxTileEntity extends TileEntityInventory implements IHasGui {
 
     public final InvSlot invSlot;
 	public boolean isGuiScreenOpened=false;
-	private int bigTimer=0;
 
 	public GlassBoxTileEntity()
 	{
@@ -59,7 +57,7 @@ public class GlassBoxTileEntity extends TileEntityInventory implements IHasGui {
 	public void updateEntityServer()
     {
     		boolean needInvUpdate=false;
-    			List<EntityItem> eItemList = new ArrayList();
+    			List<EntityItem> eItemList = new ArrayList<EntityItem>();
     			for(int i=0;i<this.invSlot.size();i++)
     			{
     				if(this.invSlot.get(i)==null)
@@ -163,7 +161,8 @@ public class GlassBoxTileEntity extends TileEntityInventory implements IHasGui {
 			return this.isGuiScreenOpened;
     }
     
-    protected List<EntityItem> getEItemsList()
+    @SuppressWarnings("unchecked")
+	protected List<EntityItem> getEItemsList()
     {
         double range = 0.2D;
         AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.xCoord,this.yCoord,this.zCoord,this.xCoord+1.0D,this.yCoord+1.0D+range,this.zCoord+1.0D);

@@ -26,7 +26,6 @@ import ic2.core.block.invslot.InvSlotConsumableId;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlotUpgrade;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ic2.core.upgrade.IUpgradableBlock;
 import ic2.core.upgrade.UpgradableProperty;
 import ic2.core.util.StackUtil;
@@ -86,8 +85,8 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
 	public boolean reverseModeOn=false;
 	public boolean autoReverseModeOn=true;
 	private float lastModelShiftAmount=1F;
-	private List<Block> blockBlackList = new ArrayList();
-	private List<Block> blockWhiteList = new ArrayList();
+	private List<Block> blockBlackList = new ArrayList<Block>();
+	private List<Block> blockWhiteList = new ArrayList<Block>();
 	public boolean advancedShield=false;
 	
 	public DriverTileEntity()
@@ -225,7 +224,8 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
     }
     
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void updateEntityClient()
     {
     	super.updateEntityClient();
@@ -318,7 +318,8 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
         }
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void updateEntityServer()
     {
         if (IC2.platform.isSimulating())
@@ -720,7 +721,7 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
 			}
 
 			@Override
-			public ContainerBase getGuiContainer(EntityPlayer arg0) {
+			public ContainerBase<DriverTileEntity> getGuiContainer(EntityPlayer arg0) {
 				return new DriverContainer(arg0, this);
 			}
 
@@ -799,9 +800,6 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
 		    
 		    private AxisAlignedBB getShieldBladesZone(double offset)
 		    {
-				int x=this.xCoord;
-				int y=this.yCoord;
-				int z=this.zCoord;
 				double extension=this.getModelShiftAmount()+offset;
 				double xShieldMinD=this.xCoord+extension*this.mX()-1D*Math.max(this.mX(), 0)-2D*Math.abs(this.mZ());
 				double xShieldMaxD=this.xCoord+extension*this.mX()-1D*Math.min(this.mX(), 0)+3D*Math.abs(this.mZ());
@@ -960,7 +958,7 @@ public class DriverTileEntity extends TileEntityInventory implements IEnergySink
 					HydrotransportPulpRegeneratorTileEntity hprte = (HydrotransportPulpRegeneratorTileEntity) te;
 					if(hprte.getActive())
 					{
-						ArrayList<ItemStack> drops1 = new ArrayList();
+						ArrayList<ItemStack> drops1 = new ArrayList<ItemStack>();
 						Iterator<ItemStack> dropsIterator = drops.iterator();
 						while(dropsIterator.hasNext())
 						{

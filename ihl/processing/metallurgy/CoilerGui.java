@@ -32,10 +32,6 @@ public class CoilerGui extends GuiContainer {
                 i1 = Math.min(this.container.tileEntity.getGUIEnergy(12),12);
                 this.drawTexturedModalRect(39, 55 + 12 - i1, 179, 12 - i1, 14, i1 + 2);
             }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 47, 56, xOffset, yOffset);
-            }
        		IHLRenderUtils.instance.drawTooltip(par1,par2,9,11,xOffset,yOffset,StatCollector.translateToLocal("ihl.coiler.tip"));
     }
 

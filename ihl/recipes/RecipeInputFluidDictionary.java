@@ -1,12 +1,8 @@
 package ihl.recipes;
 
-import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import ic2.api.recipe.IRecipeInput;
 import ihl.IHLMod;
 
 public class RecipeInputFluidDictionary implements IRecipeInputFluid 
@@ -39,5 +35,12 @@ public class RecipeInputFluidDictionary implements IRecipeInputFluid
 	public List<FluidStack> getInputs() {
 		return IHLMod.fluidDictionary.getFluids(input);
 	}
+	
+    @Override
+	public String toString()
+    {
+        return "RInputFluidStackDictionary<" + this.amount + "x" + this.input;
+    }
+
 
 }

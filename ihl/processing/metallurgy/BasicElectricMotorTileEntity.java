@@ -9,18 +9,12 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
-import ic2.core.block.TileEntityInventory;
+import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
-import ihl.IHLMod;
 import ihl.flexible_cable.FlexibleCableHolderBaseTileEntity;
-import ihl.flexible_cable.IHLGrid;
 import ihl.flexible_cable.NodeEntity;
-import ihl.interfaces.IEnergyNetNode;
-import ihl.utils.IHLUtils;
-import net.minecraft.entity.item.EntityItem;
+import ihl.utils.IHLInvSlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -29,10 +23,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBaseTileEntity implements IHasGui, INetworkClientTileEntityEventListener, IEnergySink{
 
-    public final ElectricEngineInvSlot engine;
+    public final IHLInvSlotDischarge dischargeSlot;
 	public short progress;
 	protected short operationLength=600;
-	public boolean isGuiScreenOpened=false;
 	protected final double energyConsume=0.1D;
     public double energy;
     public int maxStorage=128;
@@ -41,7 +34,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 	public BasicElectricMotorTileEntity()
 	{
 		super();
-		engine = new ElectricEngineInvSlot(this, "engine", 0, Access.IO, 1, 1);
+		dischargeSlot = new IHLInvSlotDischarge(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
 	}
 	
 
@@ -79,6 +72,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
     }
     
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setFacing(short facing1)
 	{
@@ -125,10 +119,10 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		}
 		if(!nodeList.isEmpty())
 		{
-			Iterator ei = nodeList.iterator();
+			Iterator<NodeEntity> ei = nodeList.iterator();
         	while(ei.hasNext())
         	{
-        		NodeEntity ne=(NodeEntity) ei.next();
+        		NodeEntity ne= ei.next();
         		if((ne.prevAnchorEntity==null||ne.nextAnchorEntity==null) && this.cableListContains(ne.getChainUniqueID()))
         		{
         			ne.setVirtualNodePos(connectionX,connectionY,connectionZ);
@@ -194,7 +188,6 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		switch(event)
 		{
 		case 0:
-			this.isGuiScreenOpened=false;
 			break;
 		}	
 	}
@@ -204,14 +197,19 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
     @Override
 	public void updateEntityServer()
     {
-            if(this.gridID!=-1 && this.getGrid().energy>0D && this.energy<this.maxStorage)
-            {
-            	this.energy+=energyConsume*10D;
-            	this.getGrid().drawEnergy(energyConsume*10D, this);
-            }
-        if (this.canOperate() && this.engine.correctContent() && this.isGuiScreenOpened && this.energy>=this.energyConsume/this.engine.getEfficiency())
+    	if(this.getDemandedEnergy() > 1.0D)
+    	{
+    		double amount = this.dischargeSlot.discharge(this.getDemandedEnergy(), false);
+    		this.energy += amount;
+    	}
+        if(this.gridID!=-1 && this.getGrid().energy>0D && this.energy<this.maxStorage)
         {
-            this.energy-=this.energyConsume/this.engine.getEfficiency();
+           	this.energy+=energyConsume*10D;
+           	this.getGrid().drawEnergy(energyConsume*10D, this);
+        }
+        if (this.canOperate() && this.energy>=this.energyConsume)
+        {
+            this.energy-=this.energyConsume;
             if (this.progress == 0)
             {
                 IC2.network.get().initiateTileEntityEvent(this, 0, true);
@@ -238,7 +236,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
     	
     }
 	
-	public abstract List[] getInput();
+	public abstract List<?>[] getInput();
 	public abstract boolean canOperate();
 	@Override
 	public void onGuiClosed(EntityPlayer arg0) {}
@@ -294,6 +292,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		return 0d;
 	}
 	
+	@Override
 	public void injectEnergyInThisNode(double amount, double voltage) 
 	{
 		this.energy+=amount;

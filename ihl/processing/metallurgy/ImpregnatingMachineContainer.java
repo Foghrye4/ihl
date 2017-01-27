@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ImpregnatingMachineContainer extends ContainerBase {
+public class ImpregnatingMachineContainer extends ContainerBase<ImpregnatingMachineTileEntity> {
 
     protected ImpregnatingMachineTileEntity tileEntity;
     public int lastFluidAmount = -1;

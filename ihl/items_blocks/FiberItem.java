@@ -47,7 +47,8 @@ public class FiberItem extends Item implements IWire {
 		}
 	}
 	
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List itemList)
     {
@@ -59,6 +60,7 @@ public class FiberItem extends Item implements IWire {
     }
 	
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(itemStack.stackTagCompound!=null)

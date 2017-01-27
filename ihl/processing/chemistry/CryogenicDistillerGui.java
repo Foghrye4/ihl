@@ -42,11 +42,6 @@ public class CryogenicDistillerGui extends GuiContainer {
             {
             	IHLRenderUtils.instance.renderIHLFluidTank(this.container.tileEntity.fluidTankProducts, 125, 28, 137, 67, zLevel, par1, par2, xOffset, yOffset);
             }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-                this.mc.renderEngine.bindTexture(tex);
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 26, 34, xOffset, yOffset);
-            }
     }
 
     @Override

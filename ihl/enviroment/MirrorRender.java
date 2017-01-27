@@ -15,12 +15,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Project;
@@ -42,7 +38,6 @@ private final int[] ydepth;
 private final int[] textureU;
 private final int[] textureV;
 private final Minecraft mc;
-private static final boolean useARB = true;
 
 public MirrorRender()
 {
@@ -54,7 +49,6 @@ public MirrorRender()
 }
 
 public void renderAModelAt(MirrorTileEntity tile, double x, double y, double z, float f) {
-	Tessellator tessellator=Tessellator.instance;
 	float[] mAxis = tile.getMirrorAxis();
 	if(texture==-1)
 	{
@@ -73,10 +67,6 @@ public void renderAModelAt(MirrorTileEntity tile, double x, double y, double z, 
         GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL11.GL_DEPTH_COMPONENT, textureWidth, textureHeight);
         GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER, depthBuffer);
         GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
-        IntBuffer drawBuffs = BufferUtils.createIntBuffer(1);
-        drawBuffs.put(0, GL30.GL_COLOR_ATTACHMENT0);
-        GL20.glDrawBuffers(drawBuffs);// SPme parts of code here mindlessly taken from TheArni/Advanced-Graphics-Processing-Units. https://github.com/TheArni/Advanced-Graphics-Processing-Units/
-
         if (GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER) != GL30.GL_FRAMEBUFFER_COMPLETE) 
         {
         	IHLMod.log.error("Something went wrong while creating frame buffer!");

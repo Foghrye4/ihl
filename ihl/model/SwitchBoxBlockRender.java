@@ -109,9 +109,7 @@ public class SwitchBoxBlockRender implements ISimpleBlockRenderingHandler
         float var7 = (var6 >> 16 & 255) / 255.0F;
         float var8 = (var6 >> 8 & 255) / 255.0F;
         float var9 = (var6 & 255) / 255.0F;
-        float var11;
         var5.setColorOpaque_F(var7, var8, var9);
-        var11 = 0.0625F;
         blockRenderer.renderFaceXPos(block, x, y, z, sideToTypes[4]);
         blockRenderer.renderFaceXNeg(block, x, y, z, sideToTypes[5]);
         blockRenderer.renderFaceZPos(block, x, y, z, sideToTypes[2]);

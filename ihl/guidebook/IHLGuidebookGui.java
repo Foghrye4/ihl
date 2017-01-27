@@ -9,7 +9,6 @@ import org.xml.sax.SAXException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -22,14 +21,10 @@ public class IHLGuidebookGui extends GuiContainer
     public IHLGuidebookContainer container;
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIGuidebook.png");
 	public Map<Integer, Integer[]> linksCoordinatesMap = new HashMap<Integer,Integer[]>();
-	private GuiInvisibleButton prevPageAreaButton;
-	private GuiInvisibleButton nextPageAreaButton;
 	private String title;
 	private String[] localisedContent=new String[2];;// By text block and row
 	private ResourceLocation[] resourceLocationCache = new ResourceLocation[16];//By section number
 	private int currentSection=0;
-	private int textBlockNumberOnPageTurn=0;
-	private int stringNumberOnPageTurn=0;
 	private final int titleX=25;
 	private final int titleY=7;
 	private final int textBlockWidth=104;
@@ -39,8 +34,6 @@ public class IHLGuidebookGui extends GuiContainer
 	private final int textBlockY2=5;
 	private final int textBlockMaxY=200;
 	private int stringHeight=10;
-	private int textRowInRightPage=0;
-	private int textBlockInRightPage=0;
 	private int textRowInNextPage=0;
 	private int textBlockInNextPage=0;
 	private int[] textRowStart=new int[2];
@@ -62,8 +55,8 @@ public class IHLGuidebookGui extends GuiContainer
     	super.initGui();
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
-        prevPageAreaButton = new GuiInvisibleButton(0, x, y, xSize/2, 162, linksCoordinatesMap, buttonList);
-        nextPageAreaButton = new GuiInvisibleButton(1, x+xSize/2, y, xSize/2, 162, linksCoordinatesMap, buttonList);
+        new GuiInvisibleButton(0, x, y, xSize/2, 162, linksCoordinatesMap, buttonList);
+        new GuiInvisibleButton(1, x+xSize/2, y, xSize/2, 162, linksCoordinatesMap, buttonList);
         this.clear();
         try {
 			IHLMod.xmlparser.setupGuidebookGUI(this, 0);
@@ -147,15 +140,11 @@ public class IHLGuidebookGui extends GuiContainer
 	@Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		IHLRenderUtils.instance.updateScreenSize();
-		this.textRowInRightPage=0;
-		this.textBlockInRightPage=0;
         this.drawPage(this.textBlockX1,this.textBlockY1);
     }
 	
     private void drawPage(int startX, int startY)
     {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.fontRendererObj.drawString(this.title, this.titleX, this.titleY, 0);
         int xPos=startX;
@@ -192,7 +181,6 @@ public class IHLGuidebookGui extends GuiContainer
             	if(yPos+this.pictureHeight<this.textBlockMaxY)
         		{
                 	yPos+=stringHeight;
-                	ITextureObject texture = this.mc.renderEngine.getTexture(this.resourceLocationCache[this.currentSection]);
                 	this.mc.renderEngine.bindTexture(this.resourceLocationCache[this.currentSection]);
                 	this.drawTexturedModalRect(Math.round(xPos), Math.round(yPos), 0, 0, this.pictureWidth, this.pictureHeight);
                 	yPos+=Math.round(this.pictureHeight);

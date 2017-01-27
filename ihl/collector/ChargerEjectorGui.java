@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
-import ic2.core.network.NetworkManager;
 import ic2.core.util.GuiTooltipHelper;
 
 @SideOnly(Side.CLIENT)
@@ -30,7 +29,8 @@ public class ChargerEjectorGui extends GuiContainer {
             this.container=container1;
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void initGui()
     {
         super.initGui();

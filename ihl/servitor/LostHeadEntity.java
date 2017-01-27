@@ -87,7 +87,8 @@ public class LostHeadEntity extends EntityFlying implements IMob
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(10.0D);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
@@ -115,7 +116,7 @@ public class LostHeadEntity extends EntityFlying implements IMob
         }
         
         Entity var5 = null;
-        List var6 = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+        List<Entity> var6 = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
         double var7 = 0.0D;
         int var9;
         float var11;
@@ -165,8 +166,6 @@ public class LostHeadEntity extends EntityFlying implements IMob
                 {
                     if (var4.entityHit instanceof EntityLivingBase)
                     {
-                        EntityLivingBase var24 = (EntityLivingBase)var4.entityHit;
-
                         var26 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
                         if (var26 > 0.0F)
                         {
@@ -244,7 +243,6 @@ public class LostHeadEntity extends EntityFlying implements IMob
         if (this.targetedEntity != null && this.targetedEntity.getDistanceSqToEntity(this) < var9 * var9)
         {
             double var11 = this.targetedEntity.posX - this.posX;
-            double var13 = this.targetedEntity.boundingBox.minY + this.targetedEntity.height / 2.0F - (this.posY + this.height / 2.0F);
             double var15 = this.targetedEntity.posZ - this.posZ;
             this.renderYawOffset = this.rotationYaw = -((float)Math.atan2(var11, var15)) * 180.0F / (float)Math.PI;
 

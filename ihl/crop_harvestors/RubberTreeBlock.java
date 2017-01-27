@@ -69,7 +69,6 @@ public class RubberTreeBlock extends Block{
 		@SideOnly(Side.CLIENT)
 		public void registerBlockIcons(IIconRegister par1IconRegister)
 		{
-			ItemStack result;
 			switch(type)
 			{
 			case RUBBERTREE:
@@ -120,7 +119,6 @@ public class RubberTreeBlock extends Block{
 		@SideOnly(Side.CLIENT)
 		public IIcon getIcon(int side, int meta) 
 		{
-			IIcon sideIcon = this.blockIcon;
 			switch (side)
 			{
 			case 0:

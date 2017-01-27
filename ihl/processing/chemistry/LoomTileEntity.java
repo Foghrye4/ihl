@@ -11,7 +11,6 @@ import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.invslots.IHLInvSlotOutput;
 import ihl.recipes.RecipeInputWire;
@@ -106,7 +105,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 	public void operate() 
 	{
 		List<IRecipeInput> input1 = LoomTileEntity.recipeManager.getRecipeInput(getInput()).getItemInputs();
-		List output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
 		this.output.add(output1);
 		if(input1.get(0) instanceof RecipeInputWire)
 		{
@@ -123,6 +122,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public List[] getInput()
 	{
 		return new List[] {null,Arrays.asList(new ItemStack[] {input.get()})};
@@ -131,7 +131,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 	public boolean canOperate()
 	{
 		if(LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false)==null) return false;
-		List output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
 		return this.output.canAdd(output1);
 	}
 
@@ -141,7 +141,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 	public static void addRecipe(ItemStack input, ItemStack output) 
 	{
 		if(input==null || output==null) throw new NullPointerException();
-		recipeManager.addRecipe(new UniversalRecipeInput(null,Arrays.asList(new ItemStack[] {input})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null,new ItemStack[] {input}), new UniversalRecipeOutput(null, new ItemStack[] {output},20));
 	}
 	
     public int gaugeProgressScaled(int i)

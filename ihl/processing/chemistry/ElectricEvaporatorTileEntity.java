@@ -27,7 +27,6 @@ import ic2.core.audio.AudioSource;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlotUpgrade;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ic2.core.upgrade.IUpgradableBlock;
 import ic2.core.upgrade.IUpgradeItem;
 import ic2.core.upgrade.UpgradableProperty;
@@ -39,7 +38,6 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
 {
     public final InvSlotUpgrade upgradeSlot;
     private int tier;
-    private int lastTier;
     public int maxStorage;
     private int defaultMaxStorage;
     private double energy;
@@ -48,9 +46,6 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
     public final int defaultTier;
     public int energyConsume;
     public AudioSource audioSource;
-    private static final int EventStart = 0;
-    private static final int EventInterrupt = 1;
-    private static final int EventStop = 2;
 	private int updateChecksum=0;
 	private boolean addedToEnergyNet=false;
 
@@ -60,7 +55,7 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
         this.defaultEnergyConsume = this.energyConsume = 8;
         this.defaultOperationLength = this.maxProgress = 400;
         this.energy=0D;
-        this.lastTier = this.tier = this.defaultTier = 1;
+        this.tier = this.defaultTier = 1;
         this.maxStorage = this.defaultMaxStorage = defaultEnergyConsume * defaultOperationLength;
     	this.fuelSlot = new IHLInvSlotDischarge(this, 1, Access.IO, this.tier, InvSlot.InvSide.BOTTOM);
         this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4, 4);
@@ -206,7 +201,6 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
         }
     	if(IC2.platform.isSimulating())
     	{
-        boolean needsInvUpdate = false;
         this.setOverclockRates();
 
     	if(this.getDemandedEnergy() > 1.0D)
@@ -232,7 +226,6 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
             if (this.progress >= this.maxProgress)
             {
                 this.operate();
-                needsInvUpdate = true;
                 this.progress = 0;
                 IC2.network.get().initiateTileEntityEvent(this, 2, true);
             }
@@ -253,18 +246,12 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
         {
             ItemStack stack = this.upgradeSlot.get(i);
 
-            if (stack != null && stack.getItem() instanceof IUpgradeItem && ((IUpgradeItem)stack.getItem()).onTick(stack, this))
+            if (stack != null && stack.getItem() instanceof IUpgradeItem)
             {
-                needsInvUpdate = true;
+            	((IUpgradeItem)stack.getItem()).onTick(stack, this);
             }
         }
     	}
-    }
-    
-    private static int applyModifier(int base, int extra, double multiplier)
-    {
-        double ret = Math.round(((double)base + (double)extra) * multiplier);
-        return ret > 2.147483647E9D ? Integer.MAX_VALUE : (int)ret;
     }
     
     @Override
@@ -317,7 +304,7 @@ public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implement
     }
 
     @Override
-	public ContainerBase getGuiContainer(EntityPlayer entityPlayer)
+	public ContainerBase<ElectricEvaporatorTileEntity> getGuiContainer(EntityPlayer entityPlayer)
     {
         return new ElectricEvaporatorContainer(entityPlayer, this);
     }

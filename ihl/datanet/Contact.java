@@ -20,7 +20,7 @@ public class Contact implements IDataNode
 {
 	public final int innerId;
 	private int dataGridID=-1;
-	private Set<IDataNode> connectedContacts = new HashSet();
+	private Set<IDataNode> connectedContacts = new HashSet<IDataNode>(8);
 	public final InvSlotSignalProcessor attachedSlot;
 	public final int attachedSlotNumber;
 	public final int type; //Free:-1; A1:0; A2:1; C:2; NO:3; NC:4;

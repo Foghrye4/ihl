@@ -2,7 +2,6 @@ package ihl.processing.metallurgy;
 
 import ihl.model.IHLModelRenderer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -48,13 +47,6 @@ public class DetonationSprayingMachineModel extends ModelBase {
 	          Base.addTube("Tube11", -1F, 10F, -8F, 2, 2, 1, 0F,1F,ForgeDirection.NORTH);
 	    }
 
-	  private void setRotation(ModelRenderer model, float x, float y, float z)
-	  {
-	    model.rotateAngleX = x;
-	    model.rotateAngleY = y;
-	    model.rotateAngleZ = z;
-	  }
-	  
 	  @Override
 	public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
 	  {

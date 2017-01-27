@@ -24,7 +24,7 @@ public class DebugScannerTileEntity extends TileEntityInventory implements IHasG
 {
     public final InvSlot itemsSlot;
     private ItemStack lastItem;
-    public List<String> oreDictionaryEntries = new ArrayList();
+    public List<String> oreDictionaryEntries = new ArrayList<String>();
     
     public DebugScannerTileEntity()
     {
@@ -54,7 +54,7 @@ public class DebugScannerTileEntity extends TileEntityInventory implements IHasG
         		if(this.itemsSlot.get().stackTagCompound!=null)
         		{
         			this.oreDictionaryEntries.add("NBT keys:");
-        			Iterator iterator = this.itemsSlot.get().stackTagCompound.func_150296_c().iterator();
+        			Iterator<?> iterator = this.itemsSlot.get().stackTagCompound.func_150296_c().iterator();
         			while(iterator.hasNext())
         			{
         				String entry = (String) iterator.next();
@@ -65,7 +65,7 @@ public class DebugScannerTileEntity extends TileEntityInventory implements IHasG
             				if(ct!=null && ct.func_150296_c()!=null && !ct.func_150296_c().isEmpty())
             				{
             					this.oreDictionaryEntries.add(" -NBT compound tag subkeys:");
-            					Iterator stIterator = ct.func_150296_c().iterator();
+            					Iterator<?> stIterator = ct.func_150296_c().iterator();
                     			while(stIterator.hasNext())
                     			{
                     				String entry2 = (String) stIterator.next();
@@ -138,7 +138,7 @@ public class DebugScannerTileEntity extends TileEntityInventory implements IHasG
     }
 
     @Override
-	public ContainerBase getGuiContainer(EntityPlayer entityPlayer)
+	public ContainerBase<?> getGuiContainer(EntityPlayer entityPlayer)
     {
         return new DebugScannerContainer(entityPlayer, this);
     }

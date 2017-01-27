@@ -15,7 +15,8 @@ import org.lwjgl.opengl.GL11;
 
 public class CableHolderSelectionBoxSpecialRenderer implements ISelectionBoxSpecialRenderer
 {
-    public void drawSelectionBox(EntityPlayer player, ItemStack currentItem, MovingObjectPosition movingObjectPosition, float partialTick)
+    @Override
+	public void drawSelectionBox(EntityPlayer player, ItemStack currentItem, MovingObjectPosition movingObjectPosition, float partialTick)
     {
     	AnchorTileEntity ate = (AnchorTileEntity) Minecraft.getMinecraft().theWorld.getTileEntity(movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ);
     	short facing = IHLUtils.getFacingFromPlayerView(player, true);
@@ -26,9 +27,9 @@ public class CableHolderSelectionBoxSpecialRenderer implements ISelectionBoxSpec
         GL11.glLineWidth(2.0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDepthMask(false);
-        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)partialTick;
-        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)partialTick;
-        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)partialTick;
+        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTick;
+        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTick;
+        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTick;
         double size=0.1d;
         RenderGlobal.drawOutlinedBoundingBox(AxisAlignedBB.getBoundingBox(portPos[0]-size, portPos[1]-size, portPos[2]-size, portPos[0]+size, portPos[1]+size, portPos[2]+size).getOffsetBoundingBox(-offsetX, -offsetY, -offsetZ), -1);
         GL11.glDepthMask(true);

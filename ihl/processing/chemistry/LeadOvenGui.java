@@ -5,15 +5,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class LeadOvenGui extends GuiContainer {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUILeadOven.png");
 	private LeadOvenContainer container;
-	private String title = StatCollector.translateToLocal("ihl.gui.leadOven");
-
 
     public LeadOvenGui (LeadOvenContainer container1) {
             //the container is instanciated and passed to the superclass for handling
@@ -23,10 +20,8 @@ public class LeadOvenGui extends GuiContainer {
     
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.mc.renderEngine.bindTexture(background);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.renderEngine.bindTexture(background);
     }
 
     @Override

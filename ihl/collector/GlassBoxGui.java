@@ -5,15 +5,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GlassBoxGui extends GuiContainer {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIGlassBox.png");
 	private GlassBoxContainer container;
-	private String title = StatCollector.translateToLocal("ihl.gui.charger_ejector");
 	
     public GlassBoxGui (GlassBoxContainer container1) {
             //the container is instanciated and passed to the superclass for handling
@@ -21,14 +18,6 @@ public class GlassBoxGui extends GuiContainer {
             this.container=container1;
     }
     
-    @Override
-	public void initGui()
-    {
-        super.initGui();
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-    }
-
     @Override
     protected void drawGuiContainerForegroundLayer(int param1, int param2) {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

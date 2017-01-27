@@ -8,9 +8,6 @@ import ic2.core.BasicMachineRecipeManager;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlotOutput;
 import ihl.IHLMod;
-import ihl.flexible_cable.AnchorTileEntity;
-import ihl.flexible_cable.SubAnchorEnergyNetNode;
-import ihl.interfaces.ICableHolder;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.IWire;
@@ -18,6 +15,13 @@ import ihl.metallurgy.constants.*;
 import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
 import ihl.recipes.IRecipeInputFluid;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +48,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.NibbleArray;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -51,7 +58,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class IHLUtils 
 {
-	private static Map<String,ItemStack> ihlItemStackRegistry = new HashMap();
+	private static Map<String,ItemStack> ihlItemStackRegistry = new HashMap<String, ItemStack>();
 	private static  final String Digits     = "(\\p{Digit}+)";
 	private static  final String HexDigits  = "(\\p{XDigit}+)";
 	private static   final String Exp        = "[eE][+-]?"+Digits;
@@ -159,10 +166,10 @@ public class IHLUtils
 		}
 	}
 	
-	public static ItemStack getOtherModItemStackWithDamage(String modname, String name,int damage) {
+	public static ItemStack getOtherModItemStackWithDamage(String modname, String name, int damage, int quantity) {
 		if(GameRegistry.findItem(modname, name)!=null)
 		{
-			return new ItemStack(GameRegistry.findItem(modname, name),1,damage);
+			return new ItemStack(GameRegistry.findItem(modname, name),quantity,damage);
 		}
 		else if(GameRegistry.findBlock(modname, name)==null)
 		{
@@ -170,7 +177,7 @@ public class IHLUtils
 		}
 		else
 		{
-			return new ItemStack(GameRegistry.findBlock(modname, name),1,damage);
+			return new ItemStack(GameRegistry.findBlock(modname, name),quantity,damage);
 		}
 	}
 	
@@ -477,6 +484,20 @@ public class IHLUtils
 			//IHLMod.log.info("IC2 metal former (rolling) recipe for "+input+" already exist. Skipped.");
 		}
 	}
+
+	public static void addIC2ExtrudingRecipe(ItemStack input, ItemStack output)
+	{
+		if(Recipes.metalformerExtruding.getOutputFor(input, false)==null)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			Recipes.metalformerExtruding.addRecipe(new RecipeInputItemStack(input), tag, output);
+		}
+		else
+		{
+			//IHLMod.log.info("IC2 metal former (rolling) recipe for "+input+" already exist. Skipped.");
+		}
+	}
+
 	
 	public static void addIC2CentrifugeRecipe(String input, ItemStack output, ItemStack output2)
 	{
@@ -536,7 +557,7 @@ public class IHLUtils
 	public static int getDamageValueViaNBTTag(ItemStack stack)
 	{
 		NBTTagCompound gtTagCompound = null;
-		if(stack!=null && stack.stackTagCompound.hasKey("GT.ToolStats"))
+		if(stack!=null && stack.stackTagCompound!=null && stack.stackTagCompound.hasKey("GT.ToolStats"))
 		{
 			gtTagCompound = stack.stackTagCompound.getCompoundTag("GT.ToolStats");
 		}
@@ -557,7 +578,7 @@ public class IHLUtils
 	public static int getMaxDamageValueViaNBTTag(ItemStack stack)
 	{
 		NBTTagCompound gtTagCompound = null;
-		if(stack!=null && stack.stackTagCompound.hasKey("GT.ToolStats"))
+		if(stack!=null && stack.stackTagCompound!=null && stack.stackTagCompound.hasKey("GT.ToolStats"))
 		{
 			gtTagCompound = stack.stackTagCompound.getCompoundTag("GT.ToolStats");
 		}
@@ -641,28 +662,28 @@ public class IHLUtils
 	
 	public static void handleFluidSlotsBehaviour(InvSlotConsumableLiquidIHL fillInputSlot, InvSlotConsumableLiquidIHL drainInputSlot, InvSlotOutput emptyFluidItemsSlot, IFluidTank fluidTank)
 	{
-        MutableObject output;
+        MutableObject<ItemStack> output;
         if (drainInputSlot!=null && !drainInputSlot.isEmpty())
         {
-            output = new MutableObject();
-            if(fluidTank.fill(drainInputSlot.drain(null, fluidTank.getCapacity()-fluidTank.getFluidAmount(), output, true),false)>0 && (output.getValue() == null || emptyFluidItemsSlot.canAdd((ItemStack)output.getValue())))
+            output = new MutableObject<ItemStack>();
+            if(fluidTank.fill(drainInputSlot.drain(null, fluidTank.getCapacity()-fluidTank.getFluidAmount(), output, true),false)>0 && (output.getValue() == null || emptyFluidItemsSlot.canAdd(output.getValue())))
             {
             	fluidTank.fill(drainInputSlot.drain(null, fluidTank.getCapacity()-fluidTank.getFluidAmount(), output, false),true);
             	if(output.getValue()!=null)
             	{
-            		emptyFluidItemsSlot.add((ItemStack)output.getValue());
+            		emptyFluidItemsSlot.add(output.getValue());
             	}
             }
         }
         if (fillInputSlot!=null && !fillInputSlot.isEmpty())
         {
-            output = new MutableObject();
-            if (fillInputSlot.transferFromTank(fluidTank, output, true) && (output.getValue() == null || emptyFluidItemsSlot.canAdd((ItemStack)output.getValue())))
+            output = new MutableObject<ItemStack>();
+            if (fillInputSlot.transferFromTank(fluidTank, output, true) && (output.getValue() == null || emptyFluidItemsSlot.canAdd(output.getValue())))
             {
             	fillInputSlot.transferFromTank(fluidTank, output, false);
             	if(output.getValue()!=null)
             	{
-            		emptyFluidItemsSlot.add((ItemStack)output.getValue());
+            		emptyFluidItemsSlot.add(output.getValue());
             	}
             }
         }
@@ -788,7 +809,7 @@ public class IHLUtils
 	public static List<ItemStack> convertRecipeInputToItemStackList(List<IRecipeInput> input)
 	{
 		Iterator<IRecipeInput> irii=input.iterator();
-		List<ItemStack> output = new ArrayList();
+		List<ItemStack> output = new ArrayList<ItemStack>();
 		while(irii.hasNext())
 		{
 			IRecipeInput iri = irii.next();
@@ -801,7 +822,7 @@ public class IHLUtils
 	
 	public static List<FluidStack> convertRecipeInputToFluidStackList(List<IRecipeInputFluid> input) {
 		Iterator<IRecipeInputFluid> irii=input.iterator();
-		List<FluidStack> output = new ArrayList();
+		List<FluidStack> output = new ArrayList<FluidStack>();
 		while(irii.hasNext())
 		{
 			IRecipeInputFluid iri = irii.next();
@@ -840,7 +861,8 @@ public class IHLUtils
 	
 	public static long getXYZHash(int x,int y,int z)
 	{
-		return ((x&0x1FFFFF)<<42)|((y&0x1FFFFF)<<21)|(z&0x1FFFFF);
+	    int sign_bits = (x & 0x80000000) >> 29 | (y & 0x80000000) >> 30 | (z & 0x80000000) >> 31;
+		return (long)x<<31 ^ (long)y<<17 ^ (long)z<<3 ^ sign_bits;
 	}
 	
 	public static String trim(String str)
@@ -1105,6 +1127,118 @@ public class IHLUtils
 	  else {
 		  return useSafeValue;
 	  }
-
 	}
+	
+	public static int parseIntSafe(String string, int useSafeValue)
+	{
+  	  if (Pattern.matches(fpRegex, string))
+	      return Integer.valueOf(string);
+	  else {
+		  return useSafeValue;
+	  }
+	}
+
+
+	public static boolean isBlockRegisteredInOreDictionaryAs(Block block, String string) {
+		Iterator<ItemStack> isoi = OreDictionary.getOres(string).iterator();
+		while(isoi.hasNext())
+		{
+			if(Block.getBlockFromItem(isoi.next().getItem())==block)
+			{
+				return true;
+			}
+		}
+		return false;
+	}    
+	
+	public static void setBlockAndTileEntityRaw(World world, int x, int y, int z, Block block, TileEntity te)
+	{
+		Chunk chunk = world.getChunkProvider().provideChunk(x>>4, z>>4);
+		ExtendedBlockStorage[] ebsA = chunk.getBlockStorageArray();
+		ExtendedBlockStorage ebs = ebsA[y>>4];
+		if(ebs==null)
+		{
+			ebs = new ExtendedBlockStorage(y, true);
+			ebsA[y>>4] = ebs;
+		}
+		setBlockRaw(ebs,x & 15,y & 15,z & 15,block);
+		te.xCoord=x;
+		te.yCoord=y;
+		te.zCoord=z;
+		te.setWorldObj(world);
+		chunk.addTileEntity(te);
+	}
+	
+	public static void setBlockRaw(ExtendedBlockStorage ebs, int x, int y, int z, Block block)
+    {
+        int l = ebs.blockLSBArray[y << 8 | z << 4 | x] & 255;
+
+        if (ebs.blockMSBArray != null)
+        {
+            l |= ebs.blockMSBArray.get(x, y, z) << 8;
+        }
+
+        Block block1 = Block.getBlockById(l);
+
+        if (block1 != Blocks.air)
+        {
+            --ebs.blockRefCount;
+
+            if (block1.getTickRandomly())
+            {
+                --ebs.tickRefCount;
+            }
+        }
+
+        if (block != Blocks.air)
+        {
+            ++ebs.blockRefCount;
+
+            if (block.getTickRandomly())
+            {
+                ++ebs.tickRefCount;
+            }
+        }
+
+        int i1 = Block.getIdFromBlock(block);
+        ebs.blockLSBArray[y << 8 | z << 4 | x] = (byte)(i1 & 255);
+
+        if (i1 > 255)
+        {
+            if (ebs.blockMSBArray == null)
+            {
+                ebs.blockMSBArray = new NibbleArray(ebs.blockLSBArray.length, 4);
+            }
+
+            ebs.blockMSBArray.set(x, y, z, (i1 & 3840) >> 8);
+        }
+        else if (ebs.blockMSBArray != null)
+        {
+            ebs.blockMSBArray.set(x, y, z, 0);
+        }
+    }
+
+	public static void dumpToFile(Set<String> unlocalisedNames, String filename) {
+		try {
+			OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(getFile(filename)), "UTF-8");
+			BufferedWriter writer = new BufferedWriter(osWriter);
+			for(String string:unlocalisedNames)
+			{
+				writer.append(string);
+				writer.newLine();
+			}
+			writer.close();
+	        osWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+    private static File getFile(String filename)
+    {
+        File folder = new File(IHLMod.proxy.getMinecraftDir(), "logs");
+        folder.mkdirs();
+        return new File(folder, filename);
+    }
+
 }

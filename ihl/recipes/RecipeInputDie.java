@@ -6,7 +6,6 @@ import java.util.List;
 
 import ic2.api.recipe.IRecipeInput;
 import ihl.interfaces.IWire;
-import ihl.items_blocks.FlexibleCableItem;
 import ihl.utils.IHLUtils;
 import net.minecraft.item.ItemStack;
 
@@ -53,7 +52,7 @@ public class RecipeInputDie  implements IRecipeInput
 
 	public List<ItemStack> transformOutput(ItemStack matchedItemStack,	List<ItemStack> outputs) 
 	{
-		List<ItemStack> newOutputs = new ArrayList();
+		List<ItemStack> newOutputs = new ArrayList<ItemStack>();
 		int misTS = matchedItemStack.stackTagCompound.getInteger("transverseSection");
 		ItemStack material;
 		for(ItemStack material1:outputs)
@@ -75,7 +74,7 @@ public class RecipeInputDie  implements IRecipeInput
 		}
 		return newOutputs;
 	}
-
+	
 	public int transformOutput(ItemStack matchedItemStack, ItemStack material) 
 	{
 		int consumeAmountMultiplier=1;

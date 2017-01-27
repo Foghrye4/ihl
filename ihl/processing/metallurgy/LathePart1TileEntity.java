@@ -19,7 +19,6 @@ public class LathePart1TileEntity extends BasicElectricMotorTileEntity implement
 	public LathePart1TileEntity()
 	{
 		super();
-		this.isGuiScreenOpened=true;
 	}
 	
 
@@ -52,6 +51,7 @@ public class LathePart1TileEntity extends BasicElectricMotorTileEntity implement
 	}
 	
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List[] getInput() 
 	{

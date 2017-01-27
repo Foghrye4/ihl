@@ -78,7 +78,7 @@ public class CrucibleRecipeHandler extends MachineRecipeHandler
     @Override
     public List<PositionedStack> getAdditionalIngredients()
     {
-    	List<PositionedStack> ps = new ArrayList();
+    	List<PositionedStack> ps = new ArrayList<PositionedStack>();
     	ps.add(new PositionedStack(IHLUtils.getThisModItemStackWithDamage("crucible", 0),61-5,15-11));
     	ps.add(new PositionedStack(IHLUtils.getThisModItemStackWithDamage("crucible", 1),106-5,15-11));
         return ps;

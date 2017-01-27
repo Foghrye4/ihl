@@ -21,14 +21,6 @@ public class BlowerGui extends GuiContainer {
     }
     
     @Override
-	public void initGui()
-    {
-        super.initGui();
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-    }
-    
-    @Override
     protected void drawGuiContainerForegroundLayer(int param1, int param2) {
             //the parameters for drawString are: string, x, y, color
     		String title = StatCollector.translateToLocal("tile.blowerBlock.name");

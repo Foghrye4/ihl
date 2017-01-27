@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class WorldGenMinableMeta extends WorldGenerator {
 
 	protected final Block mineableBlock;
-	protected final Set<Block> replaceableBlocks=new HashSet();
+	protected final Set<Block> replaceableBlocks=new HashSet<Block>();
 	protected final Block liquidBedBlock;
 	protected final int mineableBlockMeta;
 	protected final int numberOfBlocks;
@@ -54,7 +54,6 @@ public class WorldGenMinableMeta extends WorldGenerator {
 	@Override
 	public boolean generate(World world, Random random, int x, int y, int z) 
 	{
-		boolean success=false;
 		int chunkX = x>>4;
 		int chunkZ = z>>4;
     	int xyz[] = {0,0,1,0,0,-1,0,0};
@@ -68,7 +67,6 @@ public class WorldGenMinableMeta extends WorldGenerator {
     			if(replaceableBlocks.contains(world.getBlock(x0, y0, z0)))
     			{
     				world.setBlock(x0, y0, z0, mineableBlock, mineableBlockMeta, 2);
-    				success=true;
     			}
     		}
 		}
@@ -119,7 +117,7 @@ public class WorldGenMinableMeta extends WorldGenerator {
 		}
 		else
 		{
-			Set<int[]> oreCoordinatesS = new HashSet();
+			Set<int[]> oreCoordinatesS = new HashSet<int[]>();
 			oreCoordinatesS.add(oreCoordinates);
 			this.oreCoordinatesToChunkCoordinates.put(chunkKey, oreCoordinatesS);
 		}

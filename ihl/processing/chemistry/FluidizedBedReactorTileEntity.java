@@ -42,7 +42,6 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
     public final InvSlotOutput emptyFluidItemsSlot;
 	private final IHLFluidTank fluidTank = new IHLFluidTank(8000);
 	public short temperature=20;
-	private int fractionalOutputAmount=0;
     
 	public FluidizedBedReactorTileEntity() {
 		super();
@@ -51,7 +50,6 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
         this.fillInputSlot = new InvSlotConsumableLiquidIHL(this, "fillInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 1);
 		this.input = new ApparatusProcessableInvSlot(this, "input", 3, Access.IO, 2, 64);
-		this.isGuiScreenOpened=true;
 	}
 	
     @Override
@@ -125,65 +123,8 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 	public String getInventoryName() {
 		return "fluidizedBedReactor";
 	}
-	
-    private int mX()
-	{
-		switch(this.getFacing())
-		{
-		case 4:
-		return -1;
-		case 5:
-		return 1;
-		default:
-		return 0;
-		}
-	}
-	
-	private int mZ()
-	{
-		switch(this.getFacing())
-		{
-		case 3:
-		return 1;
-		case 2:
-		return -1;
-		case 4:
-		return 0;
-		case 5:
-		return 0;
-		default:
-		return -1;
-		}
-	}
-	
-	private short getFacingFromXZ(int x, int z)
-	{
-		switch(x)
-		{
-			case -1:
-				return (short)4;
-			case 1:
-				return (short)5;
-			default:
-				switch(z)
-				{
-				case 1:
-					return (short)3;
-				case -1:
-					return (short)2;
-				default:
-					return (short)2;
-				}
-		}
-	}
-	
-	@Override
-	public void onNetworkEvent(EntityPlayer player, int event) 
-	{
-		// TODO Auto-generated method stub
-	}
 
-    @Override
+	@Override
 	public int gaugeProgressScaled(int i)
     {
         return this.progress * i / operationLength;
@@ -240,6 +181,7 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
     	return FluidizedBedReactorTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List[] getInput()
 	{
@@ -267,6 +209,19 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 		UniversalRecipeOutput output1 = getOutput();
 		this.fluidTank.drain(recipeInput.getFluidInputs(), true);
 		this.input.consume(0, recipeInput.getItemInputs().get(0).getAmount());
+		if(recipeInput.getItemInputs().get(0).getAmount()==0)
+		{
+			ItemStack stack = this.input.get();
+			if(stack.stackTagCompound==null)
+			{
+				stack.stackTagCompound = new NBTTagCompound();
+			}
+			stack.stackTagCompound.setInteger("catalyst_uses",stack.stackTagCompound.getInteger("catalyst_uses")+1);
+			if(stack.stackTagCompound.getInteger("catalyst_uses")>1000)
+			{
+				this.input.consume(0,1);
+			}
+		}
 		if(recipeInput.getItemInputs().size()>1)this.input.consume(1, recipeInput.getItemInputs().get(1).getAmount());
 		if(output1.getFluidOutputs().size()>0)this.fluidTank.fill(output1.getFluidOutputs().get(0).copy(), true);
 		if(output1.getFluidOutputs().size()>1)this.fluidTank.fill(output1.getFluidOutputs().get(1).copy(), true);
@@ -331,11 +286,11 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 	{
 		if(fluidStackOutput!=null)
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}), Arrays.asList(new ItemStack[] {itemStackOutput1}),200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}), (new ItemStack[] {itemStackOutput1}),200));
 		}
 		else
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {itemStackOutput1}),200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(null, (new ItemStack[] {itemStackOutput1}),200));
 		}
 	}
 	
@@ -347,11 +302,11 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 	public static void addRecipe(FluidStack fluidStackInput1, ItemStack itemStackInput, FluidStack fluidStackOutput, RecipeOutputItemStack itemStackOutput1) {
 		if(fluidStackOutput!=null)
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {fluidStackOutput}), Arrays.asList(new RecipeOutputItemStack[] {itemStackOutput1}),200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput((new FluidStack[] {fluidStackOutput}), (new RecipeOutputItemStack[] {itemStackOutput1}),200));
 		}
 		else
 		{
-			addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {fluidStackInput1}), Arrays.asList(new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(null, Arrays.asList(new RecipeOutputItemStack[] {itemStackOutput1}),200));
+			addRecipe(new UniversalRecipeInput((new FluidStack[] {fluidStackInput1}), (new ItemStack[] {itemStackInput})), new UniversalRecipeOutput(null, (new RecipeOutputItemStack[] {itemStackOutput1}),200));
 		}
 	}
 

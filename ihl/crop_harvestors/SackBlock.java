@@ -43,6 +43,7 @@ public class SackBlock extends Block implements ITileEntityProvider{
 	   		this.blockIcon = par1IconRegister.registerIcon(IHLModInfo.MODID + ":sackItem");
 		}
 		
+		@SuppressWarnings("rawtypes")
 		@Override
 	    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity entity)
 	    {

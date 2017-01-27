@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ic2.core.ContainerBase;
-import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.network.NetworkManager;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
@@ -30,7 +28,6 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 
     public final ApparatusProcessableInvSlot input;
     public final ApparatusProcessableInvSlot input2;
-    public boolean hasEngine;
 	private int processTimer=0;
 	private FluidTank fluidTank = new FluidTank(1000);
 	protected static final UniversalRecipeManager recipeManager = new UniversalRecipeManager("extruder");
@@ -40,7 +37,6 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 		super();
 		input = new ApparatusProcessableInvSlot(this, "input", 1, Access.IO, 1, 64);
 		input2 = new ApparatusProcessableInvSlot(this, "input2", 2, Access.IO, 1, 64);
-		isGuiScreenOpened=true;
 	}
 	
 	
@@ -48,9 +44,7 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 	@Override
     public List<String> getNetworkedFields()
     {
-		List<String> fields = super.getNetworkedFields();
-		fields.add("hasEngine");
-		return fields;
+		return super.getNetworkedFields();
     }
 	
 
@@ -63,16 +57,6 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 	public void updateEntityServer()
 	    {
 	        super.updateEntityServer();
-	        if(this.engine.isEmpty() && hasEngine==true)
-	        {
-				this.hasEngine=false;
-				IC2.network.get().updateTileEntityField(this, "hasEngine");
-	        }
-	        else if(this.engine.correctContent() && hasEngine==false)
-	        {
-				this.hasEngine=true;
-				IC2.network.get().updateTileEntityField(this, "hasEngine");
-	        }
 			ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 			TileEntity te = worldObj.getTileEntity(xCoord+dir.offsetX,yCoord+dir.offsetY,zCoord+dir.offsetZ);
 			if(checkCorrectAccembly() && this.fluidTank.getFluidAmount()>0 && this.processTimer++>20)
@@ -114,6 +98,7 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
     	return ExtruderTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
     }
     
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List[] getInput()
 	{
@@ -123,7 +108,7 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 	@Override
 	public boolean canOperate()
 	{
-		return this.fluidTank.getFluidAmount()<this.fluidTank.getCapacity() && this.engine.correctContent() && this.getOutput()!=null && checkCorrectAccembly();
+		return this.fluidTank.getFluidAmount()<this.fluidTank.getCapacity() && this.getOutput()!=null && checkCorrectAccembly();
 	}
 	
 	private boolean checkCorrectAccembly()
@@ -153,7 +138,7 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 
 	public static void addRecipe(ItemStack input, ItemStack input2, FluidStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {input,input2})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {output}),null,20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, new ItemStack[] {input,input2}), new UniversalRecipeOutput(new FluidStack [] {output},null,20));
 	}
 	
 

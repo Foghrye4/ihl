@@ -1,9 +1,6 @@
 package ihl.flexible_cable;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.regex.Pattern;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
@@ -20,7 +17,6 @@ public class SetOfDiesMiniGUI extends ItemMiniGUI
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIIronWorkbench.png");
 	private int transverseSectionValue;
 	private GuiTextField transverseSectionTextField;
-	private boolean leftMouseButtonPressed=false;
 	private int xPos;
 	private int yPos;
 	

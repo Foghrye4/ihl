@@ -1,19 +1,11 @@
 package ihl.flexible_cable;
 
 import ihl.IHLModInfo;
-import ihl.model.IHLModelRenderer;
 import ihl.model.ModelTube;
-import ihl.utils.IHLMathUtils;
-import ihl.utils.IHLRenderUtils;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -26,7 +18,6 @@ public class NodeRender extends Render
 	private ModelTube modelThin;
 	private ResourceLocation tex;
 	private float scale;
-	private boolean firstTick=true;
     
 	public NodeRender() 
 	{

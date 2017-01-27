@@ -8,7 +8,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import ic2.core.network.NetworkManager;
 import ihl.utils.IHLRenderUtils;
 
 @SideOnly(Side.CLIENT)

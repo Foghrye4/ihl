@@ -8,7 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class EvaporatorContainer extends ContainerBase {
+public class EvaporatorContainer extends ContainerBase<EvaporatorTileEntity> {
 
     protected EvaporatorTileEntity tileEntity;
     public int lastFluidAmount = -1;

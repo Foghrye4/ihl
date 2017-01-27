@@ -19,15 +19,7 @@ public class TDITGui extends GuiContainer {
             super(container1);
             this.container=container1;
     }
-    
-    @Override
-	public void initGui()
-    {
-        super.initGui();
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-    }
-    
+       
     @Override
     protected void drawGuiContainerForegroundLayer(int param1, int param2) 
     {

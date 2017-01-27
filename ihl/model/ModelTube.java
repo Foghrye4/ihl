@@ -1,9 +1,5 @@
 package ihl.model;
 
-import ihl.handpump.BlockWithCoordinates;
-
-import java.util.Iterator;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.PositionTextureVertex;

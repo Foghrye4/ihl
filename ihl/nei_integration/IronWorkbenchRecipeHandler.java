@@ -5,14 +5,11 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import ic2.api.recipe.IRecipeInput;
-import ic2.core.Ic2Items;
-import ihl.IHLMod;
 import ihl.recipes.IronWorkbenchRecipe;
 import ihl.utils.IHLUtils;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -78,7 +75,6 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
     @Override
 	public void drawBackground(int recipeNumber)
     {
-    	IronWorkbenchRecipeHandler.CachedIORecipe recipe = (CachedIORecipe) this.arecipes.get(recipeNumber);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuiDraw.changeTexture(this.getGuiTexture());
         GuiDraw.drawTexturedModalRect(0, 0, 7, 7, 162, 108);
@@ -128,10 +124,10 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
         while (i$.hasNext())
         {
         	IronWorkbenchRecipe entry = i$.next();
-            Iterator i$1 = entry.outputs.iterator();
+            Iterator<ItemStack> i$1 = entry.outputs.iterator();
             while (i$1.hasNext())
             {
-                ItemStack output = (ItemStack)i$1.next();
+                ItemStack output = i$1.next();
                 if (NEIServerUtils.areStacksSameTypeCrafting(output, result))
                 {
                     this.arecipes.add(new IronWorkbenchRecipeHandler.CachedIORecipe(entry));
@@ -150,7 +146,7 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
         	IronWorkbenchRecipe entry = i$.next();
         	if(entry.workspaceElements!=null && !entry.workspaceElements.isEmpty())
         	{
-        		Iterator i$1 = entry.workspaceElements.iterator();
+        		Iterator<ItemStack> i$1 = entry.workspaceElements.iterator();
             	while (i$1.hasNext())
             	{
             		ItemStack output = (ItemStack)i$1.next();
@@ -193,9 +189,9 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
 
     public class CachedIORecipe extends CachedRecipe
     {
-        private final List<PositionedStack> ingredients = new ArrayList();
+        private final List<PositionedStack> ingredients = new ArrayList<PositionedStack>();
         private final PositionedStack output;
-        private final List<PositionedStack> otherStacks = new ArrayList();
+        private final List<PositionedStack> otherStacks = new ArrayList<PositionedStack>();
 
         @Override
 		public List<PositionedStack> getIngredients()
@@ -227,26 +223,26 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
             	this.ingredients.add(new PositionedStack(IHLUtils.getThisModItemStack("ironWorkbench"), workspaceItemsPosX, workspaceItemsPosY));
                 if(recipe.workspaceElements!=null && !recipe.workspaceElements.isEmpty())
                 {
-                    Iterator i = recipe.workspaceElements.iterator();
+                    Iterator<ItemStack> i = recipe.workspaceElements.iterator();
                     int index = 1;
                     while (i.hasNext())
                     {
                     	int x = workspaceItemsPosX;
                     	int y = workspaceItemsPosY + index * 18;
-                        ItemStack stack = (ItemStack)i.next();
+                        ItemStack stack = i.next();
                         this.ingredients.add(new PositionedStack(stack, x, y));
                     	index++;
                     }
                 }
                 if(recipe.tools!=null && !recipe.tools.isEmpty())
                 {
-                    Iterator i = recipe.tools.iterator();
+                    Iterator<IRecipeInput> i = recipe.tools.iterator();
                     int index = 0;
                     while (i.hasNext())
                     {
                     	int x = toolsPosX + (index % 2) * 18;
                     	int y = toolsPosY + index / 2 * 18;
-                    	IRecipeInput rInput = (IRecipeInput)i.next();
+                    	IRecipeInput rInput = i.next();
                         this.ingredients.add(new PositionedStack(rInput.getInputs(), x, y));
                     	index++;
                     }
@@ -254,7 +250,7 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
                 
                 if(recipe.materials!=null && !recipe.materials.isEmpty())
                 {
-                    Iterator i = recipe.materials.iterator();
+                    Iterator<IRecipeInput> i = recipe.materials.iterator();
                     int index = 0;
                     while (i.hasNext())
                     {
@@ -262,7 +258,7 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
                     	int y = materialsPosY + index / 2 * 18;
                     	IRecipeInput rInput = (IRecipeInput)i.next();
                         Iterator<ItemStack> rInputsi = rInput.getInputs().iterator();
-                        List<ItemStack> itemInputs = new ArrayList();
+                        List<ItemStack> itemInputs = new ArrayList<ItemStack>();
                         while(rInputsi.hasNext())
                         {
                         	ItemStack stack = rInputsi.next().copy();
@@ -277,13 +273,13 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
                     }
                 }
                 this.output=new PositionedStack(recipe.outputs.get(0), outputPosX, outputPosY);
-                Iterator i = recipe.outputs.iterator();
+                Iterator<ItemStack> i = recipe.outputs.iterator();
                 int index = 0;
                 while (i.hasNext())
                 {
                   	int x = outputPosX + (index % 3) * 18;
                    	int y = outputPosY + index / 3 * 18;
-                    ItemStack stack = (ItemStack)i.next();
+                    ItemStack stack = i.next();
                     if(index>0)
                     {
                         this.otherStacks.add(new PositionedStack(stack, x, y));

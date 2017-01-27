@@ -1,7 +1,9 @@
 package ihl.nei_integration;
 
+import java.awt.Rectangle;
 import java.util.Map;
 
+import codechicken.nei.recipe.TemplateRecipeHandler.RecipeTransferRect;
 import ihl.processing.chemistry.LabElectrolyzerGui;
 import ihl.processing.chemistry.LabElectrolyzerTileEntity;
 import ihl.recipes.UniversalRecipeInput;
@@ -59,6 +61,14 @@ public class LabElectrolyzerRecipeHandler extends MachineRecipeHandler
     {
         return "ihl:textures/gui/GUILabElectrolyzer.png";
     }
+    
+    @Override
+    public void loadTransferRects()
+    {
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(7-5,32-10, 18, 18), this.getRecipeId(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(86-5,32-10, 37, 18), this.getRecipeId(), new Object[0]));
+    }
+
 
     @Override
 	public String getOverlayIdentifier()

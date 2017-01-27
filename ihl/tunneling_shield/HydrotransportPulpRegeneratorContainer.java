@@ -10,7 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
-public class HydrotransportPulpRegeneratorContainer extends ContainerBase {
+public class HydrotransportPulpRegeneratorContainer extends ContainerBase<HydrotransportPulpRegeneratorTileEntity> {
 
     protected HydrotransportPulpRegeneratorTileEntity tileEntity;
     public int lastFluidAmount = -1;
@@ -18,6 +18,7 @@ public class HydrotransportPulpRegeneratorContainer extends ContainerBase {
     public short lastProgress = -1;
     public short lastTemperature = -1;
 	private int lastEnergy = -1;
+	@SuppressWarnings("unused")
 	private List<FluidStack> fluidTankFluidList;
     private final static int height=166;
     
@@ -39,7 +40,7 @@ public class HydrotransportPulpRegeneratorContainer extends ContainerBase {
         }
         this.addSlotToContainer(new SlotInvSlot(tileEntity1.drainInputSlot, 0, 32, 13));
         this.addSlotToContainer(new SlotInvSlot(tileEntity1.emptyFluidItemsSlot, 0, 32, 51));
-        this.addSlotToContainer(new SlotInvSlot(tileEntity1.engine, 0, 8, 32));
+        this.addSlotToContainer(new SlotInvSlot(tileEntity1.dischargeSlot, 0, 8, 32));
         for(col=0;col<4;col++)
         {
             for(row=0;row<3;row++)

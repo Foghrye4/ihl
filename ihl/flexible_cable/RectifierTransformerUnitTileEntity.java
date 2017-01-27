@@ -1,6 +1,5 @@
 package ihl.flexible_cable;
 
-import java.util.Iterator;
 import java.util.List;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -8,15 +7,10 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.IC2;
-import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityInventory;
-import ihl.IHLMod;
-import ihl.flexible_cable.IHLGrid;
-import ihl.flexible_cable.NodeEntity;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.utils.IHLUtils;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -280,6 +274,7 @@ public class RectifierTransformerUnitTileEntity extends TileEntityInventory impl
 		return amount;
 	}
 	
+	@Override
 	public boolean isCableRemoved(int chainUniqueID) 
 	{
 		if(!checkCables)

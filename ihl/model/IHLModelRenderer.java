@@ -39,8 +39,8 @@ public class IHLModelRenderer {
 
 	    /** Hides the model. */
 	    public boolean isHidden;
-	    public List cubeList;
-	    public List childModels;
+	    public List<Object> cubeList;
+	    public List<ModelRenderer> childModels;
 	    public final String boxName;
 	    private ModelBase baseModel;
 	    public float offsetX;
@@ -48,14 +48,14 @@ public class IHLModelRenderer {
 	    public float offsetZ;
 
 		public boolean drawFromInside=false;
-	    private static final String __OBFID = "CL_00000874";
-
-	    public IHLModelRenderer(ModelBase par1ModelBase, String par2Str)
+		
+	    @SuppressWarnings("unchecked")
+		public IHLModelRenderer(ModelBase par1ModelBase, String par2Str)
 	    {
 	        this.textureWidth = 64.0F;
 	        this.textureHeight = 32.0F;
 	        this.showModel = true;
-	        this.cubeList = new ArrayList();
+	        this.cubeList = new ArrayList<Object>();
 	        this.baseModel = par1ModelBase;
 	        par1ModelBase.boxList.add(this);
 	        this.boxName = par2Str;
@@ -80,7 +80,7 @@ public class IHLModelRenderer {
 	    {
 	        if (this.childModels == null)
 	        {
-	            this.childModels = new ArrayList();
+	            this.childModels = new ArrayList<ModelRenderer>();
 	        }
 
 	        this.childModels.add(par1ModelRenderer);

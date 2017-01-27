@@ -7,7 +7,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import ihl.IHLMod;
 import ihl.interfaces.IWorkspaceElement;
 import ihl.utils.IHLUtils;
 
@@ -68,7 +67,6 @@ public class InvSlotWorkspaceElement extends IronWorkbenchInvSlot {
 		while(iterator.hasNext())
 		{
 			ItemStack rWorkspaceElementItemStack = iterator.next();
-			boolean presence=false;
 			for(int i=1;i<workspaceElements.length;i++)
 			{
 				IWorkspaceElement cWorkspaceElement=workspaceElements[i];
@@ -149,18 +147,6 @@ public class InvSlotWorkspaceElement extends IronWorkbenchInvSlot {
 		return false;
 	}
 	
-	private boolean contains(ItemStack wse) 
-	{
-		for(int i=1;i<size();i++)
-		{
-			if(this.get(i)!=null && this.get(i).getItem()==wse.getItem())
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public short encodeReadyStatus()
 	{
 		short result=0;
@@ -187,7 +173,7 @@ public class InvSlotWorkspaceElement extends IronWorkbenchInvSlot {
 	@Override
 	public List<ItemStack> getItemStackList()
 	{
-		List<ItemStack> list = new ArrayList();
+		List<ItemStack> list = new ArrayList<ItemStack>();
 		for(int i=1; i<this.size(); i++)
 		{
 			if(get(i)!=null)list.add(get(i));

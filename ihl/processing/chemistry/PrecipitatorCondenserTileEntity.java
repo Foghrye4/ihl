@@ -25,7 +25,6 @@ public class PrecipitatorCondenserTileEntity extends TileEntityInventory impleme
 {
 	private final static UniversalRecipeManager recipeManager = new UniversalRecipeManager("precipitatorcondenser");
     private static float kF = 24000F;
-    private static float gasC = 1F;
     private static float fluidC = 4F;
     private static float H = 2256F;
     private final IHLFluidTank gasBuffer = new IHLFluidTank(10000);
@@ -49,7 +48,7 @@ public class PrecipitatorCondenserTileEntity extends TileEntityInventory impleme
     
 	public static void addRecipe(String fluidNameIn, String fluidNameOut, int conversionRateToGas) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize(fluidNameIn, conversionRateToGas)}), null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize(fluidNameOut, 1)}),null,2));
+		recipeManager.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize(fluidNameIn, conversionRateToGas)}), null), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize(fluidNameOut, 1)}),null,2));
 	}
 
     @Override

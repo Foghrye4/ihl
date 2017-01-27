@@ -6,36 +6,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import ihl.IHLMod;
 import ihl.IHLModInfo;
 import ihl.interfaces.ICableHolder;
-import ihl.interfaces.IDataCableHolder;
-import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.INetworkListener;
 import ihl.items_blocks.FlexibleCableItem;
-import ihl.utils.IHLUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -109,6 +98,7 @@ public class NodeEntity extends Entity implements INetworkListener{
 	@Override
 	public void travelToDimension(int dimensionId){}
 	
+	@Override
 	public void setSize(float width, float heigth)
 	{
 		super.setSize(width, heigth);
@@ -122,6 +112,7 @@ public class NodeEntity extends Entity implements INetworkListener{
 		this.registerAndSendData(null);
 	}
 	
+	@Override
 	public void registerAndSendData(EntityPlayerMP player)
 	{
     	if(!worldObj.isRemote)
@@ -135,7 +126,7 @@ public class NodeEntity extends Entity implements INetworkListener{
         		}
         		else
         		{
-        			nes=new HashSet();
+        			nes=new HashSet<NodeEntity>();
         			IHLMod.proxy.nodeEntityRegistry.put(this.getChainUniqueID(),nes);
         		}
         		nes.add(this);
@@ -172,7 +163,8 @@ public class NodeEntity extends Entity implements INetworkListener{
     	}		
 	}
 	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void onUpdate()
     {
         super.onUpdate();
@@ -194,7 +186,7 @@ public class NodeEntity extends Entity implements INetworkListener{
     			List<NodeEntity> eItemsList = this.worldObj.getEntitiesWithinAABB(NodeEntity.class, searchArea);
     			if(!eItemsList.isEmpty())
     			{
-    				Iterator ei = eItemsList.iterator();
+    				Iterator<NodeEntity> ei = eItemsList.iterator();
                 	while(ei.hasNext())
                 	{
                 		NodeEntity node=(NodeEntity) ei.next();
@@ -227,7 +219,7 @@ public class NodeEntity extends Entity implements INetworkListener{
 			List<EntityPlayer> eItemsList = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, searchArea);
 			if(!eItemsList.isEmpty())
 			{
-				Iterator ei = eItemsList.iterator();
+				Iterator<EntityPlayer> ei = eItemsList.iterator();
             	while(ei.hasNext())
             	{
             		EntityPlayer player=(EntityPlayer) ei.next();
@@ -415,15 +407,10 @@ public class NodeEntity extends Entity implements INetworkListener{
 					xi=(dx1-2*x1+2*dx0+2*x0-dx0)*i*i*i+(3*x1-dx1-3*dx0-3*x0+dx0)*i*i+dx0*i+x0;
 					yi=(dy1-2*y1+2*dy0+2*y0-dy0)*i*i*i+(3*y1-dy1-3*dy0-3*y0+dy0)*i*i+dy0*i+y0;
 					zi=(dz1-2*z1+2*dz0+2*z0-dz0)*i*i*i+(3*z1-dz1-3*dz0-3*z0+dz0)*i*i+dz0*i+z0;
-					int blockX=(int)xi;
-					int blockY=(int)yi;
-					int blockZ=(int)zi;
 					dxi-=xi;
 					dyi-=yi;
 					dzi-=zi;
 	            	double var7 = MathHelper.sqrt_double(dxi * dxi + dzi * dzi);
-	            	float var9 = (float)(Math.atan2(dzi, dxi) * 180.0D / Math.PI) - 90.0F;
-	            	float var10 = (float)(-(Math.atan2(dyi, var7) * 180.0D / Math.PI));
 	            	float rotationPitch = (float) Math.atan2(dxi, dzi);
 	            	float rotationYaw = (float) (-Math.atan2(dyi, var7));
 	            	rotationPitchArray[i1]=rotationPitch;

@@ -8,20 +8,13 @@ import java.util.Set;
 
 public class DataGrid 
 {
-	public final Set<IDataNode> telist = new HashSet();
+	public final Set<IDataNode> telist = new HashSet<IDataNode>();
 	public double energy=0D;
-	private IDataNode sink;
-	private IDataNode source;
-	private double voltage;
-	private short frequency=0;
-	private double lastVoltage;
 	public boolean isGridValid=true;
-	private double total20TicksEU;
-	private int lastTickCounter=0;
 	
 	public Set<IDataNode> getListOfExcludedNodes()
 	{
-		Set<IDataNode> excludedNodes = new HashSet();
+		Set<IDataNode> excludedNodes = new HashSet<IDataNode>();
 		if(this.telist.isEmpty())
 		{
 			return excludedNodes;

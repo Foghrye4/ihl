@@ -5,12 +5,11 @@ import java.util.List;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.slot.SlotInvSlot;
-import ihl.processing.invslots.SlotRedstoneConverterCableInvSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class RedstoneSignalConverterContainer extends ContainerBase {
+public class RedstoneSignalConverterContainer extends ContainerBase<RedstoneSignalConverterTileEntity> {
 
     protected RedstoneSignalConverterTileEntity tileEntity;
     private int lastLinksAmount = -1;

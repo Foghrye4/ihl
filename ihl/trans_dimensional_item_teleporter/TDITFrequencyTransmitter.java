@@ -124,7 +124,7 @@ public class TDITFrequencyTransmitter extends Item implements IItemHudInfo {
 	
 	@Override
 	public List<String> getHudInfo(ItemStack itemStack) {
-        LinkedList info = new LinkedList();
+        LinkedList<String> info = new LinkedList<String>();
         if(itemStack.stackTagCompound!=null)
         {
         	NBTTagCompound nbtData = StackUtil.getOrCreateNbtData(itemStack);

@@ -68,11 +68,11 @@ public abstract class IHLRecipeHandler extends TemplateRecipeHandler
     {
         if (outputId.equals(this.getRecipeId()))
         {
-            Iterator i$ = this.getRecipeList().entrySet().iterator();
+            Iterator<Entry<IRecipeInput, RecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
 
             while (i$.hasNext())
             {
-                Entry entry = (Entry)i$.next();
+                Entry<IRecipeInput, RecipeOutput> entry = i$.next();
                 this.arecipes.add(new IHLRecipeHandler.CachedIORecipe((IRecipeInput)entry.getKey(), (RecipeOutput)entry.getValue()));
             }
         }
@@ -85,16 +85,16 @@ public abstract class IHLRecipeHandler extends TemplateRecipeHandler
     @Override
 	public void loadCraftingRecipes(ItemStack result)
     {
-        Iterator i$ = this.getRecipeList().entrySet().iterator();
+        Iterator<Entry<IRecipeInput, RecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
 
         while (i$.hasNext())
         {
-            Entry entry = (Entry)i$.next();
-            Iterator i$1 = ((RecipeOutput)entry.getValue()).items.iterator();
+            Entry<IRecipeInput, RecipeOutput> entry = i$.next();
+            Iterator<ItemStack> i$1 = ((RecipeOutput)entry.getValue()).items.iterator();
 
             while (i$1.hasNext())
             {
-                ItemStack output = (ItemStack)i$1.next();
+                ItemStack output = i$1.next();
 
                 if (NEIServerUtils.areStacksSameTypeCrafting(output, result))
                 {
@@ -108,11 +108,11 @@ public abstract class IHLRecipeHandler extends TemplateRecipeHandler
     @Override
 	public void loadUsageRecipes(ItemStack ingredient)
     {
-        Iterator i$ = this.getRecipeList().entrySet().iterator();
+        Iterator<Entry<IRecipeInput, RecipeOutput>> i$ = this.getRecipeList().entrySet().iterator();
 
         while (i$.hasNext())
         {
-            Entry entry = (Entry)i$.next();
+            Entry<IRecipeInput, RecipeOutput> entry = i$.next();
 
             if (((IRecipeInput)entry.getKey()).matches(ingredient))
             {
@@ -148,9 +148,9 @@ public abstract class IHLRecipeHandler extends TemplateRecipeHandler
 
     public class CachedIORecipe extends CachedRecipe
     {
-        private final List<PositionedStack> ingredients = new ArrayList();
+        private final List<PositionedStack> ingredients = new ArrayList<PositionedStack>();
         private final PositionedStack output;
-        private final List<PositionedStack> otherStacks = new ArrayList();
+        private final List<PositionedStack> otherStacks = new ArrayList<PositionedStack>();
 
         @Override
 		public List<PositionedStack> getIngredients()
@@ -211,12 +211,12 @@ public abstract class IHLRecipeHandler extends TemplateRecipeHandler
             }
             else
             {
-                ArrayList items = new ArrayList();
-                Iterator i = input.getInputs().iterator();
+                ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+                Iterator<ItemStack> i = input.getInputs().iterator();
 
                 while (i.hasNext())
                 {
-                    ItemStack item = (ItemStack)i.next();
+                    ItemStack item = i.next();
                     items.add(StackUtil.copyWithSize(item, input.getAmount()));
                 }
 

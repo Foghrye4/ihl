@@ -1,7 +1,6 @@
 package ihl.interfaces;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
 public interface INetworkListener 

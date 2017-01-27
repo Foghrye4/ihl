@@ -1,7 +1,6 @@
 package ihl.enviroment;
 import ic2.api.network.INetworkTileEntityEventListener;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import ihl.IHLModInfo;
 import ihl.i_hate_liquids.XYZ;
 import ihl.utils.IHLUtils;
@@ -24,8 +23,8 @@ public class SpotlightTileEntity extends LightBulbTileEntity implements INetwork
 {
 	Vec3 directionVector=Vec3.createVectorHelper(1, 0, 0);
 	private static final int maxLightRange=128;
-	private final Set<XYZ> xyzGlowningAir = new HashSet();
-	private static final Set<Vec3> lightSphereVectors = new HashSet();
+	private final Set<XYZ> xyzGlowningAir = new HashSet<XYZ>();
+	private static final Set<Vec3> lightSphereVectors = new HashSet<Vec3>();
 	public float rotationPitch=0f;
 	public float rotationYaw=0f;
 	public float prevRotationPitch=0f;

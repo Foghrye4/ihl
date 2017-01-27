@@ -46,7 +46,6 @@ public class BlockDynamicLiquidPlus extends BlockLiquid{
 		}
 		int meta2=16;
 		int fd;
-		Block block;
 		int xz[] = {0,-1,0,1,0};
 			for(int i=0;i<=3;i++)
 			{

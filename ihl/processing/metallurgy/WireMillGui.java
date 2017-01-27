@@ -52,10 +52,6 @@ public class WireMillGui extends GuiContainer {
             }
 
             this.mc.renderEngine.bindTexture(tex);
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 25, 14, xOffset, yOffset);
-            }
        		IHLRenderUtils.instance.drawTooltip(par1,par2,9,11,xOffset,yOffset,StatCollector.translateToLocal("ihl.wiremill.tip"));
     }
 

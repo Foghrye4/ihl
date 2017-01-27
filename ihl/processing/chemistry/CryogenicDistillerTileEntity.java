@@ -45,8 +45,7 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	public CryogenicDistillerTileEntity()
 	{
 		super();
-		this.isGuiScreenOpened=true;
-        this.fillInputSlotInput = new InvSlotConsumableLiquidIHL(this, "fillInputSlotInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
+	    this.fillInputSlotInput = new InvSlotConsumableLiquidIHL(this, "fillInputSlotInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
         this.fillInputSlotProducts = new InvSlotConsumableLiquidIHL(this, "fillInputSlotProducts", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.fluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 2);
 	}
@@ -61,10 +60,9 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	    {
 	        super.updateEntityServer();
 			ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
-			TileEntity te = worldObj.getTileEntity(xCoord+dir.offsetX,yCoord+dir.offsetY,zCoord+dir.offsetZ);
-			if(this.processTimer++>20 && this.engine.correctContent() && this.energy>=this.energyConsume/this.engine.getEfficiency())
+			if(this.processTimer++>20 && this.energy>=this.energyConsume)
 			{
-				this.energy-=this.energyConsume/this.engine.getEfficiency();
+				this.energy-=this.energyConsume;
 				this.processTimer=0;
 				dir = dir.getOpposite();
 				Block block = worldObj.getBlock(xCoord+dir.offsetX,yCoord+dir.offsetY,zCoord+dir.offsetZ);
@@ -144,6 +142,7 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
     }
     
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List[] getInput()
 	{
 		return new List [] {Arrays.asList(new FluidStack [] {this.fluidTankInput.getLigthestFluid()}),null};
@@ -152,7 +151,7 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	@Override
 	public boolean canOperate()
 	{
-		return this.engine.correctContent() && this.getOutput()!=null;
+		return this.getOutput()!=null;
 	}
 
 	@Override
@@ -182,11 +181,11 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	{
 		if(output2!=null)
 		{
-			recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {input}),null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {output,output2}),null,20,specialCondition));
+			recipeManager.addRecipe(new UniversalRecipeInput(new FluidStack[] {input},null), new UniversalRecipeOutput(new FluidStack[] {output,output2},null,20,specialCondition));
 		}
 		else
 		{
-			recipeManager.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {input}),null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {output}),null,20,specialCondition));
+			recipeManager.addRecipe(new UniversalRecipeInput(new FluidStack[] {input},null), new UniversalRecipeOutput(new FluidStack[] {output},null,20,specialCondition));
 		}
 	}
 	
@@ -197,7 +196,7 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	
 	public boolean canProcess()
 	{
-		return this.engine.correctContent() && this.energy>=this.maxStorage && this.fluidTankInput.getFluidAmount()<1000;
+		return this.energy>=this.maxStorage && this.fluidTankInput.getFluidAmount()<1000;
 	}
 
 	@Override

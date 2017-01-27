@@ -12,7 +12,6 @@ import ihl.utils.IHLRenderUtils;
 public class LabElectrolyzerGui extends GuiContainer {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUILabElectrolyzer.png");
 	private LabElectrolyzerContainer container;
-	private int mixerFrame=0;
 
     public LabElectrolyzerGui (LabElectrolyzerContainer container1) {
             //the container is instanciated and passed to the superclass for handling
@@ -52,11 +51,6 @@ public class LabElectrolyzerGui extends GuiContainer {
             if (this.container.tileEntity.fluidTankAnodeOutput.getFluidAmount() > 0)
             {
             	IHLRenderUtils.instance.renderIHLFluidTank(this.container.tileEntity.fluidTankAnodeOutput, 125, 28, 137, 67, zLevel, par1, par2, xOffset, yOffset);
-            }
-            if(!this.container.tileEntity.engine.correctContent())
-            {
-                this.mc.renderEngine.bindTexture(background);
-            	IHLRenderUtils.instance.drawMissingEngineTooltip(this, par1, par2, 170, 16, xOffset, yOffset);
             }
     }
 

@@ -18,7 +18,6 @@ import ic2.api.network.INetworkDataProvider;
 import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
 import ic2.core.ITickCallback;
-import ic2.core.network.NetworkManager;
 import ihl.utils.IHLUtils;
 
 public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWrenchable, INetworkDataProvider
@@ -58,7 +57,8 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
         super.validate();
         IC2.tickHandler.addSingleTickCallback(this.worldObj, new ITickCallback()
         {
-            @Override
+            @SuppressWarnings("unchecked")
+			@Override
 			public void tickCallback(World world)
             {
                 if (!LightBulbTileEntity.this.isInvalid() && world.blockExists(LightBulbTileEntity.this.xCoord, LightBulbTileEntity.this.yCoord, LightBulbTileEntity.this.zCoord))
@@ -238,7 +238,7 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
     @Override
 	public List<String> getNetworkedFields()
     {
-        Vector ret = new Vector(2);
+        Vector<String> ret = new Vector<String>(2);
         ret.add("active");
         ret.add("facing");
         return ret;

@@ -15,29 +15,16 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class UniversalRecipeInput{
 
-    private final List<IRecipeInputFluid> fluidInputs=new ArrayList();
-    private final List<IRecipeInput> itemInputs=new ArrayList();
-    private boolean sharp=true;
-    private int temperatureMin = 273;
-    private int temperatureMax = Integer.MAX_VALUE;
-    private float speedFactor=-1.0f;//=-Ea/R (k=k0*exp(-Ea/(RT)))
+    private final List<IRecipeInputFluid> fluidInputs=new ArrayList<IRecipeInputFluid>();
+    private final List<IRecipeInput> itemInputs=new ArrayList<IRecipeInput>();
 	private int multiplier=Integer.MAX_VALUE;
     
-    
-    public UniversalRecipeInput(List fluidInputs1, List itemInputs1, boolean sharp1)
+    public UniversalRecipeInput(Object[] fluidStacks, Object[] iRecipeInputs)
     {
-    	this(fluidInputs1, itemInputs1);
-    	this.sharp=false;
-    }
-    
-    public UniversalRecipeInput(List fluidInputs1, List itemInputs1)
-    {
-    	if(fluidInputs1!=null)
+    	if(fluidStacks!=null)
     	{
-    		Iterator ifluidInputs1 = fluidInputs1.iterator();
-    		while(ifluidInputs1.hasNext())
+    		for(Object material:fluidStacks)
     		{
-    			Object material = ifluidInputs1.next();
     			if(material==null)
     			{
     				throw new NullPointerException("Recipe input cannot be null!");
@@ -52,12 +39,10 @@ public class UniversalRecipeInput{
     			}
     		}
     	}
-    	if(itemInputs1!=null)
+    	if(iRecipeInputs!=null)
     	{
-    		Iterator iitemInputs1 = itemInputs1.iterator();
-    		while(iitemInputs1.hasNext())
+    		for(Object material:iRecipeInputs)
     		{
-    			Object material = iitemInputs1.next();
     			if(material==null)
     			{
     				throw new NullPointerException("Recipe input cannot be null!");
@@ -103,13 +88,13 @@ public class UniversalRecipeInput{
 	public boolean matches(UniversalRecipeInput input) {
 		List<IRecipeInput> rInputs = input.getItemInputs();
 		Iterator<IRecipeInput> ii = rInputs.iterator();
-		List<ItemStack> rInputsItems = new ArrayList();
+		List<ItemStack> rInputsItems = new ArrayList<ItemStack>();
 		while(ii.hasNext())
 		{
 			IRecipeInput is = ii.next();
 			rInputsItems.add(is.getInputs().get(0));
 		}
-		List<FluidStack> rInputsFluids = new ArrayList();
+		List<FluidStack> rInputsFluids = new ArrayList<FluidStack>();
 		List<IRecipeInputFluid> rInputsF = input.getFluidInputs();
 		Iterator<IRecipeInputFluid> iiF = rInputsF.iterator();
 		while(iiF.hasNext())
@@ -226,13 +211,13 @@ public class UniversalRecipeInput{
 	public boolean adjustAmounts(UniversalRecipeInput input, boolean doAdjustAmounts) {
 		List<IRecipeInput> rInputs = input.getItemInputs();
 		Iterator<IRecipeInput> ii = rInputs.iterator();
-		List<ItemStack> rInputsItems = new ArrayList();
+		List<ItemStack> rInputsItems = new ArrayList<ItemStack>();
 		while(ii.hasNext())
 		{
 			IRecipeInput is = ii.next();
 			rInputsItems.add(is.getInputs().get(0));
 		}
-		List<FluidStack> rInputsFluids = new ArrayList();
+		List<FluidStack> rInputsFluids = new ArrayList<FluidStack>();
 		List<IRecipeInputFluid> rInputsF = input.getFluidInputs();
 		Iterator<IRecipeInputFluid> iiF = rInputsF.iterator();
 		while(iiF.hasNext())

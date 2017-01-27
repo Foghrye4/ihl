@@ -14,7 +14,6 @@ import ihl.collector.ChargerEjectorTileEntity;
 import ihl.processing.metallurgy.PassiveBlock;
 import ihl.tunneling_shield.DriverTileEntity;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +26,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class IHLItemBlock extends ItemBlock{
-	public Map<Integer, String> nameMap = new HashMap();
+	public Map<Integer, String> nameMap = new HashMap<Integer, String>();
 	public IHLItemBlock(Block block1) 
 	{
 	   	super(block1);
@@ -216,9 +215,10 @@ public class IHLItemBlock extends ItemBlock{
 		}
 	
     @Override
+    @SideOnly(Side.CLIENT)
 	public CreativeTabs getCreativeTab()
     {
-        return IHLCreativeTab.tab;
+        return this.field_150939_a.getCreativeTabToDisplayOn();
     }
     
 	@Override
@@ -255,12 +255,18 @@ public class IHLItemBlock extends ItemBlock{
         return false;
     }
     
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)
     {
         if(itemStack.stackTagCompound!=null && itemStack.stackTagCompound.hasKey("resultSuffix"))
         {
-        	info.add(StatCollector.translateToLocal("result_of_molding") + StatCollector.translateToLocal("ihl."+itemStack.stackTagCompound.getString("resultSuffix")));
+        	String result_suffix = itemStack.stackTagCompound.getString("resultSuffix");
+        	if(StatCollector.canTranslate("ihl."+result_suffix))
+        	{
+        		result_suffix = StatCollector.translateToLocal("ihl."+result_suffix);
+        	}
+        	info.add(StatCollector.translateToLocal("result_of_molding")+result_suffix);
         	if(itemStack.stackTagCompound.hasKey("isContainStearin") && itemStack.stackTagCompound.getBoolean("isContainStearin"))
         	{
             	info.add(StatCollector.translateToLocal("ihl.tooltip.step")+" 1: "+StatCollector.translateToLocal("remove_wax_using_muffle_furnace"));
@@ -275,6 +281,10 @@ public class IHLItemBlock extends ItemBlock{
             	info.add(StatCollector.translateToLocal("ihl.tooltip.step")+" 2: "+StatCollector.translateToLocal("wait_for_10_seconds"));
             	info.add(StatCollector.translateToLocal("ihl.tooltip.step")+" 3: "+StatCollector.translateToLocal("destroy_mold_to_get_results"));
         	}
+            if(itemStack.stackTagCompound.hasKey("detonator_delay"))
+            {
+            	info.add(StatCollector.translateToLocal("ihl.detonator_delay")+" "+itemStack.stackTagCompound.getInteger("detonator_delay")+StatCollector.translateToLocal("ihl.seconds"));
+            }
         }
     }
 }

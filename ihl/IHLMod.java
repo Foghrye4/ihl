@@ -3,8 +3,10 @@ package ihl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -36,6 +38,12 @@ import ihl.datanet.DataNet;
 import ihl.enviroment.LaserHitMirrorEventHandler;
 import ihl.enviroment.LightBulbBlock;
 import ihl.enviroment.MirrorBlock;
+import ihl.explosion.ChunkAndWorldLoadEventHandler;
+import ihl.explosion.ExplosionVectorBlockV2;
+import ihl.explosion.ExplosiveBlock;
+import ihl.explosion.GroundRemoverItem;
+import ihl.explosion.IHLEntityFallingPile;
+import ihl.explosion.PileBlock;
 import ihl.flexible_cable.AnchorBlock;
 import ihl.flexible_cable.AnchorTileEntity;
 import ihl.flexible_cable.IHLENet;
@@ -51,7 +59,6 @@ import ihl.i_hate_liquids.IHLEventHandler;
 import ihl.items_blocks.FiberItem;
 import ihl.items_blocks.FlexibleCableItem;
 import ihl.items_blocks.FlexiblePipeItem;
-import ihl.items_blocks.GroundRemoverItem;
 import ihl.items_blocks.IHLItemBlock;
 import ihl.items_blocks.IHLTool;
 import ihl.items_blocks.ItemSubstance;
@@ -101,6 +108,7 @@ import ihl.crop_harvestors.RubberTreeBlock;
 import ihl.crop_harvestors.SackBlock;
 import ihl.crop_harvestors.SackTileEntity;
 import ihl.recipes.IronWorkbenchRecipe;
+import ihl.recipes.RecipeInputDetonator;
 import ihl.recipes.RecipeInputDie;
 import ihl.recipes.RecipeInputWire;
 import ihl.recipes.RecipeOutputItemStack;
@@ -115,13 +123,10 @@ import ihl.tunneling_shield.DriverBlock;
 import ihl.tunneling_shield.DriverTileEntity;
 import ihl.tunneling_shield.HorizontalMiningPipe;
 import ihl.tunneling_shield.MultiBlockSpacerBlock;
-import ihl.utils.ChunkAndWorldLoadEventHandler;
 import ihl.utils.EntityDropEventHandler;
-import ihl.utils.ExplosionVector;
 import ihl.utils.FluidDictionary;
 import ihl.utils.IHLUtils;
 import ihl.utils.IHLXMLParser;
-import ihl.utils.PlayerWakeUpEventHandler;
 import ihl.worldgen.IHLWorldGenerator;
 import ihl.worldgen.ores.BlockOre;
 import ihl.worldgen.ores.DebugScannerBlock;
@@ -140,7 +145,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -152,8 +156,6 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -203,9 +205,10 @@ public class IHLMod implements IFuelHandler{
 	public static DataNet datanet;
 	private ItemStack pfaalimestone;
 	private ItemStack pfaacobblelimestone;
-	public static ExplosionVector explosionHandler;
 	public static IHLXMLParser xmlparser;
 	public static FluidDictionary fluidDictionary;
+	public static Map<String,Integer> moltenAmounts = new HashMap<String,Integer>(); 
+	public static ExplosionVectorBlockV2 explosionHandler;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt) throws IOException, ParserConfigurationException
@@ -237,12 +240,7 @@ public class IHLMod implements IFuelHandler{
 		{
 			MinecraftForge.EVENT_BUS.register(new IHLEventHandler());
 		}
-		MinecraftForge.EVENT_BUS.register(new ChunkAndWorldLoadEventHandler());
 		MinecraftForge.EVENT_BUS.register(new EntityDropEventHandler());
-		if(config.giveIHLManualOnPlayerWakeUpEvent)
-		{
-			MinecraftForge.EVENT_BUS.register(new PlayerWakeUpEventHandler());
-		}
 		MinecraftForge.EVENT_BUS.register(new LaserHitMirrorEventHandler());
 		MinecraftForge.EVENT_BUS.register(new IHLBucketHandler());
 		MinecraftForge.EVENT_BUS.register(proxy);
@@ -250,13 +248,14 @@ public class IHLMod implements IFuelHandler{
 		GameRegistry.registerBlock(ds, "debugScanner");
 		GameRegistry.registerTileEntity(DebugScannerTileEntity.class,"DebugScanner");
 		cableAnchorBlock = new AnchorBlock("cableAnchor");
-		List<String> info1 = new ArrayList();
+		List<String> info1 = new ArrayList<String>();
 		info1.add("non vulcanized rubber insulated");
 		DataCableItem.init();
 		GroundRemoverItem.init();
 		FlexibleCableItem.init();
 		IHLGuidebookItem.init();
-		//ExplosiveBlock.init();
+		ExplosiveBlock.init();
+		PileBlock.init();
 		GameRegistry.registerTileEntity(AnchorTileEntity.class, "anchorTileEntity");
 		
 		crucible=new Crucible();
@@ -315,18 +314,17 @@ public class IHLMod implements IFuelHandler{
 		GameRegistry.registerItem(tditft, "tditftItem");
 		proxy.load();
 		registerEntities();
-		if(!IHLUtils.hasOreDictionaryEntry("ingotBrick"))
-		{
-			OreDictionary.registerOre("ingotBrick", Items.brick);
-		}
-		if(!IHLUtils.hasOreDictionaryEntry("dustGunpowder"))
-		{
-			OreDictionary.registerOre("dustGunpowder", Items.gunpowder);
-		}
-
+		OreDictionary.registerOre("ingotBrick", Items.brick);
+		OreDictionary.registerOre("dustGunpowder", Items.gunpowder);
+		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.dirt, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.grass, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("platePaper", new ItemStack(Items.paper, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("dustGunpowder", new ItemStack(Items.gunpowder, 1, OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("blockExplosive", IHLUtils.getThisModItemStack("ihlExplosive"));
+		MinecraftForge.EVENT_BUS.register(new ChunkAndWorldLoadEventHandler());
 		IHLMod.log.info("IHL precalculating explosion.");
-		explosionHandler = new ExplosionVector();
-		IHLMod.log.info("Explosion calculated. Amount of start vectors is "+explosionHandler.startVectors.size());
+		IHLMod.explosionHandler = new ExplosionVectorBlockV2();
+		IHLMod.log.info("Explosion calculated.");
 	}
 
 	@EventHandler
@@ -349,8 +347,8 @@ public class IHLMod implements IFuelHandler{
 			ConfigTag tweaks = codechicken.core.asm.CodeChickenCoreModContainer.config.getTag("tweaks");
 			cccFiniteWater = tweaks.getTag("finiteWater").setComment("If set to true two adjacent water source blocks will not generate a third.").getBooleanValue(true);
 		}
-	if(!IHLMod.config.skipRecipeLoad)
-	{
+		if(!IHLMod.config.skipRecipeLoad)
+		{
 		if(IHLMod.config.enableRubberTreeSack)
 		{
 			GameRegistry.addRecipe(new ItemStack(sackBlock, 1), new Object[]{ "STS", "L L", "LLL", 'S', Items.string, 'T', Items.stick, 'L', Items.leather});
@@ -370,8 +368,8 @@ public class IHLMod implements IFuelHandler{
 		ItemStack nuggetTarPitch = OreDictionary.getOres("nuggetTarPitch").get(0).copy();
 		GameRegistry.addShapelessRecipe(OreDictionary.getOres("ingotTarPitch").get(0).copy(), new Object[]{nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch,nuggetTarPitch});
 		if(IHLUtils.hasOreDictionaryEntry("brickPeat") && GameRegistry.findItem("Forestry", "bituminousPeat")!=null)GameRegistry.addRecipe(new ItemStack(GameRegistry.findItem("Forestry", "bituminousPeat"), 5), new Object[] { "BBB", "BPB", "BBB", 'B', IHLUtils.getOreDictItemStack("brickPeat"), 'P', OreDictionary.getOres("ingotTarPitch").get(0)});
-		pfaalimestone = IHLUtils.getOtherModItemStackWithDamage("PFAAGeologica", "mediumStone",0);
-		pfaacobblelimestone = IHLUtils.getOtherModItemStackWithDamage("PFAAGeologica", "mediumCobble",0);
+		pfaalimestone = IHLUtils.getOtherModItemStackWithDamage("PFAAGeologica", "mediumStone",0,1);
+		pfaacobblelimestone = IHLUtils.getOtherModItemStackWithDamage("PFAAGeologica", "mediumCobble",0,1);
 		isGregTechModLoaded=Loader.isModLoaded("gregtech");
 		if(isGregTechModLoaded)
 		{
@@ -402,6 +400,7 @@ public class IHLMod implements IFuelHandler{
 		IHLUtils.addIC2CentrifugeRecipe("crushedBauxite", IHLUtils.getThisModItemStack("crushedPurifiedBauxite"),IHLUtils.getOreDictItemStack("dustClay"));
 		IHLUtils.addIC2CentrifugeRecipe("crushedStibnite", IHLUtils.getThisModItemStack("crushedPurifiedStibnite"),IHLUtils.getOreDictItemStack("dustTinyGold"));
 		IHLUtils.addIC2MaceratorRecipe("logWood", IHLUtils.getThisModItemStack("dustWood"));
+		IHLUtils.addIC2MaceratorRecipe("ingotPotassium", IHLUtils.getThisModItemStack("dustPotassiumOxide"));
 		if(IHLUtils.hasOreDictionaryEntry("blockLimestone"))IHLUtils.addIC2MaceratorRecipe("blockLimestone", IHLUtils.getOreDictItemStackWithSize("dustCalcite",4));
 		if(pfaalimestone!=null)IHLUtils.addIC2MaceratorRecipe(pfaalimestone, IHLUtils.getOreDictItemStackWithSize("dustCalcite",4));
 		if(pfaacobblelimestone!=null)IHLUtils.addIC2MaceratorRecipe(pfaacobblelimestone, IHLUtils.getOreDictItemStackWithSize("dustCalcite",4));
@@ -423,6 +422,7 @@ public class IHLMod implements IFuelHandler{
 		IHLUtils.addIC2MaceratorRecipe("oreDatolite", IHLUtils.getThisModItemStackWithSize("dustDatolite",4));
 		IHLUtils.addIC2MaceratorRecipe("oreBischofite", IHLUtils.getThisModItemStackWithSize("dustBischofite",4));
 		IHLUtils.addIC2MaceratorRecipe("ingotBrick", IHLUtils.getOreDictItemStackWithSize("dustBrick",1));
+		IHLUtils.addIC2ExtrudingRecipe(IHLUtils.getThisModItemStack("dustIronOxideCatalystMix"), IHLUtils.getThisModItemStack("catalystRawIronOxide"));
 		Recipes.advRecipes.addShapelessRecipe(IHLUtils.getThisModItemStackWithSize("dustIrongraphite",2), new Object[] {new RecipeInputOreDict("dustIron"), new RecipeInputOreDict("dustGraphite")});
 		Recipes.advRecipes.addShapelessRecipe(IHLUtils.getOreDictItemStackWithSize("dustPorcelain",4), new Object[] {new RecipeInputOreDict("dustClay"),new RecipeInputOreDict("dustClay"), new RecipeInputOreDict("dustSiliconDioxide"), new RecipeInputOreDict("dustPotassiumFeldspar")});
 		Recipes.advRecipes.addShapelessRecipe(IHLUtils.getThisModItemStack("chisel"), new Object[] {IHLUtils.getThisModItemStack("grindstone"),IHLUtils.getThisModItemStack("blankChiselSteel")});
@@ -460,6 +460,15 @@ public class IHLMod implements IFuelHandler{
 			Character.valueOf('D'),  new RecipeInputOreDict("craftingToolHardHammer"),
 			Character.valueOf('R'),  new RecipeInputItemStack(IHLUtils.getThisModItemStack("diceM10x1SteelHardened")), 
 			Character.valueOf('W'),  new RecipeInputOreDict("craftingToolSaw")});
+		
+		Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStackWithSize("drillSteel",2), new Object[] {
+				"VFS", "DR ", "   ",
+				Character.valueOf('V'), new RecipeInputOreDict("craftingToolHardHammer"),
+				Character.valueOf('F'), new RecipeInputItemStack(IHLUtils.getThisModItemStack("viseSteel")),
+				Character.valueOf('S'), new RecipeInputOreDict("craftingToolFile"),
+				Character.valueOf('D'), new RecipeInputOreDict("craftingToolChisel"),
+				Character.valueOf('R'), new RecipeInputItemStack(IHLUtils.getThisModItemStack("barD10SteelHot"))});
+				
 		ItemStack crystal = IC2Items.getItem("lapotronCrystal").copy();
 		ItemStack advBattery = IC2Items.getItem("advBattery").copy();
 		ItemStack chargedReBattery = IC2Items.getItem("chargedReBattery").copy();
@@ -485,10 +494,10 @@ public class IHLMod implements IFuelHandler{
 			Recipes.advRecipes.addRecipe(((AdvancedHandPump) ic2_advanced_handpump).getItemStack(0), new Object[] { "TK ", "KCA", " RP", Character.valueOf('T'), IC2Items.getItem("treetap"), Character.valueOf('K'), IC2Items.getItem("advancedAlloy"), Character.valueOf('C'), IC2Items.getItem("cell"), Character.valueOf('A'), IC2Items.getItem("advancedCircuit"), Character.valueOf('R'), IC2Items.getItem("energyCrystal"), Character.valueOf('P'), IC2Items.getItem("powerunitsmall")});
 		}
 		
-		ItemStack forestryWaxCapsule = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCapsule", 0);
-		ItemStack forestryWaxCast = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCast", 0);
-		ItemStack forestryCandle = IHLUtils.getOtherModItemStackWithDamage("Forestry", "candle", 0);
-		ItemStack forestryBeesWax = IHLUtils.getOtherModItemStackWithDamage("Forestry", "beeswax", 0);
+		ItemStack forestryWaxCapsule = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCapsule", 0,1);
+		ItemStack forestryWaxCast = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCast", 0,1);
+		ItemStack forestryCandle = IHLUtils.getOtherModItemStackWithDamage("Forestry", "candle", 0,1);
+		ItemStack forestryBeesWax = IHLUtils.getOtherModItemStackWithDamage("Forestry", "beeswax", 0,1);
 		if(forestryWaxCapsule!=null)
 		{
 			Recipes.advRecipes.addRecipe(forestryWaxCapsule, new Object[] { "SBS", "   ", "   ", Character.valueOf('S'), IHLUtils.getThisModItemStack("ingotStearin"),Character.valueOf('B'),forestryBeesWax});
@@ -523,14 +532,15 @@ public class IHLMod implements IFuelHandler{
 		FurnaceRecipes.smelting().func_151394_a(IHLUtils.getThisModItemStack("stickCoalElectrodePremix"), IHLUtils.getOreDictItemStack("stickCoal"), 20F);
 		FurnaceRecipes.smelting().func_151394_a(IHLUtils.getThisModItemStack("plateRawCoal"), IHLUtils.getOreDictItemStack("plateCoal"), 20F);
 		FurnaceRecipes.smelting().func_151394_a(IHLUtils.getOreDictItemStackWithSize("dustCalcite",3), IHLUtils.getOreDictItemStack("dustQuicklime"), 2F);
+		FurnaceRecipes.smelting().func_151394_a(IHLUtils.getThisModItemStack("catalystRawIronOxide"), IHLUtils.getThisModItemStack("catalystIronOxide"), 2F);
 		ItemSubstance.postInit();
 		ItemStack lathingTool = Ic2Items.LathingTool.copy();
     	lathingTool.setItemDamage(OreDictionary.WILDCARD_VALUE);
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new IRecipeInput[] {new RecipeInputDie("setOfDies1_5sqmm",240)}),Arrays.asList(new ItemStack[] {Ic2Items.copperCableItem}),Arrays.asList(new ItemStack[] {IHLUtils.getUninsulatedWire("Copper",1,240)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new IRecipeInput[] {new RecipeInputDie("setOfDies1_5sqmm",240)}),Arrays.asList(new ItemStack[] {Ic2Items.ironCableItem}),Arrays.asList(new ItemStack[] {IHLUtils.getUninsulatedWire("Steel",1,240)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("bucket_tarPitch"),new ItemStack(Items.stick)}),Arrays.asList(new ItemStack[] {new ItemStack(Items.bucket),IHLUtils.getOreDictItemStackWithSize("nuggetTarPitch",4),new ItemStack(Blocks.torch)})));
-    	List<IRecipeInput> materialList3 = new ArrayList();
-    	materialList3.add(new RecipeInputItemStack(new ItemStack(Blocks.sand,1 , OreDictionary.WILDCARD_VALUE)));
+    	List<IRecipeInput> materialList3 = new ArrayList<IRecipeInput>();
+    	materialList3.add(new RecipeInputItemStack(new ItemStack(Blocks.sand, 1 , OreDictionary.WILDCARD_VALUE)));
     	materialList3.add(new RecipeInputOreDict("dustClay"));
     	materialList3.add(new RecipeInputFluidContainer(FluidRegistry.WATER,1));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,materialList3,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getSandInjectionMoldForResult("ingot")})));
@@ -547,6 +557,7 @@ public class IHLMod implements IFuelHandler{
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,materialList3,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getSandInjectionMoldForResult("handDrillSetOfMoldedParts")})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,materialList3,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getSandInjectionMoldForResult("detonationSprayingMachineSetOfMoldedParts")})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,materialList3,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getSandInjectionMoldForResult("viseSetOfMoldedParts")})));
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,materialList3,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getSandInjectionMoldForResult("nozzle")})));
     	//Sand molds recipe section end
     	List<ItemStack> materialsForPrecisionMold = Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("ingotStearin"), IHLUtils.getOreDictItemStack("cellLiquidGlass"), IHLUtils.getOreDictItemStack("dustSiliconDioxide"), new ItemStack(Blocks.sand)});
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),materialsForPrecisionMold,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getGypsumInjectionMoldForResult("rollingMachineSetOfMoldedParts"), Ic2Items.cell.copy()})));
@@ -554,8 +565,14 @@ public class IHLMod implements IFuelHandler{
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),materialsForPrecisionMold,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getGypsumInjectionMoldForResult("turboCompressorSetOfMoldedParts"), Ic2Items.cell.copy()})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),materialsForPrecisionMold,Arrays.asList(new ItemStack[]{InjectionMoldBlock.instance.getGypsumInjectionMoldForResult("extruderSetOfMoldedParts"), Ic2Items.cell.copy()})));
     	//Precision molds recipe section end
-    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("hammer"),IHLUtils.getThisModItemStack("viseSteel"),IHLUtils.getThisModItemStack("setOfFilesSteel"),IHLUtils.getThisModItemStack("chisel")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("barD10SteelHot")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStackWithSize("drillSteel",2)})));
-    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("hammer"),IHLUtils.getThisModItemStack("chisel"),IHLUtils.getThisModItemStack("needleFile")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("barD10SteelHot")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStackWithSize("sawBladeSteel",2)})));
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+    			Arrays.asList(new ItemStack[] {
+    					IHLUtils.getThisModItemStack("hammer"),
+    					IHLUtils.getThisModItemStack("chisel"),
+    					IHLUtils.getThisModItemStack("needleFile")}),
+    			Arrays.asList(new ItemStack[]{
+    					IHLUtils.getThisModItemStack("barD10SteelHot")}),
+    			Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStackWithSize("sawBladeSteel",2)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("hammer"),IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze"),IHLUtils.getThisModItemStack("needleFile")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("barD10Steel"),IHLUtils.getThisModItemStack("sawBladeSteelHardened"),new ItemStack(Items.stick)}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("hackSawSteel")})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("needleFile"),IHLUtils.getThisModItemStack("hackSawSteel")}),Arrays.asList(new ItemStack[]{IHLUtils.getOreDictItemStack("plateSteel")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStackWithSize("blankSetOfFilesSteel",4)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("setOfFilesSteel")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("viseSetOfMoldedPartsSteel")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("viseSteel")})));
@@ -795,7 +812,14 @@ public class IHLMod implements IFuelHandler{
     			new RecipeInputOreDict("foilCopper"),
     			new RecipeInputWire("Copper",8,15,"Rubber",100,10000)}),
     			Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("redstoneSignalConverter")}),Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("gasWeldingStation")})));
-
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
+    			Arrays.asList(new IRecipeInput[]{
+    			new RecipeInputOreDict("dustIronOxide",8),
+    			new RecipeInputOreDict("dustBauxite"),
+    			new RecipeInputOreDict("dustPotassiumOxide"),
+    			}),
+    			Arrays.asList(new ItemStack[]{
+    					IHLUtils.getThisModItemStackWithSize("dustIronOxideCatalystMix",10)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("hackSawSteel"),IHLUtils.getThisModItemStack("viseSteel"),IHLUtils.getThisModItemStack("setOfFilesSteel"),IHLUtils.getThisModItemStack("drillSteelHardened"),IHLUtils.getThisModItemStack("handDrillBronze")}),Arrays.asList(new ItemStack[]{IHLUtils.getOreDictItemStack("plateSteel")}),Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStackWithSize("incisorSteel",4)})));
 		if(IHLMod.isGregTechModLoaded && IHLMod.isGT_API_Version_5)
 		{
@@ -825,24 +849,67 @@ public class IHLMod implements IFuelHandler{
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),Arrays.asList(new ItemStack[]{IHLUtils.getInsulatedWire("Copper", 1,240,"Rubber",100)}),Arrays.asList(new ItemStack[]{IHLUtils.getUninsulatedWire("Copper", 1,240)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),Arrays.asList(new ItemStack[]{IHLUtils.getInsulatedWire("Steel", 1,15,"Rubber",100)}),Arrays.asList(new ItemStack[]{IHLUtils.getUninsulatedWire("Steel", 1,15)})));
     	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[]{IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze")}),Arrays.asList(new ItemStack[]{IHLUtils.getInsulatedWire("Steel", 1,240,"Rubber",100)}),Arrays.asList(new ItemStack[]{IHLUtils.getUninsulatedWire("Steel", 1,240)})));
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(
+    			new ItemStack[] {IHLUtils.getThisModItemStack("tinSnipsSteel")}),
+    		Arrays.asList(new IRecipeInput[]{
+    			new RecipeInputOreDict("plateGraphite",2),
+    			new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("highVoltageCapacitor",3),3),
+    			new RecipeInputFluidContainer(IHLFluid.IHLFluidType.MineralOil.fluid, 144),
+    			new RecipeInputOreDict("dustSolderingAlloy"),
+    			new RecipeInputOreDict("foilMica"),
+    			new RecipeInputWire(IHLUtils.getUninsulatedWire("copper", 5, 15)),
+    			new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("gu-81m",4)),
+    			new RecipeInputOreDict("foilCopper"),
+    			new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("valveTube1C21P",6))}),
+    		Arrays.asList(new ItemStack[]{
+    				IHLUtils.getThisModItemStack("vacuumInductionMeltingFurnace")
+    				}),
+    		Arrays.asList(new ItemStack[] {
+    				IHLUtils.getThisModItemStack("gasWeldingStation")})));
+    	ItemStack detonator = IHLUtils.getItemStackWithTag("detonator","detonator_delay",5);
+    	detonator.stackSize=16;
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+    			null,
+    		Arrays.asList(new IRecipeInput[]{
+    			new RecipeInputOreDict("platePaper",2),
+    			new RecipeInputItemStack(new ItemStack(Items.string)),
+    			new RecipeInputOreDict("dustGunpowder",1),
+    			new RecipeInputOreDict("dustPentaerythritolTetranitrate",1),
+    			new RecipeInputOreDict("ingotTarPitch",1)
+    			}),
+    		Arrays.asList(new ItemStack[]{detonator}),
+    		null
+    		));
+    	IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+    			null,
+    		Arrays.asList(new IRecipeInput[]{
+    			new RecipeInputOreDict("platePaper",2),
+    			new RecipeInputOreDict("dustPentaerythritolTetranitrate",8),
+    			new RecipeInputOreDict("ingotTarPitch",1),
+    			new RecipeInputDetonator(detonator)
+    			}),
+    		Arrays.asList(new ItemStack[]{
+    				IHLUtils.getItemStackWithTag("ihlExplosive","explosionPower",1000)
+    				}),null
+    		));
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustSiliconDioxide",2), new RecipeInputOreDict("dustCoal",4), "dustCarborundum");
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustQuicklime"), new RecipeInputOreDict("dustCoal",4), "dustCalciumCarbide");
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("stickCoal"), new RecipeInputOreDict("dustCoal"), "stickGraphite");
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustTungsten"), new RecipeInputOreDict("dustCoal"), "ingotTungsten");
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustBoricAcid",4), new RecipeInputOreDict("dustCoal",8), "dustBoronCarbide");
 		AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateCoal"), new RecipeInputOreDict("dustCoal",1), "plateGraphite");
-		GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("ic2steam", 1),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 1)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 1));
-		if(FluidRegistry.isFluidRegistered("steam"))GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("steam", 1),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 1)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 1));
-		GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("ic2superheatedsteam", 15),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 4)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 4));
-		LeadOvenTileEntity.addRecipe(new UniversalRecipeInput(null,Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSulfur"), IHLUtils.getOreDictItemStack("dustSaltpeter")})), IHLUtils.getFluidStackWithSize("sulfuricanhydride", 23000));
-		LeadOvenTileEntity.addRecipe(new UniversalRecipeInput(null,Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("crushedPurifiedCinnabar")})), IHLUtils.getFluidStackWithSize("vapour.mercury", 3600));
+		GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("ic2steam", 1),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 1)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 1));
+		if(FluidRegistry.isFluidRegistered("steam"))GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("steam", 1),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 1)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 1));
+		GoldChimneyKneeTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("ic2superheatedsteam", 15),IHLUtils.getFluidStackWithSize("sulfuricanhydride", 4)}),null), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 4));
+		LeadOvenTileEntity.addRecipe(new UniversalRecipeInput(null,(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSulfur"), IHLUtils.getOreDictItemStack("dustSaltpeter")})), IHLUtils.getFluidStackWithSize("sulfuricanhydride", 23000));
+		LeadOvenTileEntity.addRecipe(new UniversalRecipeInput(null,(new ItemStack[] {IHLUtils.getOreDictItemStack("crushedPurifiedCinnabar")})), IHLUtils.getFluidStackWithSize("vapour.mercury", 3600));
 		LeadOvenTileEntity.addRecipe(IHLUtils.getThisModItemStack("dustStibnite"), IHLUtils.getThisModItemStack("dustAntimonyOxide"));
 		LeadOvenTileEntity.addRecipe(IHLUtils.getOreDictItemStackWithSize("dustSodiumHydrogenSulfate",2), IHLUtils.getFluidStackWithSize("vapour.sulfuricacid", 20000), IHLUtils.getOreDictItemStack("dustSodiumSulfate"));
 		LeadOvenTileEntity.addRecipe(IHLUtils.getThisModItemStackWithSize("dustSodiumZeoliteCoked",2), IHLUtils.getThisModItemStack("dustSodiumZeolite"));
-		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {new FluidStack(FluidRegistry.WATER, 1500)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustQuicklime", 1)})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 2500)}),null,20));
-		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {new FluidStack(FluidRegistry.WATER, 130),IHLUtils.getFluidStackWithSize("limemilk", 142)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStackWithSize("muttonLard", 6)})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("glyceryl", 130)}),Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStackWithSize("ingotCalciumSoap", 5)}),200));
-		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {new FluidStack(FluidRegistry.WATER, 600),IHLUtils.getFluidStackWithSize("sulfuricacid", 284)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStackWithSize("ingotCalciumSoap", 6)})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("oleicacid", 280)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getThisModItemStackWithSize("ingotStearin", 4)),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustGypsum"),0.48f)}),200));
-		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 1000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustTrona")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 1000)}),Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalcite")}),200));
+		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput((new FluidStack[] {new FluidStack(FluidRegistry.WATER, 1500)}), (new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustQuicklime", 1)})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 2500)}),null,20));
+		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput((new FluidStack[] {new FluidStack(FluidRegistry.WATER, 130),IHLUtils.getFluidStackWithSize("limemilk", 142)}), (new ItemStack[] {IHLUtils.getThisModItemStackWithSize("muttonLard", 6)})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("glyceryl", 130)}),(new ItemStack[] {IHLUtils.getThisModItemStackWithSize("ingotCalciumSoap", 5)}),200));
+		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput((new FluidStack[] {new FluidStack(FluidRegistry.WATER, 600),IHLUtils.getFluidStackWithSize("sulfuricacid", 284)}), (new ItemStack[] {IHLUtils.getThisModItemStackWithSize("ingotCalciumSoap", 6)})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("oleicacid", 280)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getThisModItemStackWithSize("ingotStearin", 4)),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustGypsum"),0.48f)}),200));
+		ImpregnatingMachineTileEntity.addChemicalRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 1000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustTrona")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 1000)}),(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalcite")}),200));
 		DetonationSprayingMachineTileEntity.addRecipe(IHLUtils.getThisModItemStack("blankNeedleFileSteel"), IHLUtils.getThisModItemStack("needleFile"));
 		DetonationSprayingMachineTileEntity.addRecipe(IHLUtils.getThisModItemStack("blankSetOfFilesSteel"), IHLUtils.getThisModItemStack("setOfFilesSteel"));
 		DetonationSprayingMachineTileEntity.addRecipe(IHLUtils.getThisModItemStack("incisorSteel"), IHLUtils.getThisModItemStack("incisorSteelDiamondCoated"));
@@ -858,9 +925,9 @@ public class IHLMod implements IFuelHandler{
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("sawBladeSteel"),IHLUtils.getThisModItemStack("sawBladeSteelHot"));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("barD10Steel"),IHLUtils.getThisModItemStack("barD10SteelHot"));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("linerIronGraphite"),IHLUtils.getThisModItemStack("linerIronGraphiteHot"));
-		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustIronOxide"), IHLUtils.getOreDictItemStack("dustLithiumOxide")})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustFerrite",2)}),200));
-		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustSiliconDioxide",3), IHLUtils.getOreDictItemStackWithSize("dustMagnesium",2)})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSilicon"), IHLUtils.getOreDictItemStackWithSize("dustMagnesiumOxide",4)}),200));
-		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustBauxite"), IHLUtils.getOreDictItemStack("dustSodiumHydroxide")})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSodiumAluminate")}),200));
+		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {IHLUtils.getOreDictItemStack("dustIronOxide"), IHLUtils.getOreDictItemStack("dustLithiumOxide")})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustFerrite",2)}),200));
+		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustSiliconDioxide",3), IHLUtils.getOreDictItemStackWithSize("dustMagnesium",2)})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getOreDictItemStack("dustSilicon"), IHLUtils.getOreDictItemStackWithSize("dustMagnesiumOxide",4)}),200));
+		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {IHLUtils.getOreDictItemStack("dustBauxite"), IHLUtils.getOreDictItemStack("dustSodiumHydroxide")})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getOreDictItemStack("dustSodiumAluminate")}),200));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("drillSteel"),IHLUtils.getThisModItemStack("drillSteelHot"));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("tapM10x1Steel"),IHLUtils.getThisModItemStack("tapM10x1SteelHot"));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("diceM10x1Steel"),IHLUtils.getThisModItemStack("diceM10x1SteelHot"));
@@ -875,39 +942,39 @@ public class IHLMod implements IFuelHandler{
 		ImpregnatingMachineTileEntity.addQuenchingRecipe("tapM10x1SteelHot","tapM10x1SteelHardened");
 		ImpregnatingMachineTileEntity.addQuenchingRecipe("drillSteelHot","drillSteelHardened");
 		ImpregnatingMachineTileEntity.addQuenchingRecipe("sawBladeSteelHot","sawBladeSteelHardened");
-		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("oleicacid", 1)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
-		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("seedoil", 1)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
-		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("mineraloil", 1)}), Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
+		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("oleicacid", 1)}), (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
+		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("seedoil", 1)}), (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
+		ImpregnatingMachineTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("mineraloil", 1)}), (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteHot")})), new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getThisModItemStack("linerIronGraphiteGreased")}),2));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("foilRubberWithSulfur"),IHLUtils.getThisModItemStack("foilRubber"));
-		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, Arrays.asList(new IRecipeInput[] {new RecipeInputItemStack(IHLUtils.getThisModItemStack("pipeRubberWithSulfur"))})),new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStack("pipeVulcanizedRubber")}), 20));
+		MuffleFurnanceTileEntity.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput[] {new RecipeInputItemStack(IHLUtils.getThisModItemStack("pipeRubberWithSulfur"))})),new UniversalRecipeOutput(null, (new ItemStack[] {IHLUtils.getThisModItemStack("pipeVulcanizedRubber")}), 20));
 		GasWeldingStationTileEntity.addGasRecipe(IHLUtils.getOreDictItemStack("dustCalciumCarbide"),IHLUtils.getFluidStackWithSize("water", 666), IHLUtils.getFluidStackWithSize("acetylene", 1333), IHLUtils.getFluidStackWithSize("limemilk", 333));
 		CryogenicDistillerTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("air", 1000), IHLUtils.getFluidStackWithSize("nitrogen", 781), IHLUtils.getFluidStackWithSize("oxygen", 209), false);
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 500)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSiliconDioxide")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("liquidglass", 500)}),null,200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 500)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustSiliconDioxide")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("liquidglass", 500)}),null,200));
 		PrecipitatorCondenserTileEntity.addRecipe("vapour.sulfuricacid", "sulfuricacid", 50);
 		PrecipitatorCondenserTileEntity.addRecipe("vapour.mercury", "mercury", 50);
 		PrecipitatorCondenserTileEntity.addRecipe("ic2steam", "ic2distilledwater", 100);
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("glyceryl", 50),IHLUtils.getFluidStackWithSize("spruceresin", 1000)}),null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("cablingcolophony", 600)}),null,200,true));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("glyceryl", 50),IHLUtils.getFluidStackWithSize("spruceresin", 1000)}),null), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("cablingcolophony", 600)}),null,200,true));
 		CryogenicDistillerTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("spruceresin", 1000), IHLUtils.getFluidStackWithSize("ic2distilledwater", 150), IHLUtils.getFluidStackWithSize("turpentine", 300), true);
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("fueloil", 2000)}),null), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.tarpitch", 144)}),null,200,true));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("fueloil", 2000)}),null), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.tarpitch", 144)}),null,200,true));
 		CryogenicDistillerTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("fueloil", 2000), IHLUtils.getFluidStackWithSize("mineraloil", 1000), null, true);
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 4000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("crushedPurifiedGyubnera")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumtungstate", 4000)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyManganeseOxide"),3.75f),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyIronOxide"),9f/12f)}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 1750)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustRockSalt",1)})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 1000)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustPotassiumSulphate"),1.75f)}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 3500)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSalt")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 1000)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumHydrogenSulfate"),3.5f)}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 7000/9),new FluidStack(FluidRegistry.WATER,6000/9+1000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustDatolite")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("boricacid", 1777)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustGypsum"),12f/9f),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinySiliconDioxide"),3f)}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 1667),IHLUtils.getFluidStackWithSize("hydrogenchloride", 1334)}), null), new UniversalRecipeOutput(null,Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumChloride")}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumtungstate", 6667)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumChloride")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("saltwater", 6000)}),Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumTungstate")}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 2000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustWood"),IHLUtils.getOreDictItemStack("dustSodiumSulfide")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.cellulose", 1500),IHLUtils.getFluidStackWithSize("ic2biomass", 500)}),null,200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("cablingcolophony", 50),new FluidStack(FluidRegistry.WATER,2000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustMica")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.mica", 2000)}),null,200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 500),new FluidStack(FluidRegistry.WATER,7500)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustMagnesiumOxide")})), new UniversalRecipeOutput(null,Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustBischofite"),8.75f)}),200));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("liquidglass", 1000),new FluidStack(FluidRegistry.WATER,2000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustSodiumAluminate")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.sodiumzeolite", 4000)}),null,200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 4000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("crushedPurifiedGyubnera")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumtungstate", 4000)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyManganeseOxide"),3.75f),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyIronOxide"),9f/12f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 1750)}), (new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustRockSalt",1)})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 1000)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustPotassiumSulphate"),1.75f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 3500)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustSalt")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 1000)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumHydrogenSulfate"),3.5f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("sulfuricacid", 7000/9),new FluidStack(FluidRegistry.WATER,6000/9+1000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustDatolite")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("boricacid", 1777)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustGypsum"),12f/9f),new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinySiliconDioxide"),3f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("limemilk", 1667),IHLUtils.getFluidStackWithSize("hydrogenchloride", 1334)}), null), new UniversalRecipeOutput(null,(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumChloride")}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumtungstate", 6667)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumChloride")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("saltwater", 6000)}),(new ItemStack[] {IHLUtils.getOreDictItemStack("dustCalciumTungstate")}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 2000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustWood"),IHLUtils.getOreDictItemStack("dustSodiumSulfide")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.cellulose", 1500),IHLUtils.getFluidStackWithSize("ic2biomass", 500)}),null,200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("cablingcolophony", 50),new FluidStack(FluidRegistry.WATER,2000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustMica")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.mica", 2000)}),null,200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("hydrogenchloride", 500),new FluidStack(FluidRegistry.WATER,7500)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustMagnesiumOxide")})), new UniversalRecipeOutput(null,(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustBischofite"),8.75f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("liquidglass", 1000),new FluidStack(FluidRegistry.WATER,2000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustSodiumAluminate")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("pulp.sodiumzeolite", 4000)}),null,200));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("saltwater", 4000), IHLUtils.getOreDictItemStack("dustSalt"));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("boricacid", 2288), IHLUtils.getOreDictItemStack("dustBoricAcid"));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 2000), IHLUtils.getOreDictItemStack("dustSodiumHydroxide"));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("pulp.sodiumzeolite", 4000), IHLUtils.getOreDictItemStack("dustSodiumZeolite"));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("solution.lithiumchloride", 4000), IHLUtils.getOreDictItemStack("dustLithiumChloride"));
 		EvaporatorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("solution.calciumchloride", 4000), IHLUtils.getOreDictItemStack("dustCalciumChloride"));
-		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 2000),IHLUtils.getFluidStackWithSize("hydrogenchloride", 667)}), Arrays.asList(new IRecipeInput[] {new RecipeInputOreDict("dustCalciumTungstate")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("solution.calciumchloride", 2000)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTungsticAcid"),1.16f)}),200));
-		if(IHLUtils.hasOreDictionaryEntry("dustTungstate"))ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 1000),IHLUtils.getFluidStackWithSize("hydrogenchloride",140)}), Arrays.asList(new IRecipeInput[] {new RecipeInputOreDict("dustTungstate")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("solution.lithiumchloride", 560)}),Arrays.asList(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTungsticAcid"),1.0f)}),200));
+		ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 2000),IHLUtils.getFluidStackWithSize("hydrogenchloride", 667)}), (new IRecipeInput[] {new RecipeInputOreDict("dustCalciumTungstate")})), new UniversalRecipeOutput((new FluidStack [] {IHLUtils.getFluidStackWithSize("solution.calciumchloride", 2000)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTungsticAcid"),1.16f)}),200));
+		if(IHLUtils.hasOreDictionaryEntry("dustTungstate"))ChemicalReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 1000),IHLUtils.getFluidStackWithSize("hydrogenchloride",140)}), (new IRecipeInput[] {new RecipeInputOreDict("dustTungstate")})), new UniversalRecipeOutput((new FluidStack [] {IHLUtils.getFluidStackWithSize("solution.lithiumchloride", 560)}),(new RecipeOutputItemStack[] {new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTungsticAcid"),1.0f)}),200));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getOreDictItemStackWithSize("dustTungsticAcid",2), IHLUtils.getOreDictItemStack("dustTungstenOxide"),1.14f);
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("electrolysisBathRawPorcelain"), IHLUtils.getThisModItemStack("electrolysisBathPorcelain"));
 		MuffleFurnanceTileEntity.addRecipe(IHLUtils.getThisModItemStack("ovenRawPorcelain"), IHLUtils.getThisModItemStack("leadOven"));
@@ -929,8 +996,108 @@ public class IHLMod implements IFuelHandler{
 		FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("oxygen", 500), IHLUtils.getOreDictItemStack("dustLithium"), null, new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustLithiumOxide"),1.5f));
 		FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("oxygen", 1333), IHLUtils.getOreDictItemStack("dustLead"), null, new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustLeadPlumbate"),2.333f));
 		FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("chlorine", 2000), IHLUtils.getOreDictItemStack("dustCarborundum"), IHLUtils.getFluidStackWithSize("silicontetrachloride", 2500), new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustCoal"),0.5f));
-		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("hydrogen", 445),IHLUtils.getFluidStackWithSize("silicontetrachloride", 1667)}),Arrays.asList(new ItemStack [] {IHLUtils.getOreDictItemStackWithSize("dustIridium", 0),IHLUtils.getOreDictItemStack("dustTinySilicon")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("trichlorosilane", 2112)}),null,200));
-		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("fueloil", 6000)}), Arrays.asList(new ItemStack [] {IHLUtils.getOreDictItemStack("dustSodiumZeolite")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack [] {IHLUtils.getFluidStackWithSize("fuel", 4500),IHLUtils.getFluidStackWithSize("crackinggas", 500)}),Arrays.asList(new RecipeOutputItemStack [] { new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumZeoliteCoked"),1.9f)}), 2000));
+		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack [] {IHLUtils.getFluidStackWithSize("hydrogen", 445),IHLUtils.getFluidStackWithSize("silicontetrachloride", 1667)}),(new ItemStack [] {IHLUtils.getOreDictItemStackWithSize("dustIridium", 0),IHLUtils.getOreDictItemStack("dustTinySilicon")})), new UniversalRecipeOutput((new FluidStack [] {IHLUtils.getFluidStackWithSize("trichlorosilane", 2112)}),null,200));
+		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack [] {IHLUtils.getFluidStackWithSize("fueloil", 6000)}), (new ItemStack [] {IHLUtils.getOreDictItemStack("dustSodiumZeolite")})), new UniversalRecipeOutput((new FluidStack [] {IHLUtils.getFluidStackWithSize("fuel", 4500),IHLUtils.getFluidStackWithSize("crackinggas", 500)}),(new RecipeOutputItemStack [] { new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumZeoliteCoked"),1.9f)}), 2000));
+		FluidizedBedReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(null, 
+						(new IRecipeInput [] {new RecipeInputOreDict("dustWood")})), 
+				new UniversalRecipeOutput((new FluidStack [] {
+					IHLUtils.getFluidStackWithSize("molten.tarpitch", 8), 
+					IHLUtils.getFluidStackWithSize("tarwater", 39),
+					IHLUtils.getFluidStackWithSize("crackinggas", 31)}),
+				(new RecipeOutputItemStack [] { 
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustCoal"),0.25f)}), 2000));
+		ChemicalReactorTileEntity.addRecipe(
+				new UniversalRecipeInput((new FluidStack[] {
+					IHLUtils.getFluidStackWithSize("tarwater", 50)}),
+				(new IRecipeInput[] {
+					new RecipeInputOreDict("dustQuicklime")})), 
+				new UniversalRecipeOutput((new FluidStack[] {
+					IHLUtils.getFluidStackWithSize("water", 10)}),
+				(new RecipeOutputItemStack [] { 
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustCalciumAcetate"),1f)}),200,true));
+		CryogenicDistillerTileEntity.addRecipe(
+				IHLUtils.getFluidStackWithSize("tarwater", 50), 
+				IHLUtils.getFluidStackWithSize("ic2distilledwater", 30), 
+				IHLUtils.getFluidStackWithSize("methanol", 10), true);
+		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("methanol", 200),IHLUtils.getFluidStackWithSize("oxygen", 100)},
+				new IRecipeInput [] {new RecipeInputOreDict("dustSilver", 0)}), 
+			new UniversalRecipeOutput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("formaldehyde", 300)},null,200));
+		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("chlorine", 110),
+						IHLUtils.getFluidStackWithSize("mercury", 50)},
+						null), 
+				new UniversalRecipeOutput(
+				null,new RecipeOutputItemStack [] {
+						new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustMercuryChloride"),1f)},200));
+		FluidizedBedReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(
+				new FluidStack [] {
+						IHLUtils.getFluidStackWithSize("acetylene", 100),
+						IHLUtils.getFluidStackWithSize("ic2distilledwater", 100),
+						IHLUtils.getFluidStackWithSize("hydrogenchloride", 2)},
+				new IRecipeInput [] {new RecipeInputOreDict("dustMercuryChloride", 0)}), 
+			new UniversalRecipeOutput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("acetaldehyde", 200)},null,200));
+		ChemicalReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(new FluidStack[] {
+					IHLUtils.getFluidStackWithSize("acetaldehyde", 100),
+					IHLUtils.getFluidStackWithSize("formaldehyde", 400),
+					IHLUtils.getFluidStackWithSize("solution.natriumhydroxide", 100)},
+				null),
+			new UniversalRecipeOutput(null,
+				new RecipeOutputItemStack [] { 
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumFormate"),1f),
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustPentaerythritol"),1f)
+				},200,false));
+		ChemicalReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(
+				new FluidStack[] {
+					IHLUtils.getFluidStackWithSize("sulfuricacid", 288)},
+				new IRecipeInput[] {
+					new RecipeInputOreDict("dustSaltpeter")}), 
+				new UniversalRecipeOutput(null,
+				new RecipeOutputItemStack [] { 
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustPotassiumSulphate"),2f)},200,true));
+		CryogenicDistillerTileEntity.addRecipe(
+				IHLUtils.getFluidStackWithSize("sulfuricacid", 288), 
+				IHLUtils.getFluidStackWithSize("nitricacid", 120), null, true);
+		FluidizedBedReactorTileEntity.addRecipe(new UniversalRecipeInput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("hydrogen", 90)},
+						new IRecipeInput[] {new RecipeInputItemStack(IHLUtils.getThisModItemStack("catalystIronOxide"))}), 
+				new UniversalRecipeOutput(
+				null,new RecipeOutputItemStack [] {
+						new RecipeOutputItemStack(IHLUtils.getThisModItemStack("catalystIron"),1f)},200));
+		FluidizedBedReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(
+				new FluidStack [] {
+						IHLUtils.getFluidStackWithSize("nitrogen", 100),
+						IHLUtils.getFluidStackWithSize("hydrogen", 300)},
+				new IRecipeInput[] {new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("catalystIron",0),0)}), 
+			new UniversalRecipeOutput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("ammonia", 400)},null,200));
+		FluidizedBedReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(
+				new FluidStack [] {
+						IHLUtils.getFluidStackWithSize("ammonia", 100),
+						IHLUtils.getFluidStackWithSize("oxygen", 150)},
+				new IRecipeInput[] {new RecipeInputOreDict("dustIridium",0)}), 
+			new UniversalRecipeOutput(
+				new FluidStack [] {IHLUtils.getFluidStackWithSize("nitricacid", 250)},null,200));
+		ChemicalReactorTileEntity.addRecipe(
+				new UniversalRecipeInput(
+				new FluidStack[] {
+					IHLUtils.getFluidStackWithSize("nitricacid", 50),
+					IHLUtils.getFluidStackWithSize("sulfuricacid", 50)},
+				new IRecipeInput[] {
+					new RecipeInputOreDict("dustPentaerythritol"),
+					new RecipeInputItemStack(new ItemStack(Items.snowball,8))}), 
+				new UniversalRecipeOutput(null,
+				new RecipeOutputItemStack [] { 
+					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustPentaerythritolTetranitrate"),1f)},200,false));
+
 		Crucible.addRecipe("ingotSteel", IHLUtils.getFluidStackWithSize("molten.steel", 144));
 		Crucible.addRecipe("ingotBronze", IHLUtils.getFluidStackWithSize("molten.bronze", 144));
 		Crucible.addRecipe("ingotGold", IHLUtils.getFluidStackWithSize("molten.gold", 144));
@@ -938,6 +1105,7 @@ public class IHLMod implements IFuelHandler{
 		Crucible.addRecipe("dustGold", IHLUtils.getFluidStackWithSize("molten.gold", 144));
 		Crucible.addRecipe("dustSalt", IHLUtils.getFluidStackWithSize("molten.sodiumchloride", 144));
 		Crucible.addRecipe("dustGlass", IHLUtils.getFluidStackWithSize("molten.glass", 144));
+		Crucible.addRecipe("dustRockSalt", IHLUtils.getFluidStackWithSize("molten.potassiumchloride", 144));
 		PaperMachineTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("pulp.cellulose", 1500), new ItemStack(Items.paper));
 		PaperMachineTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("pulp.mica", 500), IHLUtils.getThisModItemStack("foilMica"));
 		FractionatorBottomTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("oil", 100), IHLUtils.getFluidStackWithSize("fueloil", 60), IHLUtils.getFluidStackWithSize("fuel", 40));
@@ -945,8 +1113,9 @@ public class IHLMod implements IFuelHandler{
 		if(FluidRegistry.isFluidRegistered("liquid_medium_oil"))FractionatorBottomTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("liquid_medium_oil", 100), IHLUtils.getFluidStackWithSize("fueloil", 60), IHLUtils.getFluidStackWithSize("fuel", 40));
 		if(FluidRegistry.isFluidRegistered("liquid_heavy_oil"))FractionatorBottomTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("liquid_heavy_oil", 100), IHLUtils.getFluidStackWithSize("fueloil", 70), IHLUtils.getFluidStackWithSize("fuel", 30));
 		if(FluidRegistry.isFluidRegistered("liquid_extra_heavy_oil"))FractionatorBottomTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("liquid_extra_heavy_oil", 100), IHLUtils.getFluidStackWithSize("fueloil", 80), IHLUtils.getFluidStackWithSize("fuel", 20));
-		ElectrolysisBathTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.sodiumchloride", 1000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustBischofite")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.magnesium", 6)}),null,200));
-		ElectrolysisBathTileEntity.addRecipe(new UniversalRecipeInput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.sodiumchloride", 1000)}), Arrays.asList(new ItemStack[] {IHLUtils.getOreDictItemStack("dustLithiumChloride")})), new UniversalRecipeOutput(Arrays.asList(new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.lithium", 72)}),null,200));
+		ElectrolysisBathTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.sodiumchloride", 1000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustBischofite")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.magnesium", 6)}),null,200));
+		ElectrolysisBathTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.sodiumchloride", 1000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustLithiumChloride")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.lithium", 72)}),null,200));
+		ElectrolysisBathTileEntity.addRecipe(new UniversalRecipeInput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.potassiumchloride", 1000)}), (new ItemStack[] {IHLUtils.getOreDictItemStack("dustRockSalt")})), new UniversalRecipeOutput((new FluidStack[] {IHLUtils.getFluidStackWithSize("molten.potassium", 72)}),null,200));
 		// 1 mb of molten metal per 1 m of cable with transverse section equals to 1.5 sq. mm.
 		fluidDictionary.registerFluidStack("water", IHLUtils.getFluidStackWithSize("water", 1000));
 		fluidDictionary.registerFluidStack("water", IHLUtils.getFluidStackWithSize("ic2distilledwater", 1000));
@@ -976,7 +1145,7 @@ public class IHLMod implements IFuelHandler{
 		{
 			NEIModContainer.plugins.add(new NEIIHLConfig());
 		}
-		IHLMod.config.CheckLists();
+		IHLMod.config.checkLists();
 		IHLMod.proxy.initBlockRenderer();
 		IHLMod.log.info("IHL loaded.");
 	}
@@ -987,6 +1156,7 @@ public class IHLMod implements IFuelHandler{
 		EntityRegistry.registerModEntity(CollectorHeavyEntity.class, "CollectorHeavyEntity", 1, this, 80, 3, true);
 		EntityRegistry.registerModEntity(PowerCableNodeEntity.class, "PowerCableNodeEntity", 2, this, 80, 3, true);
 		EntityRegistry.registerModEntity(NodeEntity.class, "NodeEntity", 3, this, 80, 3, true);
+		EntityRegistry.registerModEntity(IHLEntityFallingPile.class, "IHLEntityFallingPile", 4, this, 80, 3, true);
 		EntityRegistry.registerGlobalEntityID(LostHeadEntity.class, "LostHead", EntityRegistry.findGlobalUniqueEntityId(), 0x0033FF, 0x00CCFF);
 		if(IHLMod.config.enableWailers)
 		{
@@ -1023,33 +1193,19 @@ public class IHLMod implements IFuelHandler{
 		return 0;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void loadGT5Recipes()
 	{
-        ItemStack odi = ItemList.Circuit_Basic.get(1L, new Object[] {null});
-        ItemStack crystal = ItemList.Circuit_Primitive.get(1L, new Object[] {null});
         ItemStack advBattery = ItemList.Hull_MV.get(1L, new Object[] {null});
-        ItemStack chargedReBattery = ItemList.Hull_LV.get(1L, new Object[] {null});
-        ItemStack gypsumOreList = GT_OreDictUnificator.get(OrePrefixes.cableGt01, Materials.Tin, 1L);
         ItemStack oreListIterator = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Gold, 1L);
         ItemStack sc = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Silver, 1L);
         ItemStack ec = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Electrum, 1L);
         ItemStack lp = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Lazurite, 1L);
         ItemStack sp = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1L);
-        ItemStack sr = GT_OreDictUnificator.get(OrePrefixes.rod, Materials.Steel, 1L);
-        ItemStack ip = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 1L);
-        ItemStack ir = GT_OreDictUnificator.get(OrePrefixes.rod, Materials.Iron, 1L);
-        ItemStack is = GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Iron, 1L);
-        ItemStack cs = GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Copper, 1L);
-        ItemStack cr = GT_OreDictUnificator.get(OrePrefixes.rod, Materials.Copper, 1L);
-        ItemStack pp = GT_OreDictUnificator.get(OrePrefixes.ingot, Materials.Plastic, 1L);
-        ItemStack copper_plate = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Copper, 1L);
-        ItemStack copper_framebox = GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Copper, 1L);
         ItemStack rotor_lv = ItemList.Rotor_LV.get(1L, new Object[] {null});
         ItemStack rotor_mv = ItemList.Rotor_MV.get(1L, new Object[] {null});
         ItemStack motor_lv = ItemList.Electric_Motor_LV.get(1L, new Object[] {null});
         ItemStack motor_mv = ItemList.Electric_Motor_MV.get(1L, new Object[] {null});
-        ItemStack piston_lv = ItemList.Electric_Piston_LV.get(1L, new Object[] {null});
-        ItemStack roboarm_lv = ItemList.Robot_Arm_LV.get(1L, new Object[] {null});
         ItemStack sensor_lv = ItemList.Sensor_LV.get(1L, new Object[] {null});
         ItemStack sensor_mv = ItemList.Sensor_MV.get(1L, new Object[] {null});
         ItemStack battery_lv_c = ItemList.Battery_RE_LV_Cadmium.get(1L, new Object[] {null});
@@ -1119,11 +1275,11 @@ public class IHLMod implements IFuelHandler{
         {
             GregTech_API.sRecipeAdder.addPulveriserRecipe(pfaacobblelimestone, new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustCalcite", 4)}, new int[] {10000}, 600, 30);
         }
-        List gypsumOreList3 = IHLUtils.getEntryListForOre("oreGypsum");
-        Iterator oreListIterator3 = gypsumOreList3.iterator();
+        List<ItemStack> gypsumOreList3 = IHLUtils.getEntryListForOre("oreGypsum");
+        Iterator<ItemStack> oreListIterator3 = gypsumOreList3.iterator();
         while (oreListIterator3.hasNext())
         {
-            GregTech_API.sRecipeAdder.addPulveriserRecipe(((ItemStack)oreListIterator3.next()), new ItemStack[] {IHLUtils.getOreDictItemStack("dustGypsum")}, new int[] {10000}, 600, 30);
+            GregTech_API.sRecipeAdder.addPulveriserRecipe((oreListIterator3.next()), new ItemStack[] {IHLUtils.getOreDictItemStack("dustGypsum")}, new int[] {10000}, 600, 30);
         }
         GregTech_API.sRecipeAdder.addPulveriserRecipe(IHLUtils.getThisModItemStack("orePotassiumFeldspar"), new ItemStack[] {IHLUtils.getOreDictItemStack("dustPotassiumFeldspar")}, new int[] {10000}, 600, 30);
         GregTech_API.sRecipeAdder.addPulveriserRecipe(IHLUtils.getThisModItemStack("oreLimestone"), new ItemStack[] {IHLUtils.getOreDictItemStackWithSize("dustCalcite", 4)}, new int[] {10000}, 600, 30);
@@ -1148,31 +1304,16 @@ public class IHLMod implements IFuelHandler{
 	
 	private void loadGT6Recipes()
 	{
-		ItemStack ac = IL.Circuit_Basic.get(1,(Object) null);
-		ItemStack cp = IL.Circuit_Primitive.get(1,(Object) null);
 		ItemStack hull_mv = Ic2Items.advancedMachine;
-		ItemStack hull_lv = Ic2Items.advancedMachine;
-		ItemStack tc = OreDictManager.INSTANCE.getStack(OP.cableGt01,MT.Tin, 1);
 		ItemStack gc = OreDictManager.INSTANCE.getStack(OP.cableGt08,MT.Gold, 1);
 		ItemStack sc = OreDictManager.INSTANCE.getStack(OP.cableGt08,MT.Silver, 1);
 		ItemStack ec = OreDictManager.INSTANCE.getStack(OP.cableGt08,MT.Electrum, 1);
 		ItemStack lp = OreDictManager.INSTANCE.getStack(OP.plate,MT.Lazurite, 1);
 		ItemStack sp = OreDictManager.INSTANCE.getStack(OP.plate,MT.Steel, 1);
-		ItemStack sr = OreDictManager.INSTANCE.getStack(OP.rod,MT.Steel, 1);
-		ItemStack ip = OreDictManager.INSTANCE.getStack(OP.plate,MT.Iron, 1);
-		ItemStack ir = OreDictManager.INSTANCE.getStack(OP.rod,MT.Iron, 1);
-		ItemStack is = OreDictManager.INSTANCE.getStack(OP.screw,MT.Iron, 1);
-		ItemStack cs = OreDictManager.INSTANCE.getStack(OP.screw,MT.Copper, 1);
-		ItemStack cr = OreDictManager.INSTANCE.getStack(OP.rod,MT.Copper, 1);
-		ItemStack pp = OreDictManager.INSTANCE.getStack(OP.ingot,MT.Plastic, 1);
-		ItemStack copper_plate = OreDictManager.INSTANCE.getStack(OP.plate,MT.Copper, 1);
-		ItemStack copper_framebox = OreDictManager.INSTANCE.getStack(OP.frameGt,MT.Copper, 1);
 		ItemStack rotor_lv = OreDictManager.INSTANCE.getStack(OP.rotor,MT.Iron, 1);
 		ItemStack rotor_mv = OreDictManager.INSTANCE.getStack(OP.rotor,MT.Aluminium, 1);
 		ItemStack motor_lv = IL.Electric_Motor_LV.get(1,(Object) null);
 		ItemStack motor_mv = IL.Electric_Motor_MV.get(1,(Object) null);
-		ItemStack piston_lv = IL.Electric_Piston_LV.get(1,(Object) null);
-		ItemStack roboarm_lv = IL.Robot_Arm_LV.get(1,(Object) null);
 		ItemStack sensor_lv = IL.Sensor_LV.get(1,(Object) null);
 		ItemStack sensor_mv = IL.Sensor_MV.get(1,(Object) null);
 		ItemStack battery_lv_c = IL.Battery_RE_LV_Cadmium.get(1,(Object) null);
@@ -1185,17 +1326,16 @@ public class IHLMod implements IFuelHandler{
 		ItemStack pump = IL.Electric_Pump_MV.get(1,(Object) null);
 		ItemStack pump_hv = IL.Electric_Pump_HV.get(1,(Object) null);
 		
-		List<IRecipeInput> dsmInputs1 = new ArrayList();
-		ItemStack gregtechfile = IHLUtils.getOtherModItemStackWithDamage("gregtech", "gt.metatool.01", 18);
-		dsmInputs1.add(new RecipeInputItemStack(gregtechfile));
-		dsmInputs1.add(new RecipeInputOreDict("dustDiamond"));
-		dsmInputs1.add(new RecipeInputOreDict("dustGunpowder"));
-		DetonationSprayingMachineTileEntity.addRecipe((new UniversalRecipeInput(null,dsmInputs1)), new UniversalRecipeOutput(null, Arrays.asList(new ItemStack[] {gregtechfile.copy()}),2));
+		IRecipeInput[] dsmInputs1 = new IRecipeInput[3];
+		ItemStack gregtechfile = IHLUtils.getOtherModItemStackWithDamage("gregtech", "gt.metatool.01", 18,1);
+		dsmInputs1[0] = new RecipeInputItemStack(gregtechfile);
+		dsmInputs1[1] = new RecipeInputOreDict("dustDiamond");
+		dsmInputs1[2] = new RecipeInputOreDict("dustGunpowder");
+		DetonationSprayingMachineTileEntity.addRecipe((new UniversalRecipeInput(null,dsmInputs1)), new UniversalRecipeOutput(null, new ItemStack[] {gregtechfile.copy()},2));
 
 		if(IHLMod.config.enableRubberTreeSack)
 		{
 			long[] chances={10000,2000,2000,1000,100,0};
-			long[] chances2={10000,10000,10000,5000,500,10000};
 			Recipe.RecipeMap.sCoagulatorRecipes.addRecipe(
 					true,
 					new ItemStack[] {},

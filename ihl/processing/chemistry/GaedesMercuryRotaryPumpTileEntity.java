@@ -18,7 +18,6 @@ public class GaedesMercuryRotaryPumpTileEntity extends	BasicElectricMotorTileEnt
 	
 	public GaedesMercuryRotaryPumpTileEntity()
 	{
-		this.isGuiScreenOpened=true;
 	}
 	
 	@Override
@@ -33,6 +32,7 @@ public class GaedesMercuryRotaryPumpTileEntity extends	BasicElectricMotorTileEnt
 		return IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump");
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List[] getInput() 
 	{

@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class DataNet {
 	
-	public Map<Integer, DataGrid> grids = new HashMap();
+	public Map<Integer, DataGrid> grids = new HashMap<Integer, DataGrid>();
 	private int griduid=0;
 	
 	public DataNet()

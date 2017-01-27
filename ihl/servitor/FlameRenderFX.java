@@ -1,6 +1,5 @@
 package ihl.servitor;
 
-import ihl.IHLModInfo;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Tessellator;
