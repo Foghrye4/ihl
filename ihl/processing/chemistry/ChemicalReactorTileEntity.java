@@ -230,7 +230,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 	    	if(te instanceof CryogenicDistillerTileEntity)
 	    	{
 	    		CryogenicDistillerTileEntity cgte = (CryogenicDistillerTileEntity)te;
-	    		cgte.fill(ForgeDirection.getOrientation(this.getFacing()), recipeInput.getFluidInputs().get(1).getInputs().get(0), true);
+	    		cgte.fill(ForgeDirection.getOrientation(this.getFacing()).getOpposite(), recipeInput.getFluidInputs().get(0).getInputs().get(0), true);
 	    	}
 		}
 		this.fluidTank.drain(recipeInput.getFluidInputs(), true);

@@ -14,12 +14,12 @@ public class RecipeInputWire implements IRecipeInput
     public final ItemStack input;
     public final int amount;
 
-    public RecipeInputWire(ItemStack aInput)
+    public RecipeInputWire(final ItemStack aInput)
     {
         this(aInput, IHLUtils.getWireLength(aInput));
     }
 
-    public RecipeInputWire(ItemStack aInput, int aAmount)
+    public RecipeInputWire(final ItemStack aInput, int aAmount)
     {
         if (aInput.getItem() == null || !(aInput.getItem() instanceof IWire))
         {
@@ -27,7 +27,7 @@ public class RecipeInputWire implements IRecipeInput
         }
         else
         {
-            this.input = aInput.copy();
+            this.input = aInput;
             this.amount = aAmount;
         }
     }

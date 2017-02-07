@@ -34,7 +34,7 @@ public class CryogenicDistillerRecipeHandler extends MachineRecipeHandler
     @Override
     public void loadTransferRects()
     {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(102-5, 32-10, 18, 18), this.getRecipeId(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(57-5, 32-10, 63, 18), this.getRecipeId(), new Object[0]));
     }
 
     @Override

@@ -41,6 +41,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLModConfig 
 {
+	public int explosionVectorSizeBits=8;
+	
 	public int handpumpTier=1;
 	public int handpumpMaxCharge=30000;
 	public int handpumpOperationEUCost=180;
@@ -168,6 +170,8 @@ public class IHLModConfig
 		enableFlexibleCablesCrafting = config.get(Configuration.CATEGORY_GENERAL, "enableFlexibleCablesCrafting", enableFlexibleCablesCrafting).getBoolean(enableFlexibleCablesCrafting);
 		mirrorReflectionRange = config.get(Configuration.CATEGORY_GENERAL, "mirrorReflectionRange", mirrorReflectionRange).getInt();
 		mirrorReflectionUpdateSpeed = config.get(Configuration.CATEGORY_GENERAL, "mirrorReflectionUpdateSpeed", mirrorReflectionUpdateSpeed).getInt();
+		
+		explosionVectorSizeBits = config.get(Configuration.CATEGORY_GENERAL, "explosionVectorSizeBits", explosionVectorSizeBits).getInt();
 		
 		Property blp = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockBlackList", bl);
 		Property wlp = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockWhiteList", wl);

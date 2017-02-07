@@ -915,7 +915,6 @@ public class IHLUtils
 		is.stackTagCompound.setBoolean("firstConnection",false);
     	is.stackTagCompound.setInteger("fullLength", length);
     	is.stackTagCompound.setInteger("length", length);
-    	is.stackTagCompound.setBoolean("firstConnection", false);
     	is.stackTagCompound.setString("material", material);
     	is.stackTagCompound.setInteger("transverseSection",transverseSection);
 		return is;

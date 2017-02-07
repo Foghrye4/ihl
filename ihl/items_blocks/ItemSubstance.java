@@ -12,10 +12,8 @@ import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid.IHLFluidType;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -274,7 +272,7 @@ public class ItemSubstance extends Item implements IItemHasMiniGUI{
 		CrushedPurifiedBauxite(126, "crushedPurifiedBauxite",true,"Al\u2082O\u2083\u00B7H\u2082O"),
 		CrushedBauxite(125, "crushedBauxite",true,"Al\u2082O\u2083�H\u2082O + SiO\u2082, Fe\u2082O\u2083"),
 		SodiumSulfide(124,"dustSodiumSulfide",true,"NaS"),
-		SodiumSulfate(123,"dustSodiumSulfate",true,"NaSO\u2084"),
+		SodiumSulfate(123,"dustSodiumSulfate",true,"Na\u2082SO\u2084"),
 		dustWood(122,"dustWood",true),
 		Kenotron(121,"valveTube1C21P"),
 		HighVolatgeCapacitor(120,"highVoltageCapacitor"),

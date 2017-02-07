@@ -92,7 +92,7 @@ public class IHLFluidTank implements IFluidTank
     {
     	if(this.fluidList.isEmpty())
     	{
-    		return null;
+    		return IHLUtils.getFluidStackWithSize("air", this.capacity);
     	}
         return this.fluidList.get(this.fluidList.size()-1);
     }

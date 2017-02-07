@@ -30,7 +30,7 @@ public class ExplosionVectorBlockV2
 {
 	public int[] startVectors = new int[1];
 	private final int[][] directionMasks = new int[8][3];
-	private final int bits = 8;
+	private final int bits = IHLMod.config.explosionVectorSizeBits;
 	private final int maxValue = (1<<bits)-1;
 	private final int maxArraySize = (1<<bits*3)-1;
 	public final int[][] vectors = new int[maxArraySize][2];

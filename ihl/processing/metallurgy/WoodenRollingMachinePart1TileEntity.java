@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot.Access;
@@ -132,9 +134,9 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	@Override
 	public void onGuiClosed(EntityPlayer arg0) {}
 	
-	public static void addRecipe(ItemStack input, ItemStack input2, ItemStack input3, ItemStack output) 
+	public static void addRecipe(RecipeInputItemStack recipeInputItemStack, RecipeInputItemStack recipeInputItemStack2, RecipeInputOreDict recipeInputOreDict, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input,input2,input3})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput[] {recipeInputItemStack,recipeInputItemStack2,recipeInputOreDict})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
 	}
 	
 
@@ -142,9 +144,9 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 		return recipeManager.getRecipes();
 	}
 
-	public static void addRecipe(ItemStack input, ItemStack input3, ItemStack output) 
+	public static void addRecipe(RecipeInputOreDict recipeInputOreDict, RecipeInputOreDict recipeInputOreDict2, ItemStack output) 
 	{
-		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] {input,input3})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput[] {recipeInputOreDict,recipeInputOreDict2})), new UniversalRecipeOutput(null,(new ItemStack[] {output}),20));
 	}
 
 	@Override
