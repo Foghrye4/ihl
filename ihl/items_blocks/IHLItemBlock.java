@@ -10,9 +10,6 @@ import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
-import ihl.collector.ChargerEjectorTileEntity;
-import ihl.processing.metallurgy.PassiveBlock;
-import ihl.tunneling_shield.DriverTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -101,25 +98,6 @@ public class IHLItemBlock extends ItemBlock{
 	                    this.field_150939_a.onBlockPlacedBy(world, x, y, z, player, par1ItemStack);
 	                    this.field_150939_a.onPostBlockPlaced(world, x, y, z, var13);
 	                    TileEntity tile=world.getTileEntity(x, y, z);
-	                    if(tile!=null && par1ItemStack.stackTagCompound!=null && par1ItemStack.stackTagCompound.hasKey("energy") && tile instanceof ChargerEjectorTileEntity && IC2.platform.isSimulating())
-	                    {
-	                    	ChargerEjectorTileEntity te=(ChargerEjectorTileEntity)tile;
-	                        double energy;
-							try
-	                        {
-	                            energy = par1ItemStack.stackTagCompound.getDouble("energy");
-	                        }
-	                        catch (Exception var3)
-	                        {
-	                            energy = par1ItemStack.stackTagCompound.getInteger("energy");
-
-	                            if (energy > Integer.MAX_VALUE)
-	                            {
-	                            	energy *= 10.0D;
-	                            }
-	                        }
-	                    	te.setStored(energy);
-	                    }
 	                    if(tile instanceof IWrenchable && IC2.platform.isSimulating())
 	                    {
 	                    	IWrenchable te=(IWrenchable)tile;
@@ -234,27 +212,6 @@ public class IHLItemBlock extends ItemBlock{
 		}
 	}
 
-    @Override
-    public boolean onItemUseFirst(ItemStack itemstack, EntityPlayer entityPlayer, World world, int x, int y, int z, int l, float hitX, float hitY, float hitZ)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof DriverTileEntity && IC2.platform.isSimulating())
-        {
-        	DriverTileEntity dte = (DriverTileEntity) tileEntity;
-        	if(itemstack.getUnlocalizedName()==PassiveBlock.Type.IHLShieldAssemblyUnitBlock.unlocalizedName)
-        	{
-				dte.installShield();
-				itemstack.stackSize--;
-        	}
-        	else if(itemstack.getUnlocalizedName()==PassiveBlock.Type.AdvancedShieldAssemblyUnitBlock.unlocalizedName)
-        	{
-				dte.installAdvancedShield();
-				itemstack.stackSize--;
-        	}
-        }
-        return false;
-    }
-    
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag)

@@ -16,8 +16,10 @@ catalystRawIronOxide.name=Iron oxide catalyst blank (not sintered)
 dustIronOxideCatalystMix.name=Mix for preparing an iron catalyst
 dustSodiumFormate.name=Sodium formate
 dustMercuryChloride.name=Mercury chloride
+dustMercuryFulminate.name=Mercury fulminate
 dustCalciumAcetate.name=Calcium acetate
 itemCellMethanol=Methanol cell
+itemCellNitroGlycerin=Nitro glycerin cell
 
 item.skull.name=Wailer remains
 item.guidebook.name=IHL manual

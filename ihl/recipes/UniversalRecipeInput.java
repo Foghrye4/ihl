@@ -132,7 +132,7 @@ public class UniversalRecipeInput {
 							multiplier = multiplier1;
 						}
 					}
-					if (IHLUtils.reduceItemStackAmountUsingIRecipeInput(is, is1)) {
+					if (IHLUtils.reduceItemStackAmountUsingIRecipeInput(is, is1, multiplier)) {
 						is1 = null;
 					}
 				}

@@ -8,21 +8,11 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import ihl.collector.ChargerEjectorModel;
-import ihl.collector.ChargerEjectorRender;
-import ihl.collector.ChargerEjectorTileEntity;
-import ihl.collector.CollectorEntity;
-import ihl.collector.CollectorHeavyEntity;
-import ihl.collector.CollectorItemRender;
-import ihl.collector.CollectorRender;
-import ihl.collector.GlassBoxRender;
-import ihl.collector.GlassBoxTileEntity;
 import ihl.crop_harvestors.BlobEntityFX;
 import ihl.crop_harvestors.BlobEntityFX.FluidType;
 import ihl.crop_harvestors.BlobRenderFX;
 import ihl.crop_harvestors.SackRender;
 import ihl.crop_harvestors.SackTileEntity;
-import ihl.datanet.DataCableItem;
 import ihl.enviroment.LightBulbModel;
 import ihl.enviroment.LightBulbRender;
 import ihl.enviroment.LightBulbTileEntity;
@@ -104,12 +94,7 @@ import ihl.servitor.FlameRenderFX;
 import ihl.servitor.LostHeadEntity;
 import ihl.servitor.LostHeadRender;
 import ihl.servitor.SkullItemRender;
-import ihl.tunneling_shield.BlockItemRender;
-import ihl.tunneling_shield.DriverEntity;
-import ihl.tunneling_shield.DriverModel;
-import ihl.tunneling_shield.DriverRender;
-import ihl.tunneling_shield.DriverRenderEntity;
-import ihl.tunneling_shield.DriverTileEntity;
+import ihl.utils.BlockItemRender;
 import ihl.utils.IHLRenderUtils;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid;
@@ -125,7 +110,6 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -164,25 +148,16 @@ public class ClientProxy extends ServerProxy {
 		this.renderUtils=new IHLRenderUtils();
 		MinecraftForge.EVENT_BUS.register(this.renderUtils);
 		
-		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.BronzeTub, MachineType.GlassBox);
+		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.BronzeTub);
 		registerBlockHandler(new RefluxCondenserBlockRender(), MachineType.RefluxCondenser);
-		registerBlockHandler(new SwitchBoxBlockRender(), MachineType.RedstoneSignalConverter);
 		registerBlockHandler(new RectifierTransformerUnitBlockRender(), MachineType.RectifierTransformerUnit);
 		registerBlockHandler(new IronWorkbenchBlockRender(), MachineType.IronWorkbench);
 		PileBlockRender pileBlockRender = new PileBlockRender();
 		RenderingRegistry.registerBlockHandler(pileBlockRender);
 		ClientRegistry.bindTileEntitySpecialRenderer(PileTileEntity.class, pileBlockRender.pileTileEntityRender);
 		
-		RenderingRegistry.registerEntityRenderingHandler(CollectorEntity.class, new CollectorRender(false));
-		MinecraftForgeClient.registerItemRenderer(IHLMod.collectorItem, new CollectorItemRender(false));
-		RenderingRegistry.registerEntityRenderingHandler(CollectorHeavyEntity.class, new CollectorRender(true));
-		MinecraftForgeClient.registerItemRenderer(IHLMod.collectorHeavyItem, new CollectorItemRender(true));
-		RenderingRegistry.registerEntityRenderingHandler(DriverEntity.class, new DriverRenderEntity());
 		RenderingRegistry.registerEntityRenderingHandler(IHLEntityFallingPile.class, new IHLEntityFallingPileRender());
-		ClientRegistry.bindTileEntitySpecialRenderer(ChargerEjectorTileEntity.class, new ChargerEjectorRender());
-		ClientRegistry.bindTileEntitySpecialRenderer(DriverTileEntity.class, new DriverRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(SackTileEntity.class, new SackRender());
-		ClientRegistry.bindTileEntitySpecialRenderer(GlassBoxTileEntity.class, new GlassBoxRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(LathePart1TileEntity.class, new UniversalTileRender(new LathePart1Model(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/coiler.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(LathePart2TileEntity.class, new UniversalTileRender(new LathePart2Model(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/coiler.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(LoomTileEntity.class, new UniversalTileRender(new LoomModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/detonationSprayingMachine.png")));
@@ -214,8 +189,6 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(SpotlightTileEntity.class, new SpotlightRender());
 		selectionBoxSpecialRendererRegistry.put(AnchorTileEntity.class, new CableHolderSelectionBoxSpecialRenderer());
 		selectionBoxSpecialRendererRegistry.put(RectifierTransformerUnitTileEntity.class, new RectifierTransformerUnitSelectionBoxSpecialRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(IHLMod.driverBlock), new BlockItemRender(new DriverModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/shield.png"), 5, 2, 0F, 0.0F));
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(IHLMod.chargerEjectorBlock), new BlockItemRender(new ChargerEjectorModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/chargerEjector.png"), 0, 6, 0.5F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("goldPrecipitatorCondenser"), new BlockItemRender(new PrecipitatorCondenserModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/porcelainBox.png"), 0, 0, 0.0F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("goldChimneyKnee"), new BlockItemRender(new GoldChimneyKneeModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/porcelainBox.png"), 0, 0, 0.0F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("cannonBronze"), new BlockItemRender(new DetonationSprayingMachineModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/detonationSprayingMachine.png"), 0, 0, 0.0F, 0.0F));
@@ -242,15 +215,12 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("spotlight"), new BlockItemRender(new SpotlightModel(), new ResourceLocation(IHLModInfo.MODID+":textures/blocks/spotlight.png"), 0, 1, 0.0F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(IHLTool.instance, new IHLToolRenderer());
 		MinecraftForgeClient.registerItemRenderer(FlexibleCableItem.instance, new FlexibleCableItemRender());
-		MinecraftForgeClient.registerItemRenderer(DataCableItem.dataCableInstance, new FlexibleCableItemRender());
 		RenderingRegistry.registerEntityRenderingHandler(LostHeadEntity.class, new LostHeadRender());
 		RenderingRegistry.registerEntityRenderingHandler(FlameEntityFX.class, new FlameRenderFX(IHLModInfo.MODID+":textures/particles/flameTongue.png"));
 		RenderingRegistry.registerEntityRenderingHandler(BlastEntityFX.class, new FlameRenderFX(IHLModInfo.MODID+":textures/particles/blast.png"));
 		RenderingRegistry.registerEntityRenderingHandler(BlobEntityFX.class, new BlobRenderFX());
 		RenderingRegistry.registerEntityRenderingHandler(ExplosionEntityFX.class, new ExplosionRenderFX(IHLModInfo.MODID+":textures/particles/explosion.png"));
 		RenderingRegistry.registerEntityRenderingHandler(NodeEntity.class, new NodeRender());
-		MinecraftForge.EVENT_BUS.register(new RenderGameOverlayEventHandler());
-		
 	}
 	
 	@Override

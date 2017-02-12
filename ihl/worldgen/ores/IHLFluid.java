@@ -134,6 +134,7 @@ public class IHLFluid extends Fluid {
 	public enum IHLFluidType {
 		// Methane("Methane","fluidAcetylene",10047, 293, 249, 373, 1150,
 		// "methane", Material.water, false, false, false, false),
+		NitroGlyceryl("NitroGlycerin", 10052, 293, 291, 583, 1595, "nitroglycerin", Material.water, true, false, true),
 		Ammonia("Ammonia", 10051, 273, 273 - 78, 273
 				- 33, 0.772F, "ammonia", new MaterialLiquid(MapColor.airColor), false, false, true),
 		Acetaldehyde("Acetaldehyde", 10050, 273, 273
@@ -178,7 +179,7 @@ public class IHLFluid extends Fluid {
 		NatriumHydroxide("NatriumHydroxideDissolvedInWater", 10021, 293, 249, 373, 1525, "solution.natriumhydroxide", Material.water, true, false, false),
 		LiquidGlass("LiquidGlass", 10020, 293, 253, 373, 2400),
 		fluidRubberTreeSap("fluidRubberTreeSap", "fluidRubberTreeSap", 10019, 293, 273, 393, 1200f, "fluidrubbertreesap", Material.water, true, true, false, false),
-		SpruceResin("SpruceResin", 10018, 293, 273, 533, 1080, "spruceresin", Material.water, true, true, true),
+		SpruceResin("SpruceResin","fluidSpruceResin", 10018, 293, 273, 533, 1080, "spruceresin", Material.water, true, true, true, false),
 		CablingColophony("CablingColophony", 10017, 363, 363, 533, 1070, "cablingcolophony", Material.water, true, false, true),
 		Glyceryl("Glyceryl", 10016, 293, 291, 583, 1261, "glyceryl", Material.water, true, false, true),
 		SeedOil("SeedOil", 10015, 293, 256, 583, 920, "seedoil", Material.water, true, false, true),

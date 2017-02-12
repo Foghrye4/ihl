@@ -28,7 +28,6 @@ import ic2.core.Ic2Items;
 import ic2.core.util.LiquidUtil;
 import ihl.IHLModInfo;
 import ihl.IHLMod;
-import ihl.i_hate_liquids.XYZ;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid;
 
@@ -79,11 +78,11 @@ public class AdvancedHandPump extends IHLHandPump {
     		{
     			fluid1 = ((BlockFluidBase)block).drain(world, blockXYZ.x, blockXYZ.y, blockXYZ.z, false);
     		}
-    		else if(block==Blocks.water||block==Blocks.flowing_water||block==IHLMod.flowing_water)
+    		else if(block==Blocks.water||block==Blocks.flowing_water)
         	{
     			fluid1 = new FluidStack(FluidRegistry.WATER, 1000);
         	}
-        	else if(block==Blocks.lava||block==Blocks.flowing_lava||block==IHLMod.flowing_lava)
+        	else if(block==Blocks.lava||block==Blocks.flowing_lava)
         	{
     			fluid1 = new FluidStack(FluidRegistry.LAVA, 1000);
         	}

@@ -2,7 +2,7 @@ package ihl.enviroment;
 import ic2.api.network.INetworkTileEntityEventListener;
 import ic2.core.IC2;
 import ihl.IHLModInfo;
-import ihl.i_hate_liquids.XYZ;
+import ihl.handpump.XYZ;
 import ihl.utils.IHLUtils;
 
 import java.util.HashSet;

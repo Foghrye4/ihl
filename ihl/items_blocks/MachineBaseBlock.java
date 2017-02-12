@@ -7,8 +7,6 @@ import ic2.core.item.tool.ItemToolCutter;
 import ihl.IHLCreativeTab;
 import ihl.IHLMod;
 import ihl.IHLModInfo;
-import ihl.collector.GlassBoxTileEntity;
-import ihl.datanet.RedstoneSignalConverterTileEntity;
 import ihl.flexible_cable.BatterySwitchUnitTileEntity;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
@@ -40,12 +38,10 @@ import ihl.processing.metallurgy.LathePart2TileEntity;
 import ihl.processing.metallurgy.MuffleFurnanceTileEntity;
 import ihl.processing.metallurgy.RollingMachinePart1TileEntity;
 import ihl.processing.metallurgy.RollingMachinePart2TileEntity;
-import ihl.processing.metallurgy.VacuumInductionMeltingFurnaceTileEntity;
 import ihl.processing.metallurgy.VulcanizationExtrudingMoldTileEntity;
 import ihl.processing.metallurgy.WireMillTileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart1TileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart2TileEntity;
-import ihl.tunneling_shield.HydrotransportPulpRegeneratorTileEntity;
 import ihl.utils.IHLUtils;
 
 import java.util.ArrayList;
@@ -151,11 +147,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 					world.setBlockToAir(x, y+1, z);
 				}
 			}
-			if(te instanceof RedstoneSignalConverterTileEntity)
-			{
-				RedstoneSignalConverterTileEntity rscte = (RedstoneSignalConverterTileEntity) te;
-				rscte.linksOrInventoryChanged=true;
-			}
 		}
 	}
 	
@@ -191,11 +182,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 						if(inventory.getStackInSlot(i)!=null)world.spawnEntityInWorld(new EntityItem(world, x, y+1, z, inventory.getStackInSlot(i)));
 					}
 				}
-				if(te instanceof RedstoneSignalConverterTileEntity)
-				{
-					RedstoneSignalConverterTileEntity rsce = (RedstoneSignalConverterTileEntity)te;
-					rsce.removeAttachedChains();
-				}
 			}
 		}
 		super.onBlockPreDestroy(world, x, y, z, meta);
@@ -220,23 +206,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 			this.setBlockBoundsForItemRender();
 			break;
-		case GlassBox:
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1F, 1.0F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 0.1F, 1.0F, 1.0F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.9F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.9F, 1.0F, 1.0F, 1.0F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBoundsForItemRender();
-			break;
-		case RedstoneSignalConverter:
-			this.setBlockBounds(0.2F, 0.2F, 0.2F, 0.8F, 0.8F, 0.8F);
-			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			break;
         default:
         	super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
         	break;
@@ -249,49 +218,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     }
     
-    @Override
-	public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
-    {
-    	int facing = 3;
-		TileEntity te = blockAccess.getTileEntity(x, y, z);
-		if(te!=null && te instanceof IWrenchable)
-		{
-			IWrenchable tebh = (IWrenchable) te;
-			facing=tebh.getFacing();
-		}
-    	switch(this.type)
-    	{
-    		case VacuumInductionMeltingFurnace:
-    			switch(facing)
-    			{
-    				case 0:
-    	    			this.setBlockBounds(-1.0F, -2.0F, 0.0F, 2.0F, 1.0F, 3.0F);
-    	    			break;
-    				case 1:
-    	    			this.setBlockBounds(-1.0F, 0.0F, 0.0F, 2.0F, 3.0F, 3.0F);
-    	    			break;
-    				case 2:
-    	    			this.setBlockBounds(-1.0F, 0.0F, -2.0F, 2.0F, 3.0F, 1.0F);
-    	    			break;
-    				case 3:
-    	    			this.setBlockBounds(-1.0F, 0.0F, 0.0F, 2.0F, 3.0F, 3.0F);
-    	    			break;
-    				case 4:
-    	    			this.setBlockBounds(-2.0F, 0.0F, -1.0F, 1.0F, 3.0F, 2.0F);
-    	    			break;
-    				case 5:
-    	    			this.setBlockBounds(0.0F, 0.0F, -1.0F, 3.0F, 3.0F, 2.0F);
-    	    			break;
-   					default:
-   		    			break;
-    			}
-    			break;
-   			default: 
-   				super.setBlockBoundsBasedOnState(blockAccess, x, y, z);
-    			break;
-    	}
-    }
-	
 	public static void init()
 	{
 		MachineType[] var1 = MachineType.values();
@@ -484,10 +410,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 		{
 			return this.steel;
 		}
-		if(this.type==MachineType.RedstoneSignalConverter)
-		{
-			return this.redstoneSignalConverterEmptySide;
-		}
 		if(this.type==MachineType.RectifierTransformerUnit)
 		{
 			switch(side)
@@ -535,10 +457,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 			case 0:
 				switch(this.type)
 				{
-				case HydrotransportPulpRegenerator:
-					return this.hydrotransportPulpRegeneratorFront;
-				case GlassBox:
-					return this.glassBoxSide;
 				case BronzeTub:
 					return this.bronzeTubSide;
 				case AchesonFurnace:
@@ -559,18 +477,12 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 					return this.textureFrontCryogenicDistiller;
 				case PaperMachine:
 					return this.textureFrontPaperMachine;
-				case VacuumInductionMeltingFurnace:
-					return this.vacuumInductionMeltingFurnaceFront;
 				default:
 					break;
 				}
 			case 1:
 				switch(this.type)
 				{
-					case HydrotransportPulpRegenerator:
-						return this.hydrotransportPulpRegeneratorBack;
-					case GlassBox:
-						return this.glassBoxSide;
 					case BronzeTub:
 						return this.bronzeTubSide;
 					case LeadOven:
@@ -587,8 +499,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 						return this.textureBackCryogenicDistiller;
 					case ChemicalReactor:
 						return this.textureBackCryogenicDistiller;
-					case VacuumInductionMeltingFurnace:
-						return this.vacuumInductionMeltingFurnaceBack;
 					default:
 						return this.textureBack;
 				}
@@ -596,10 +506,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 			case 2:
 				switch(this.type)
 				{
-					case HydrotransportPulpRegenerator:
-						return this.textureBackMachineCasing;
-					case GlassBox:
-						return this.glassBoxBottom;
 					case BronzeTub:
 						return this.bronzeTubSide;
 					case LeadOven:
@@ -616,18 +522,12 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 						return this.textureBackMachineCasing;
 					case ChemicalReactor:
 						return this.textureBackMachineCasing;
-					case VacuumInductionMeltingFurnace:
-						return this.vacuumInductionMeltingFurnaceRight;
 					default:
 						return this.textureTop;
 				}
 			case 3:
 				switch(this.type)
 				{
-				case HydrotransportPulpRegenerator:
-					return this.textureTopMachineCasing;
-				case GlassBox:
-					return this.glassBoxTop;
 				case BronzeTub:
 					return this.bronzeTubTop;
 				case AchesonFurnace:
@@ -648,18 +548,12 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 					return this.textureTopMachineCasing;
 				case ChemicalReactor:
 					return this.textureTopMachineCasing;
-				case VacuumInductionMeltingFurnace:
-					return this.vacuumInductionMeltingFurnaceRight;
 				default:
 					return this.textureTop;
 				}
 			case 4:
 				switch(this.type)
 				{
-					case HydrotransportPulpRegenerator:
-						return this.textureRightMachineCasing;
-					case GlassBox:
-						return this.glassBoxSide;
 					case BronzeTub:
 						return this.bronzeTubSide;
 					case LeadOven:
@@ -676,18 +570,12 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 						return this.textureRightMachineCasing;
 					case ChemicalReactor:
 						return this.textureRightMachineCasing;
-					case VacuumInductionMeltingFurnace:
-						return this.vacuumInductionMeltingFurnaceRight;
 					default:
 						return this.textureSide;
 				}
 			case 5:
 				switch(this.type)
 				{
-					case HydrotransportPulpRegenerator:
-						return this.textureLeftMachineCasing;
-					case GlassBox:
-						return this.glassBoxSide;
 					case BronzeTub:
 						return this.bronzeTubSide;
 					case LeadOven:
@@ -704,8 +592,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 						return this.textureLeftMachineCasing;
 					case FluidizedBedReactor:
 						return this.textureLeftMachineCasing;
-					case VacuumInductionMeltingFurnace:
-						return this.vacuumInductionMeltingFurnaceLeft;
 					default:
 						return this.textureSide;
 				}
@@ -720,18 +606,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 		return true;
     }
     
-	@Override
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
-    {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof RedstoneSignalConverterTileEntity)
-		{
-			RedstoneSignalConverterTileEntity rte = (RedstoneSignalConverterTileEntity) te;
-			return rte.isProvidingRedstonePower(side);
-		}
-		return 0;
-    }
-	
     @Override
 	public boolean canProvidePower()
     {
@@ -748,10 +622,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     {
     	
     	IronWorkbench("ironWorkbench",IronWorkbenchTileEntity.class, false, true, null),
-    	RedstoneSignalConverter("redstoneSignalConverter",RedstoneSignalConverterTileEntity.class, true, true, IHLUtils.getThisModItemStack("foilSteel")),
-    	HydrotransportPulpRegenerator("hydrotransportPulpRegenerator", HydrotransportPulpRegeneratorTileEntity.class, true, IHLUtils.getThisModItemStack("extruderSetOfMoldedPartsSteel")),
-    	VacuumInductionMeltingFurnace("vacuumInductionMeltingFurnace", VacuumInductionMeltingFurnaceTileEntity.class, true, IHLUtils.getThisModItemStack("foilSteel")),
-    	GlassBox("glassBoxBlock",GlassBoxTileEntity.class, false, true, IHLUtils.getThisModItemStack("dustGlass")),
     	ElectrolysisBath("electrolysisBath",ElectrolysisBathTileEntity.class, false, IHLUtils.getThisModItemStack("plateGraphite")),
     	RectifierTransformerUnit("rectifierTransformerUnit",RectifierTransformerUnitTileEntity.class, false, true, IHLUtils.getThisModItemStack("foilSteel")),
     	BatterySwitchUnit("batterySwitchUnit",BatterySwitchUnitTileEntity.class, false, IHLUtils.getThisModItemStack("foilSteel")),
@@ -808,7 +678,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     		itemDroppedOnBlockDestroy=itemDroppedOnBlockDestroy1;
     		
     	}
-		String unlocalizedName;
+		public String unlocalizedName;
 		Class<? extends TileEntity> teclass;
 		boolean isNormalBlock=true;
 		boolean hasSpecialBlockRenderer=false;
@@ -845,24 +715,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 		{
 			case BronzeTub:
 				return this.bronzeTubSide;
-			case GlassBox:
-				switch(flag)
-				{	
-					case 0:
-						return this.glassBoxInnerSide;
-					case 1:
-						return this.glassBoxInnerBottom;
-				}
-			case RedstoneSignalConverter:
-				switch(flag)
-				{	
-					case 0:
-						return this.redstoneSignalConverterEmptySide;
-					case 1:
-						return this.redstoneSignalConverterEmitterSide;
-					case 2:
-						return this.redstoneSignalConverterSensorSide;
-				}
 			default:
 				return this.blockIcon;
 		}

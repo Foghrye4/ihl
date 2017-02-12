@@ -33,192 +33,166 @@ import ihl.recipes.RecipeInputDie;
 import ihl.recipes.RecipeInputObjectInstance;
 import ihl.utils.IHLUtils;
 
-public class IronWorkbenchTileEntity extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, INetworkTileEntityEventListener{
+public class IronWorkbenchTileEntity extends TileEntityInventory
+		implements IHasGui, INetworkClientTileEntityEventListener, INetworkTileEntityEventListener {
 
 	public static List<IronWorkbenchRecipe> recipes = new ArrayList<IronWorkbenchRecipe>();
 	public int progress;
-	public int currentSlot=-1;
+	public int currentSlot = -1;
 	public final int maxProgress;
-    public final InvSlotTool tools;
-    public final InvSlotWorkspaceElement workspaceElements;
-    public final InvSlotProcessableIronWorkbench inputMaterial;
-    public final InvSlotOutputInProgress output;
-	public boolean isGuiScreenOpened=false;
-	private boolean startProcess=false;
-	private boolean outputDefined=false;
+	public final InvSlotTool tools;
+	public final InvSlotWorkspaceElement workspaceElements;
+	public final InvSlotProcessableIronWorkbench inputMaterial;
+	public final InvSlotOutputInProgress output;
+	public boolean isGuiScreenOpened = false;
+	private boolean startProcess = false;
+	private boolean outputDefined = false;
 	private EntityPlayer crafter;
 	public ContainerBase<?> container;
 	private Map<Integer, IronWorkbenchRecipe> slotRecipeMap = new HashMap<Integer, IronWorkbenchRecipe>();
 	private boolean firstTick = true;
-    
-    public IronWorkbenchTileEntity()
-    {
-    	this.maxProgress=80;
-    	this.workspaceElements = new InvSlotWorkspaceElement(this, "workspaceElements", 3, Access.NONE, 6);
-    	this.tools=new InvSlotTool(this, "tools", 0, Access.IO, 12);
-    	this.inputMaterial=new InvSlotProcessableIronWorkbench(this, "input", 1, Access.IO, 12);
-    	this.output=new InvSlotOutputInProgress(this, "output", 2, 18);
-    }
-    
-    public static void addRecipe(IronWorkbenchRecipe recipe)
-    {
-    	IronWorkbenchTileEntity.recipes.add(recipe);
-    }
-    
-	@Override
-	public String getInventoryName() 
-	{
-		return "ironWorkbench";
+
+	public IronWorkbenchTileEntity() {
+		this.maxProgress = 80;
+		this.workspaceElements = new InvSlotWorkspaceElement(this, "workspaceElements", 3, Access.NONE, 6);
+		this.tools = new InvSlotTool(this, "tools", 0, Access.IO, 12);
+		this.inputMaterial = new InvSlotProcessableIronWorkbench(this, "input", 1, Access.IO, 12);
+		this.output = new InvSlotOutputInProgress(this, "output", 2, 18);
 	}
-	
+
+	public static void addRecipe(IronWorkbenchRecipe recipe) {
+		IronWorkbenchTileEntity.recipes.add(recipe);
+	}
 
 	@Override
-    public ItemStack getWrenchDrop(EntityPlayer player)
-	{
+	public String getInventoryName() {
+		return "ironWorkbench";
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
 		return IHLUtils.getThisModItemStack("ironWorkbench");
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateEntityClient()
-	{
-		if(firstTick)
-		{
+	public void updateEntityClient() {
+		if (firstTick) {
 			IHLMod.proxy.requestTileEntityInitdataFromClientToServer(xCoord, yCoord, zCoord);
-			this.firstTick=false;
+			this.firstTick = false;
 		}
 	}
-	
+
 	@Override
-	public void updateEntityServer()
-	{
-		if(this.isGuiScreenOpened)
-		{
-			if(this.output.isEmpty() && !outputDefined)
-			{
+	public void updateEntityServer() {
+		if (this.isGuiScreenOpened) {
+			if (this.output.isEmpty() && !outputDefined) {
 				this.workspaceElements.reset();
-				Iterator<IronWorkbenchRecipe> iwri=IronWorkbenchTileEntity.recipes.iterator();
-				while(iwri.hasNext())
-				{
+				Iterator<IronWorkbenchRecipe> iwri = IronWorkbenchTileEntity.recipes.iterator();
+				while (iwri.hasNext()) {
 					IronWorkbenchRecipe recipe = iwri.next();
-					if(recipe.isCanBeCrafted(this.tools.getItemStackList(), this.inputMaterial.getItemStackList(), this.workspaceElements.getItemStackList()))
-					{
-						if(recipe.workspaceElements==null || recipe.workspaceElements.isEmpty() || this.workspaceElements.containsAndCanUse(recipe.workspaceElements))
-						{
+					if (recipe.isCanBeCrafted(this.tools.getItemStackList(), this.inputMaterial.getItemStackList(),
+							this.workspaceElements.getItemStackList())) {
+						if (recipe.workspaceElements == null || recipe.workspaceElements.isEmpty()
+								|| this.workspaceElements.containsAndCanUse(recipe.workspaceElements)) {
 							List<ItemStack> newOutputs = recipe.outputs;
-							for(IRecipeInput rinput:recipe.tools)
-							{
-								if(rinput instanceof RecipeInputDie)
-								{
-									newOutputs = ((RecipeInputDie)rinput).transformOutput(this.getMatchedItemStack(rinput),recipe.outputs);
+							for (IRecipeInput rinput : recipe.tools) {
+								if (rinput instanceof RecipeInputDie) {
+									newOutputs = ((RecipeInputDie) rinput)
+											.transformOutput(this.getMatchedItemStack(rinput), recipe.outputs);
 								}
 							}
-							for(IRecipeInput rinput:recipe.materials)
-							{
-								if(rinput instanceof RecipeInputDetonator)
-								{
-									newOutputs = ((RecipeInputDetonator)rinput).transformOutput(this.getMatchedItemStack(rinput),recipe.outputs);
+							for (IRecipeInput rinput : recipe.materials) {
+								if (rinput instanceof RecipeInputDetonator) {
+									newOutputs = ((RecipeInputDetonator) rinput)
+											.transformOutput(this.getMatchedItemStack(rinput), recipe.outputs);
 								}
 							}
 							int slot = this.output.put(newOutputs);
-							if(slot<0)break;
+							if (slot < 0)
+								break;
 							slotRecipeMap.put(slot, recipe);
-							this.startProcess=false;
+							this.startProcess = false;
 						}
 					}
 				}
-				for(int i=0; i<this.inputMaterial.size();i++)
-				{
+				for (int i = 0; i < this.inputMaterial.size(); i++) {
 					ItemStack stack = this.inputMaterial.get(i);
-					if(stack!=null && stack.getItem() instanceof IWire)
-					{
-						if(stack.stackTagCompound==null)
-						{
-							stack.stackTagCompound=new NBTTagCompound();
+					if (stack != null && stack.getItem() instanceof IWire) {
+						if (stack.stackTagCompound == null) {
+							stack.stackTagCompound = new NBTTagCompound();
 						}
 						int fullLength = this.getFullLengthOfSameWires(stack);
 						List<RecipeInputObjectInstance> list = this.getListOfSameWires(stack);
 						ItemStack result = stack.copy();
 						result.stackTagCompound.setInteger("length", fullLength);
 						result.stackTagCompound.setInteger("fullLength", fullLength);
-						IronWorkbenchRecipe recipe = new IronWorkbenchRecipe(null, list, Arrays.asList(new ItemStack[] {result}));
+						IronWorkbenchRecipe recipe = new IronWorkbenchRecipe(null, list,
+								Arrays.asList(new ItemStack[] { result }));
 						int slot = this.output.put(recipe.outputs);
-						if(slot<0)break;
+						if (slot < 0)
+							break;
 						slotRecipeMap.put(slot, recipe);
-						this.startProcess=false;
+						this.startProcess = false;
 						break;
 					}
 				}
-				outputDefined=true;
-			}
-			else if(!this.output.isEmpty())
-			{
+				outputDefined = true;
+			} else if (!this.output.isEmpty()) {
 				Set<Integer> crafterEmptyInventorySlotsList = getCrafterEmptyInventorySlotsList();
-					if(startProcess && crafterEmptyInventorySlotsList.size()>=this.slotRecipeMap.get(currentSlot).outputs.size())
-					{
-						if(++this.progress>=this.maxProgress)
-						{
-							IronWorkbenchRecipe crecipe = this.slotRecipeMap.get(currentSlot);
-							List<ItemStack> opts = this.output.getRecipeOutputs(currentSlot);
-							int multiplier = this.inputMaterial.getMultiplier(crecipe.materials);
-							Iterator<ItemStack> optsi = opts.iterator();
-							Iterator<Integer> emptySlotsIterator = crafterEmptyInventorySlotsList.iterator();
-							while(optsi.hasNext())
-							{
-								int slot = emptySlotsIterator.next();
-								ItemStack stack = optsi.next();
-								if(stack.getItem() instanceof IWire)
-								{
-									this.crafter.inventory.mainInventory[slot]=IHLUtils.getWireItemStackCopyWithLengthMultiplied(stack,multiplier);
-								}
-								else
-								{
-									this.crafter.inventory.mainInventory[slot]=stack.copy();
-									this.crafter.inventory.mainInventory[slot].stackSize*=multiplier;
-								}
+				if (startProcess && crafterEmptyInventorySlotsList.size() >= this.slotRecipeMap.get(currentSlot).outputs
+						.size()) {
+					if (++this.progress >= this.maxProgress) {
+						IronWorkbenchRecipe crecipe = this.slotRecipeMap.get(currentSlot);
+						List<ItemStack> opts = this.output.getRecipeOutputs(currentSlot);
+						int multiplier = this.inputMaterial.getMultiplier(crecipe.materials);
+						Iterator<ItemStack> optsi = opts.iterator();
+						Iterator<Integer> emptySlotsIterator = crafterEmptyInventorySlotsList.iterator();
+						while (optsi.hasNext()) {
+							int slot = emptySlotsIterator.next();
+							ItemStack stack = optsi.next();
+							if (stack.getItem() instanceof IWire) {
+								this.crafter.inventory.mainInventory[slot] = IHLUtils
+										.getWireItemStackCopyWithLengthMultiplied(stack, multiplier);
+							} else {
+								this.crafter.inventory.mainInventory[slot] = stack.copy();
+								this.crafter.inventory.mainInventory[slot].stackSize *= multiplier;
 							}
-          					Iterator<ItemStack> emptyContainers = this.inputMaterial.substract(crecipe.materials, multiplier).iterator();
-          					while(emptyContainers.hasNext())
-          					{
-          						if(emptySlotsIterator.hasNext())
-          						{
-    								int slot = emptySlotsIterator.next();
-    								ItemStack stack = emptyContainers.next();
-    								this.crafter.inventory.mainInventory[slot]=stack.copy();
-   									this.crafter.inventory.mainInventory[slot].stackSize*=multiplier;
-          						}
-          						else
-          						{
-    								EntityItem eistack = new EntityItem(this.worldObj, this.xCoord, this.yCoord+1, this.zCoord, emptyContainers.next());
-    								this.worldObj.spawnEntityInWorld(eistack);
-    							}
-          					}
-          					this.crafter.inventoryContainer.detectAndSendChanges();
-							this.tools.damage(crecipe.tools);
-							if(!crecipe.workspaceElements.isEmpty())
-							{
-								this.workspaceElements.use(crecipe.workspaceElements);
-							}
-							this.resetOutput();
 						}
+						Iterator<ItemStack> emptyContainers = this.inputMaterial
+								.substract(crecipe.materials, multiplier).iterator();
+						while (emptyContainers.hasNext()) {
+							if (emptySlotsIterator.hasNext()) {
+								int slot = emptySlotsIterator.next();
+								ItemStack stack = emptyContainers.next();
+								this.crafter.inventory.mainInventory[slot] = stack.copy();
+								this.crafter.inventory.mainInventory[slot].stackSize *= multiplier;
+							} else {
+								EntityItem eistack = new EntityItem(this.worldObj, this.xCoord, this.yCoord + 1,
+										this.zCoord, emptyContainers.next());
+								this.worldObj.spawnEntityInWorld(eistack);
+							}
+						}
+						this.crafter.inventoryContainer.detectAndSendChanges();
+						this.tools.damage(crecipe.tools);
+						if (!crecipe.workspaceElements.isEmpty()) {
+							this.workspaceElements.use(crecipe.workspaceElements);
+						}
+						this.resetOutput();
 					}
+				}
 			}
 		}
 	}
 
-	private ItemStack getMatchedItemStack(IRecipeInput rinput) 
-	{
-		for(ItemStack tool:this.tools.getItemStackList())
-		{
-			if(rinput.matches(tool))
-			{
+	private ItemStack getMatchedItemStack(IRecipeInput rinput) {
+		for (ItemStack tool : this.tools.getItemStackList()) {
+			if (rinput.matches(tool)) {
 				return tool;
 			}
 		}
-		for(ItemStack material:this.inputMaterial.getItemStackList())
-		{
-			if(rinput.matches(material))
-			{
+		for (ItemStack material : this.inputMaterial.getItemStackList()) {
+			if (rinput.matches(material)) {
 				return material;
 			}
 		}
@@ -226,46 +200,38 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 		return null;
 	}
 
-	private Set<Integer> getCrafterEmptyInventorySlotsList()
-	{
+	private Set<Integer> getCrafterEmptyInventorySlotsList() {
 		Set<Integer> list = new HashSet<Integer>(4);
-		if(this.crafter!=null)
-		{
-			for (int var1 = 0; var1 < this.crafter.inventory.mainInventory.length; ++var1)
-        	{
-            	if (this.crafter.inventory.mainInventory[var1] == null)
-            	{
-            		list.add(var1);
-            	}
-        	}
+		if (this.crafter != null) {
+			for (int var1 = 0; var1 < this.crafter.inventory.mainInventory.length; ++var1) {
+				if (this.crafter.inventory.mainInventory[var1] == null) {
+					list.add(var1);
+				}
+			}
 		}
 		return list;
 	}
-	
-    private List<RecipeInputObjectInstance> getListOfSameWires(ItemStack stack1) {
-    	List<RecipeInputObjectInstance> list = new ArrayList<RecipeInputObjectInstance>();
-		for(int i=0; i<this.inputMaterial.size();i++)
-		{
+
+	private List<RecipeInputObjectInstance> getListOfSameWires(ItemStack stack1) {
+		List<RecipeInputObjectInstance> list = new ArrayList<RecipeInputObjectInstance>();
+		for (int i = 0; i < this.inputMaterial.size(); i++) {
 			ItemStack stack = this.inputMaterial.get(i);
-			if(stack!=null && ((IWire)stack1.getItem()).isSameWire(stack1, stack))
-			{
+			if (stack != null && ((IWire) stack1.getItem()).isSameWire(stack1, stack)) {
 				list.add(new RecipeInputObjectInstance(stack));
 			}
 		}
-    	return list;
+		return list;
 	}
 
 	private int getFullLengthOfSameWires(ItemStack stack1) {
-    	int fullLength=0;
-		for(int i=0; i<this.inputMaterial.size();i++)
-		{
+		int fullLength = 0;
+		for (int i = 0; i < this.inputMaterial.size(); i++) {
 			ItemStack stack = this.inputMaterial.get(i);
-			if(stack!=null && ((IWire)stack1.getItem()).isSameWire(stack1, stack))
-			{
+			if (stack != null && ((IWire) stack1.getItem()).isSameWire(stack1, stack)) {
 				fullLength += IHLUtils.getWireLength(stack);
 			}
 		}
-    	return fullLength;
+		return fullLength;
 	}
 
 	@Override
@@ -277,126 +243,109 @@ public class IronWorkbenchTileEntity extends TileEntityInventory implements IHas
 	@Override
 	public ContainerBase<?> getGuiContainer(EntityPlayer player) {
 		resetOutput();
-		this.isGuiScreenOpened=true;
-		this.crafter=player;
+		this.isGuiScreenOpened = true;
+		this.crafter = player;
 		container = new IronWorkbenchContainer(player, this);
 		return container;
 	}
 
 	@Override
-	public void onGuiClosed(EntityPlayer arg0) 
-	{
-		this.isGuiScreenOpened=false;
+	public void onGuiClosed(EntityPlayer arg0) {
+		this.isGuiScreenOpened = false;
 	}
 
 	@Override
-	public void onNetworkEvent(EntityPlayer player, int event) 
-	{
-		if(event==16)
-		{
-			this.isGuiScreenOpened=false;
-			this.crafter=null;
-			this.container=null;
+	public void onNetworkEvent(EntityPlayer player, int event) {
+		if (event == 16) {
+			this.isGuiScreenOpened = false;
+			this.crafter = null;
+			this.container = null;
 			return;
 		}
-		for(int i=event;i>=0;i--)
-		{
-			if(this.slotRecipeMap.containsKey(i))
-			{
-				if(!this.slotRecipeMap.get(i).isCanBeCrafted(this.tools.getItemStackList(), this.inputMaterial.getItemStackList(), this.workspaceElements.getItemStackList()))
-				{
+		for (int i = event; i >= 0; i--) {
+			if (this.slotRecipeMap.containsKey(i)) {
+				if (!this.slotRecipeMap.get(i).isCanBeCrafted(this.tools.getItemStackList(),
+						this.inputMaterial.getItemStackList(), this.workspaceElements.getItemStackList())) {
 					resetOutput();
-				}
-				else
-				{
-					this.currentSlot=i;
-					this.startProcess=true;
+				} else {
+					this.currentSlot = i;
+					this.startProcess = true;
 					return;
 				}
 			}
 		}
 	}
 
-	public void resetOutput() 
-	{
+	public void resetOutput() {
 		this.output.clear();
 		this.slotRecipeMap.clear();
-		this.progress=0;
-		this.startProcess=false;
-		this.currentSlot=-1;
-		this.outputDefined=false;
+		this.progress = 0;
+		this.startProcess = false;
+		this.currentSlot = -1;
+		this.outputDefined = false;
 	}
-	
 
 	public void dropContents() {
-		for(int i=0;i<this.tools.size();i++)
-		{
-			if(this.tools.get(i)!=null)this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, this.xCoord, this.yCoord+1, this.zCoord, this.tools.get(i)));
+		for (int i = 0; i < this.tools.size(); i++) {
+			if (this.tools.get(i) != null)
+				this.worldObj.spawnEntityInWorld(
+						new EntityItem(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, this.tools.get(i)));
 		}
-		for(int i=0;i<this.inputMaterial.size();i++)
-		{
-			if(this.inputMaterial.get(i)!=null)this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, this.xCoord, this.yCoord+1, this.zCoord, this.inputMaterial.get(i)));
+		for (int i = 0; i < this.inputMaterial.size(); i++) {
+			if (this.inputMaterial.get(i) != null)
+				this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, this.xCoord, this.yCoord + 1,
+						this.zCoord, this.inputMaterial.get(i)));
 		}
 	}
 
 	@Override
-	public void onNetworkEvent(int event) 
-	{	
+	public void onNetworkEvent(int event) {
 
 	}
 
-    public int gaugeProgressScaled(int i)
-    {
-        return this.progress * i / this.maxProgress;
-    }
-    
-	@Override
-    public boolean shouldRenderInPass(int pass)
-    {
-        return pass==0;
-    }
+	public int gaugeProgressScaled(int i) {
+		return this.progress * i / this.maxProgress;
+	}
 
-	public static void removeRecipeByOutput(List<ItemStack> recipeOutputsItems) 
-	{
+	@Override
+	public boolean shouldRenderInPass(int pass) {
+		return pass == 0;
+	}
+
+	public static void removeRecipeByOutput(List<ItemStack> recipeOutputsItems) {
 		Iterator<IronWorkbenchRecipe> ri = recipes.iterator();
-		while(ri.hasNext())
-		{
+		while (ri.hasNext()) {
 			IronWorkbenchRecipe recipe = ri.next();
-			boolean removeEntry=false;
+			boolean removeEntry = false;
 			Iterator<ItemStack> roi = recipe.outputs.iterator();
-			while(roi.hasNext())
-			{
-				if(IHLUtils.isItemStacksIsEqual(recipeOutputsItems.get(0), roi.next(), true))
-				{
-					removeEntry=true;
+			while (roi.hasNext()) {
+				if (IHLUtils.isItemStacksIsEqual(recipeOutputsItems.get(0), roi.next(), true)) {
+					removeEntry = true;
 				}
 			}
-			if(removeEntry)
-			{
+			if (removeEntry) {
 				ri.remove();
 			}
 		}
 
 	}
 
-	public static void removeRecipeByInput(List<IRecipeInput> recipeInputsTools1,List<IRecipeInput> recipeInputsItems1,List<ItemStack> recipeInputsMachines) {
+	public static void removeRecipeByInput(List<IRecipeInput> recipeInputsTools1, List<IRecipeInput> recipeInputsItems1,
+			List<ItemStack> recipeInputsMachines) {
 		List<ItemStack> recipeInputsTools = IHLUtils.convertRecipeInputToItemStackList(recipeInputsTools1);
 		List<ItemStack> recipeInputsItems = IHLUtils.convertRecipeInputToItemStackList(recipeInputsItems1);
 		Iterator<IronWorkbenchRecipe> ri = recipes.iterator();
-		while(ri.hasNext())
-		{
+		while (ri.hasNext()) {
 			IronWorkbenchRecipe recipe = ri.next();
-			if(recipe.isCanBeCrafted(recipeInputsTools, recipeInputsItems, recipeInputsMachines))
-			{
+			if (recipe.isCanBeCrafted(recipeInputsTools, recipeInputsItems, recipeInputsMachines)) {
 				ri.remove();
 			}
 		}
 	}
-	
+
 	@Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		this.readFromNBT(pkt.func_148857_g());
-    }
+	}
 
 }

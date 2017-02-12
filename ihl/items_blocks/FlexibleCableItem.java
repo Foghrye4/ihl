@@ -28,7 +28,6 @@ import ihl.flexible_cable.AnchorTileEntity;
 import ihl.flexible_cable.NodeEntity;
 import ihl.flexible_cable.PowerCableNodeEntity;
 import ihl.interfaces.ICableHolder;
-import ihl.interfaces.IDataCableHolder;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.IWire;
@@ -100,8 +99,7 @@ public class FlexibleCableItem extends Item implements IWire {
 			world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "step.stone", 1.0F, 0.8F);
 		if (!world.isRemote && t != null
 				&& ((t instanceof IEnergyNetNode && !isDataCable)
-						|| (t instanceof IMultiPowerCableHolder && !isDataCable)
-						|| (t instanceof IDataCableHolder && isDataCable))
+						|| (t instanceof IMultiPowerCableHolder && !isDataCable))
 				&& stack.stackTagCompound.getInteger("fullLength") >= 1) {
 			double ppx, ppy, ppz;
 			ICableHolder te;
@@ -138,10 +136,15 @@ public class FlexibleCableItem extends Item implements IWire {
 					stack.stackTagCompound.setBoolean("firstConnection", false);
 					return false;
 				} else {
-					if (t2 instanceof IMultiPowerCableHolder) {
-						te = ((IMultiPowerCableHolder) t2).getEnergyNetNode(facing);
+					if (t instanceof IMultiPowerCableHolder) {
+						facing = ((IMultiPowerCableHolder) t).getSide(player);
+						if (facing == -1) {
+							return false;
+						} else {
+							te = ((IMultiPowerCableHolder) t).getEnergyNetNode(facing);
+						}
 					} else {
-						te = (ICableHolder) t2;
+						te = (ICableHolder) t;
 					}
 					te.setCableCheck(true);
 				}

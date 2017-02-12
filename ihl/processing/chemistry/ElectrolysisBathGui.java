@@ -8,7 +8,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import ihl.collector.GuiMultiTextureButton;
+
+import ihl.utils.GuiMultiTextureButton;
 import ihl.utils.IHLRenderUtils;
 
 @SideOnly(Side.CLIENT)

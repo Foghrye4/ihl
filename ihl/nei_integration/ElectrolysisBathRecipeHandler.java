@@ -1,5 +1,6 @@
 package ihl.nei_integration;
 
+import java.awt.Rectangle;
 import java.util.Map;
 
 import ihl.processing.chemistry.ElectrolysisBathGui;
@@ -64,6 +65,12 @@ public class ElectrolysisBathRecipeHandler extends MachineRecipeHandler
 	public String getOverlayIdentifier()
     {
         return "electrolysisBath";
+    }
+    
+    @Override
+    public void loadTransferRects()
+    {
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(115-5,10-10, 172-115, 72), this.getRecipeId(), new Object[0]));
     }
 
     @Override

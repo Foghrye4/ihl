@@ -1,11 +1,9 @@
 package ihl;
 
-import ic2.api.item.IC2Items;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputFluidContainer;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
-import ic2.core.util.StackUtil;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.recipes.IronWorkbenchRecipe;
 import ihl.recipes.RecipeInputDie;
@@ -30,10 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -41,7 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLModConfig 
 {
-	public int explosionVectorSizeBits=8;
+	public int explosionVectorSizeBits=7;
 	
 	public int handpumpTier=1;
 	public int handpumpMaxCharge=30000;
@@ -51,33 +47,12 @@ public class IHLModConfig
 	public int advancedHandpumpMaxCharge=1000000;
 	public int advancedHandpumpOperationEUCost=10000;
 
-	public int harvesterTier=1;
-	public int harvesterMaxEnergyStorage=110;
-	public int harvesterIdleEUCost=1;
-	public int harvesterOperationEUCost=100;
-
-	public int blowerTier=1;
-	public int blowerMaxEnergyStorage=100;
-	public int blowerEnergyConsumePerTick=5;
-	
 	public int tditTier=4;
 	public int tditMaxEnergyStorage=12000;
 	public int tditEnergyConsumePerStack=12000;
 	
-	public int ts02DefaultTier=1;
-	public int ts02DefaultMaxEnergyStorage=1000;
-	public int ts02DefaultSpeed=400;
-	public int ts02DefaultOperationEUCost=5;
-	public String[] ts02BlockBlackListString;
-	public String[] ts02BlockWhiteListString;
-	
-	public boolean enableExtendedLiquidPhysics=true;
 	public boolean enableHandpump=true;
-	public boolean enableFan=true;
-	public boolean enableTunnelingShield=true;
-	public boolean enableHarvester=true;
 	public boolean enableRubberTreeSack=true;
-	public boolean enableCollectors=true;
 	public boolean enableWailers=true;
 	public boolean enableTDIT=true;
 	
@@ -104,7 +79,6 @@ public class IHLModConfig
 	public int mirrorReflectionUpdateSpeed=128;
 	public String preventMachineBlockRegistrationName="null";
 	public boolean skipRecipeLoad=false;
-	public boolean giveIHLManualOnPlayerWakeUpEvent=true;
 	
 	public IHLModConfig(FMLPreInitializationEvent evt) throws IOException
 	{
@@ -112,17 +86,10 @@ public class IHLModConfig
 		config.load();
 		skipRecipeLoad = config.get(Configuration.CATEGORY_GENERAL, "skipRecipeLoad", skipRecipeLoad).getBoolean(skipRecipeLoad);
 		preventMachineBlockRegistrationName = config.get(Configuration.CATEGORY_GENERAL, "preventMachineBlockRegistrationName", preventMachineBlockRegistrationName).getString();
-		String[] bl = {"bedrock", "reinforcedStone", "reinforcedGlass", "reinforcedDoorBlock" , "personalSafe", "end_portal_frame"};
-		String[] wl = {"brown_mushroom_block", "cake", "fire", "lava", "water", "flowing_lava", "flowing_water", "redstone_torch", "redstone_wire", "web", "torch"};
-		enableExtendedLiquidPhysics = config.get(Configuration.CATEGORY_GENERAL, "enableExtendedLiquidPhysics", enableExtendedLiquidPhysics).getBoolean(enableExtendedLiquidPhysics);
 		enableHandpump = config.get(Configuration.CATEGORY_GENERAL, "enableHandpump", enableHandpump).getBoolean(enableHandpump);
-		enableFan = config.get(Configuration.CATEGORY_GENERAL, "enableFan", enableFan).getBoolean(enableFan);
-		enableTunnelingShield = config.get(Configuration.CATEGORY_GENERAL, "enableTunnelingShield", enableTunnelingShield).getBoolean(enableTunnelingShield);
 		enableRubberTreeSack = config.get(Configuration.CATEGORY_GENERAL, "enableRubberTreeSack", enableRubberTreeSack).getBoolean(enableRubberTreeSack);
-		enableCollectors = config.get(Configuration.CATEGORY_GENERAL, "enableCollectors", enableCollectors).getBoolean(enableCollectors);
 		enableWailers = config.get(Configuration.CATEGORY_GENERAL, "enableWailers", enableWailers).getBoolean(enableWailers);
 		enableTDIT = config.get(Configuration.CATEGORY_GENERAL, "enableTDIT", enableTDIT).getBoolean(enableTDIT);
-		giveIHLManualOnPlayerWakeUpEvent = config.get(Configuration.CATEGORY_GENERAL, "giveIHLManualOnPlayerWakeUpEvent", giveIHLManualOnPlayerWakeUpEvent).getBoolean(giveIHLManualOnPlayerWakeUpEvent);
 		
 		generateApatiteOre = config.get(Configuration.CATEGORY_GENERAL, "generateApatiteOre", generateApatiteOre).getBoolean(generateApatiteOre);
 		generateSaltpeterOre = config.get(Configuration.CATEGORY_GENERAL, "generateSaltpeterOre", generateSaltpeterOre).getBoolean(generateSaltpeterOre);
@@ -147,23 +114,10 @@ public class IHLModConfig
 		advancedHandpumpTier = config.get(Configuration.CATEGORY_GENERAL, "advancedHandpumpTier", advancedHandpumpTier).getInt();
 		advancedHandpumpMaxCharge = config.get(Configuration.CATEGORY_GENERAL, "advancedHandpumpMaxCharge", advancedHandpumpMaxCharge).getInt();
 		advancedHandpumpOperationEUCost = config.get(Configuration.CATEGORY_GENERAL, "advancedHandpumpOperationEUCost", advancedHandpumpOperationEUCost).getInt();
-		blowerTier = config.get(Configuration.CATEGORY_GENERAL, "blowerTier", blowerTier).getInt();
-		blowerMaxEnergyStorage = config.get(Configuration.CATEGORY_GENERAL, "blowerMaxEnergyStorage", blowerMaxEnergyStorage).getInt();
-		blowerEnergyConsumePerTick = config.get(Configuration.CATEGORY_GENERAL, "blowerEnergyConsumePerTick", blowerEnergyConsumePerTick).getInt();
 		
 		tditTier = config.get(Configuration.CATEGORY_GENERAL, "tditTier", tditTier).getInt();
 		tditMaxEnergyStorage = config.get(Configuration.CATEGORY_GENERAL, "tditMaxEnergyStorage", tditMaxEnergyStorage).getInt();
 		tditEnergyConsumePerStack = config.get(Configuration.CATEGORY_GENERAL, "tditEnergyConsumePerStack", tditEnergyConsumePerStack).getInt();
-		
-		ts02DefaultTier = config.get(Configuration.CATEGORY_GENERAL, "ts02DefaultTier", ts02DefaultTier).getInt();
-		ts02DefaultMaxEnergyStorage = config.get(Configuration.CATEGORY_GENERAL, "ts02DefaultMaxEnergyStorage", ts02DefaultMaxEnergyStorage).getInt();
-		ts02DefaultSpeed = config.get(Configuration.CATEGORY_GENERAL, "ts02DefaultSpeed", ts02DefaultSpeed).getInt();
-		ts02DefaultOperationEUCost = config.get(Configuration.CATEGORY_GENERAL, "ts02DefaultOperationEUCost", ts02DefaultOperationEUCost).getInt();
-
-		harvesterTier = config.get(Configuration.CATEGORY_GENERAL, "harvesterTier", harvesterTier).getInt();
-		harvesterMaxEnergyStorage = config.get(Configuration.CATEGORY_GENERAL, "harvesterMaxEnergyStorage", harvesterMaxEnergyStorage).getInt();
-		harvesterIdleEUCost = config.get(Configuration.CATEGORY_GENERAL, "harvesterIdleEUCost", harvesterIdleEUCost).getInt();
-		harvesterOperationEUCost = config.get(Configuration.CATEGORY_GENERAL, "harvesterOperationEUCost", harvesterOperationEUCost).getInt();
 			
 		enableFlexibleCablesGridPowerLossCalculations = config.get(Configuration.CATEGORY_GENERAL, "enableFlexibleCablesGridPowerLossCalculations", enableFlexibleCablesGridPowerLossCalculations).getBoolean(enableFlexibleCablesGridPowerLossCalculations);
 		additionalPowerLossesAtFrequencyGenerator = config.get(Configuration.CATEGORY_GENERAL, "additionalPowerLossesAtFrequencyGenerator", additionalPowerLossesAtFrequencyGenerator).getDouble(additionalPowerLossesAtFrequencyGenerator);
@@ -173,26 +127,6 @@ public class IHLModConfig
 		
 		explosionVectorSizeBits = config.get(Configuration.CATEGORY_GENERAL, "explosionVectorSizeBits", explosionVectorSizeBits).getInt();
 		
-		Property blp = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockBlackList", bl);
-		Property wlp = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockWhiteList", wl);
-		if(blp.isList())
-		{
-				ts02BlockBlackListString = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockBlackList", bl).getStringList();
-		}
-		else
-		{
-				blp.set(bl);
-				ts02BlockBlackListString=bl;
-		}
-		if(wlp.isList())
-		{
-				ts02BlockWhiteListString = config.get(Configuration.CATEGORY_GENERAL, "ts02BlockWhiteList", wl).getStringList();
-		}
-		else
-		{
-				wlp.set(wl);
-				ts02BlockWhiteListString=wl;
-		}
 		config.save();
 	}
 	
@@ -599,37 +533,6 @@ public class IHLModConfig
         loadRecipeConfig(is, false);
 	}
 
-	public void checkLists()
-	{
-	       for(int i6=0;i6<this.ts02BlockBlackListString.length;i6++)
-	        {
-	        	String blockName = this.ts02BlockBlackListString[i6];
-	        	Block block = Block.getBlockFromName(blockName);
-	        	if(block==null)
-	        	{
-	        		ItemStack stack = IC2Items.getItem(blockName);
-	        		if(stack!=null)
-	        		{
-	        			block = StackUtil.getBlock(stack);
-	        		}
-	        	}
-	        }
-	       
-	       for(int i7=0;i7<this.ts02BlockWhiteListString.length;i7++)
-	        {
-	        	String blockName = this.ts02BlockWhiteListString[i7];
-	        	Block block = Block.getBlockFromName(blockName);
-	        	if(block==null)
-	        	{
-	        		ItemStack stack = IC2Items.getItem(blockName);
-	        		if(stack!=null)
-	        		{
-	        			block = StackUtil.getBlock(stack);
-	        		}
-	        	}
-	        }
-	}
-	
     private static File getFile()
     {
         File folder = new File(IHLMod.proxy.getMinecraftDir(), "config");

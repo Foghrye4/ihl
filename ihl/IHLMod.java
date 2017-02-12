@@ -12,7 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.logging.log4j.Logger;
 
-import codechicken.lib.config.ConfigTag;
 import codechicken.nei.NEIModContainer;
 import gregapi.data.IL;
 import gregapi.data.MT;
@@ -33,8 +32,6 @@ import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 import ic2.core.Ic2Items;
 import ic2.core.util.StackUtil;
-import ihl.datanet.DataCableItem;
-import ihl.datanet.DataNet;
 import ihl.enviroment.LaserHitMirrorEventHandler;
 import ihl.enviroment.LightBulbBlock;
 import ihl.enviroment.MirrorBlock;
@@ -50,16 +47,12 @@ import ihl.flexible_cable.IHLENet;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.flexible_cable.NodeEntity;
 import ihl.flexible_cable.PowerCableNodeEntity;
-import ihl.guidebook.IHLGuidebookItem;
 import ihl.handpump.AdvancedHandPump;
 import ihl.handpump.IHLHandPump;
-import ihl.i_hate_liquids.BlockDynamicLiquidPlus;
-import ihl.i_hate_liquids.IHLBucketHandler;
-import ihl.i_hate_liquids.IHLEventHandler;
 import ihl.items_blocks.FiberItem;
 import ihl.items_blocks.FlexibleCableItem;
 import ihl.items_blocks.FlexiblePipeItem;
-import ihl.items_blocks.IHLItemBlock;
+import ihl.items_blocks.IHLBucketHandler;
 import ihl.items_blocks.IHLTool;
 import ihl.items_blocks.ItemSubstance;
 import ihl.items_blocks.MachineBaseBlock;
@@ -91,25 +84,17 @@ import ihl.processing.metallurgy.GasWeldingStationTileEntity;
 import ihl.processing.metallurgy.ImpregnatingMachineTileEntity;
 import ihl.processing.metallurgy.InjectionMoldBlock;
 import ihl.processing.metallurgy.MuffleFurnanceTileEntity;
-import ihl.processing.metallurgy.PassiveBlock;
 import ihl.processing.metallurgy.RollingMachinePart1TileEntity;
 import ihl.processing.metallurgy.VulcanizationExtrudingMoldTileEntity;
 import ihl.processing.metallurgy.WireMillTileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart1TileEntity;
-import ihl.collector.ChargerEjectorBlock;
-import ihl.collector.ChargerEjectorTileEntity;
-import ihl.collector.CollectorHeavyEntity;
-import ihl.collector.CollectorHeavyItem;
-import ihl.collector.CollectorItem;
-import ihl.collector.CollectorEntity;
-import ihl.crop_harvestors.BlowerBlock;
-import ihl.crop_harvestors.BlowerTileEntity;
 import ihl.crop_harvestors.RubberTreeBlock;
 import ihl.crop_harvestors.SackBlock;
 import ihl.crop_harvestors.SackTileEntity;
 import ihl.recipes.IronWorkbenchRecipe;
 import ihl.recipes.RecipeInputDetonator;
 import ihl.recipes.RecipeInputDie;
+import ihl.recipes.RecipeInputOreDictionaryList;
 import ihl.recipes.RecipeInputWire;
 import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
@@ -119,14 +104,9 @@ import ihl.servitor.LostHeadEntity;
 import ihl.trans_dimensional_item_teleporter.TDITBlock;
 import ihl.trans_dimensional_item_teleporter.TDITFrequencyTransmitter;
 import ihl.trans_dimensional_item_teleporter.TDITTileEntity;
-import ihl.tunneling_shield.DriverBlock;
-import ihl.tunneling_shield.DriverTileEntity;
-import ihl.tunneling_shield.HorizontalMiningPipe;
-import ihl.tunneling_shield.MultiBlockSpacerBlock;
 import ihl.utils.EntityDropEventHandler;
 import ihl.utils.FluidDictionary;
 import ihl.utils.IHLUtils;
-import ihl.utils.IHLXMLParser;
 import ihl.worldgen.IHLWorldGenerator;
 import ihl.worldgen.ores.BlockOre;
 import ihl.worldgen.ores.DebugScannerBlock;
@@ -171,36 +151,16 @@ public class IHLMod implements IFuelHandler {
 	// GregTech recipes.
 	public static boolean isGregTechModLoaded = false;
 	public static boolean isGT_API_Version_5 = false;
-	// This used to determine if CCC presented on server and do not use
-	// alternative water blocks if true.
-	public static boolean cccFiniteWater = false;
-	public static Block driverBlock;
-	public static Block blowerBlock;
 	public static Block cableAnchorBlock;
 	public static Block sackBlock;
 	public static Block rubberTreeBlock;
 	public static Block spruceTreeBlock;
 	public static Block evaporatorBlock;
 	public static Block electricEvaporatorBlock;
-	public static Block multiBlockSpacerBlock = (new MultiBlockSpacerBlock()).setBlockName("IHLMultiBlockSpacerBlock")
-			.setBlockTextureName(IHLModInfo.MODID + ":shieldAU").setHardness(5.0F).setResistance(5.0F);
 	public static Block boneBlock = (new BoneBlock(Material.coral)).setBlockName("boneBlock").setHardness(2.0F)
 			.setResistance(2.0F);
 	public static Item ic2_handpump;
 	public static Item ic2_advanced_handpump;
-	public static Item collectorItem = new CollectorItem().setUnlocalizedName("collector");
-	public static Item collectorHeavyItem = new CollectorHeavyItem().setUnlocalizedName("collectorHeavy");
-	public static Block horizontalMiningPipeX = (new HorizontalMiningPipe(1)).setBlockName("horizontalMiningPipeX")
-			.setBlockTextureName("ic2:machine/blockMiningPipe").setHardness(5.0F).setResistance(5.0F);
-	public static Block horizontalMiningPipeZ = (new HorizontalMiningPipe(0)).setBlockName("horizontalMiningPipeZ")
-			.setBlockTextureName("ic2:machine/blockMiningPipe").setHardness(5.0F).setResistance(5.0F);
-	public static Block flowing_water = (new BlockDynamicLiquidPlus(Material.water)).setHardness(100.0F)
-			.setLightOpacity(3).setBlockName("water").setBlockTextureName(IHLModInfo.MODID + ":metalShards");
-	public static Block flowing_lava = (new BlockDynamicLiquidPlus(Material.lava)).setHardness(100.0F)
-			.setLightLevel(1.0F).setBlockName("lava").setBlockTextureName(IHLModInfo.MODID + ":metalShards");
-	public static Block chargerEjectorBlock = (new ChargerEjectorBlock(Material.glass))
-			.setBlockName("chargerEjectorBlock").setBlockTextureName(IHLModInfo.MODID + ":ace").setHardness(2.0F)
-			.setResistance(2.0F);
 	public static Item ihlSkull = (new Item()).setUnlocalizedName("skull").setFull3D()
 			.setCreativeTab(CreativeTabs.tabMisc).setTextureName(IHLModInfo.MODID + ":skull");
 	public static Block ic2Leaves;
@@ -212,10 +172,8 @@ public class IHLMod implements IFuelHandler {
 			.setBlockTextureName(IHLModInfo.MODID + ":tditTop");
 	public static Item crucible;
 	public static Logger log;
-	public static DataNet datanet;
 	private ItemStack pfaalimestone;
 	private ItemStack pfaacobblelimestone;
-	public static IHLXMLParser xmlparser;
 	public static FluidDictionary fluidDictionary;
 	public static Map<String, Integer> moltenAmounts = new HashMap<String, Integer>();
 	public static ExplosionVectorBlockV2 explosionHandler;
@@ -223,7 +181,6 @@ public class IHLMod implements IFuelHandler {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt) throws IOException, ParserConfigurationException {
 		fluidDictionary = new FluidDictionary();
-		xmlparser = new IHLXMLParser();
 		log = evt.getModLog();
 		IHLMod.config = new IHLModConfig(evt);
 		rubberTreeBlock = (new RubberTreeBlock(RubberTreeBlock.TreeType.RUBBERTREE)).setBlockName("rubberTreeBlock")
@@ -232,7 +189,6 @@ public class IHLMod implements IFuelHandler {
 				.setBlockTextureName(IHLModInfo.MODID + ":blockSpruceFront").setHardness(2.0F).setResistance(5.0F)
 				.setCreativeTab(IHLCreativeTab.tab);
 		GameRegistry.registerFuelHandler(this);
-		PassiveBlock.init();
 		FiberItem.init();
 		FlexiblePipeItem.init();
 		InjectionMoldBlock.init();
@@ -247,10 +203,6 @@ public class IHLMod implements IFuelHandler {
 		LightBulbBlock.init();
 		MachineBaseBlock.init();// must be first
 		IHLMod.enet = new IHLENet();
-		IHLMod.datanet = new DataNet();
-		if (config.enableExtendedLiquidPhysics) {
-			MinecraftForge.EVENT_BUS.register(new IHLEventHandler());
-		}
 		MinecraftForge.EVENT_BUS.register(new EntityDropEventHandler());
 		MinecraftForge.EVENT_BUS.register(new LaserHitMirrorEventHandler());
 		MinecraftForge.EVENT_BUS.register(new IHLBucketHandler());
@@ -261,10 +213,8 @@ public class IHLMod implements IFuelHandler {
 		cableAnchorBlock = new AnchorBlock("cableAnchor");
 		List<String> info1 = new ArrayList<String>();
 		info1.add("non vulcanized rubber insulated");
-		DataCableItem.init();
 		GroundRemoverItem.init();
 		FlexibleCableItem.init();
-		IHLGuidebookItem.init();
 		ExplosiveBlock.init();
 		PileBlock.init();
 		GameRegistry.registerTileEntity(AnchorTileEntity.class, "anchorTileEntity");
@@ -274,11 +224,6 @@ public class IHLMod implements IFuelHandler {
 		ic2_handpump = new IHLHandPump().setUnlocalizedName("handpump");
 		ic2_advanced_handpump = new AdvancedHandPump().setUnlocalizedName("advanced_handpump");
 		tditft = new TDITFrequencyTransmitter().setUnlocalizedName("tditFrequencyTransmitter");
-		driverBlock = (new DriverBlock(Material.iron)).setBlockName("IHLDriverBlock")
-				.setBlockTextureName(IHLModInfo.MODID + ":driver").setHardness(5.0F).setResistance(5.0F);
-
-		blowerBlock = (new BlowerBlock(Material.iron)).setBlockName("blowerBlock")
-				.setBlockTextureName(IHLModInfo.MODID + ":shieldAU").setHardness(5.0F).setResistance(5.0F);
 
 		evaporatorBlock = (new EvaporatorBlock(Material.iron)).setBlockName("evaporatorBlock")
 				.setBlockTextureName(IHLModInfo.MODID + ":solidFuelEvaporatorFrontActive").setHardness(5.0F)
@@ -289,34 +234,11 @@ public class IHLMod implements IFuelHandler {
 		sackBlock = (new SackBlock(Material.iron)).setBlockName("sackBlock")
 				.setBlockTextureName(IHLModInfo.MODID + ":sackItem").setHardness(0.5F).setResistance(0.5F);
 
-		GameRegistry.registerBlock(horizontalMiningPipeX, "horizontalMiningPipeX");
-		GameRegistry.registerBlock(horizontalMiningPipeZ, "horizontalMiningPipeZ");
 		GameRegistry.registerBlock(boneBlock, "boneBlock");
-
-		GameRegistry.registerBlock(blowerBlock, "blowerBlock");
-		GameRegistry.registerTileEntity(BlowerTileEntity.class, "blowerTileEntity");
 
 		GameRegistry.registerItem(ic2_handpump, "Handpump");
 		GameRegistry.registerItem(ic2_advanced_handpump, ic2_advanced_handpump.getUnlocalizedName());
 		GameRegistry.registerItem(ihlSkull, "skull");
-
-		GameRegistry.registerBlock(driverBlock, IHLItemBlock.class, "IHLDriverBlock");
-		GameRegistry.registerTileEntity(DriverTileEntity.class, "IHLDriverTileEntity");
-
-		GameRegistry.registerBlock(chargerEjectorBlock, IHLItemBlock.class, "chargerEjectorBlock");
-		GameRegistry.registerTileEntity(ChargerEjectorTileEntity.class, "ChargerEjectorTileEntity");
-
-		GameRegistry.registerBlock(multiBlockSpacerBlock, "IHLShieldBlock");
-
-		GameRegistry.registerBlock(flowing_water, "flowing_water");
-		GameRegistry.registerBlock(flowing_lava, "flowing_lava");
-
-		GameRegistry.registerItem(collectorItem, "collectorItem");
-
-		GameRegistry.registerItem(collectorHeavyItem, "collectorHeavyItem");
-
-		// NetworkRegistry.INSTANCE.registerGuiHandler(this, new
-		// IHLGuiHandler());
 
 		GameRegistry.registerBlock(rubberTreeBlock, "rubberTreeBlock");
 		GameRegistry.registerBlock(spruceTreeBlock, "spruceTreeBlock");
@@ -334,6 +256,8 @@ public class IHLMod implements IFuelHandler {
 		registerEntities();
 		OreDictionary.registerOre("ingotBrick", Items.brick);
 		OreDictionary.registerOre("dustGunpowder", Items.gunpowder);
+		OreDictionary.registerOre("toolLighter", Items.flint_and_steel);
+		OreDictionary.registerOre("charcoal", new ItemStack(Items.coal,1,1));
 		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.dirt, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.grass, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("platePaper", new ItemStack(Items.paper, 1, OreDictionary.WILDCARD_VALUE));
@@ -349,19 +273,6 @@ public class IHLMod implements IFuelHandler {
 	public void postInit(FMLPostInitializationEvent evt) throws IOException {
 		ic2Leaves = StackUtil.getBlock(IC2Items.getItem("rubberLeaves"));
 		ic2Wood = StackUtil.getBlock(IC2Items.getItem("rubberWood"));
-		boolean isCodeChickenCoreLoaded = true;
-		try {
-			Class.forName("codechicken.core.asm.TweakTransformer");
-		} catch (ClassNotFoundException e) {
-			isCodeChickenCoreLoaded = false;
-		}
-		if (isCodeChickenCoreLoaded) {
-			codechicken.core.asm.CodeChickenCoreModContainer.loadConfig();
-			ConfigTag tweaks = codechicken.core.asm.CodeChickenCoreModContainer.config.getTag("tweaks");
-			cccFiniteWater = tweaks.getTag("finiteWater")
-					.setComment("If set to true two adjacent water source blocks will not generate a third.")
-					.getBooleanValue(true);
-		}
 		if (!IHLMod.config.skipRecipeLoad) {
 			if (IHLMod.config.enableRubberTreeSack) {
 				GameRegistry.addRecipe(new ItemStack(sackBlock, 1),
@@ -382,8 +293,6 @@ public class IHLMod implements IFuelHandler {
 								Character.valueOf('C'), IC2Items.getItem("copperCableItem"), Character.valueOf('A'),
 								IC2Items.getItem("advancedCircuit") });
 			}
-			GameRegistry.addRecipe(IHLUtils.getThisModItemStack("glassBoxBlock"),
-					new Object[] { "   ", "G G", "GGG", 'G', new ItemStack(Blocks.glass_pane, 1) });
 			GameRegistry.addRecipe(new ItemStack(boneBlock, 1),
 					new Object[] { "XXX", "XYX", "XXX", 'X', Items.bone, 'Y', Items.iron_ingot });
 			GameRegistry.addRecipe(new ItemStack(boneBlock, 1),
@@ -562,46 +471,6 @@ public class IHLMod implements IFuelHandler {
 			advBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
 			chargedReBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
 
-			if (IHLMod.config.enableCollectors) {
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingiron"), Character.valueOf('R'),
-								IC2Items.getItem("reBattery"), Character.valueOf('E'),
-								new ItemStack(Items.ender_pearl, 1), Character.valueOf('Z'),
-								IC2Items.getItem("advancedCircuit") });
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingiron"), Character.valueOf('R'),
-								chargedReBattery, Character.valueOf('E'), new ItemStack(Items.ender_pearl, 1),
-								Character.valueOf('Z'), IC2Items.getItem("advancedCircuit") });
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingbronze"), Character.valueOf('R'),
-								advBattery, Character.valueOf('E'), new ItemStack(Items.ender_pearl, 1),
-								Character.valueOf('Z'), IC2Items.getItem("advancedCircuit") });
-
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingiron"), Character.valueOf('R'),
-								IC2Items.getItem("reBattery"), Character.valueOf('E'),
-								IC2Items.getItem("advancedMachine"), Character.valueOf('Z'),
-								IC2Items.getItem("advancedCircuit") });
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingiron"), Character.valueOf('R'),
-								chargedReBattery, Character.valueOf('E'), IC2Items.getItem("advancedMachine"),
-								Character.valueOf('Z'), IC2Items.getItem("advancedCircuit") });
-				Recipes.advRecipes.addRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-						new Object[] { "ICI", "RER", "IZI", Character.valueOf('I'), IC2Items.getItem("ironCableItem"),
-								Character.valueOf('C'), IC2Items.getItem("casingbronze"), Character.valueOf('R'),
-								advBattery, Character.valueOf('E'), IC2Items.getItem("advancedMachine"),
-								Character.valueOf('Z'), IC2Items.getItem("advancedCircuit") });
-
-				Recipes.advRecipes.addRecipe(new ItemStack(IHLMod.chargerEjectorBlock, 1),
-						new Object[] { "PGP", "GCG", "GLG", Character.valueOf('P'), IC2Items.getItem("platelapi"),
-								Character.valueOf('G'), new ItemStack(Blocks.glass, 1), Character.valueOf('C'),
-								IC2Items.getItem("glassFiberCableItem"), Character.valueOf('L'), crystal });
-			}
 			if (IHLMod.config.enableHandpump) {
 				Recipes.advRecipes.addRecipe(((IHLHandPump) ic2_handpump).getItemStack(0),
 						new Object[] { "T  ", " C ", "  P", Character.valueOf('T'), IC2Items.getItem("treetap"),
@@ -856,13 +725,13 @@ public class IHLMod implements IFuelHandler {
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hackSawSteel"),
 							IHLUtils.getThisModItemStack("setOfFilesSteel") }),
-					Arrays.asList(new IRecipeInput[] { new RecipeInputItemStack(IHLUtils.getThisModItemStack("setOfPartsForLVElemotorSteel")),
-							new RecipeInputFluidContainer(FluidRegistry.getFluid("spruceresin"),1),
-							new RecipeInputWire("Copper", 4, 15), 
-							new RecipeInputItemStack(new ItemStack(Items.paper)),
-							new RecipeInputItemStack(new ItemStack(Blocks.planks,1,OreDictionary.WILDCARD_VALUE)),
+					Arrays.asList(new IRecipeInput[] {
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("setOfPartsForLVElemotorSteel")),
+							new RecipeInputFluidContainer(FluidRegistry.getFluid("spruceresin"), 1),
+							new RecipeInputWire("Copper", 4, 15), new RecipeInputItemStack(new ItemStack(Items.paper)),
+							new RecipeInputItemStack(new ItemStack(Blocks.planks, 1, OreDictionary.WILDCARD_VALUE)),
 							new RecipeInputItemStack(IHLUtils.getThisModItemStack("linerIronGraphiteGreased"), 2) }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("electricMotorLVLEDC")})));
+					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("electricMotorLVLEDC") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("linerIronGraphiteHot"),
 							IHLUtils.getThisModItemStack("muttonLard") }),
@@ -1186,20 +1055,22 @@ public class IHLMod implements IFuelHandler {
 							new RecipeInputFluidContainer(FluidRegistry.getFluid("mercury"), 1) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel") }),
-					Arrays.asList(new IRecipeInput[] {
-							new RecipeInputFluidContainer(FluidRegistry.getFluid("mineraloil"), 1),
-							new RecipeInputOreDict("foilMica"), new RecipeInputOreDict("foilCopper"),
-							new RecipeInputOreDict("foilSteel") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("highVoltageCapacitor") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel") }),
-					Arrays.asList(new IRecipeInput[] {
-							new RecipeInputFluidContainer(FluidRegistry.getFluid("mineraloil"), 1),
-							new RecipeInputOreDict("foilMica"), new RecipeInputOreDict("foilGold"),
-							new RecipeInputOreDict("foilSteel") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("highVoltageCapacitor") })));
+			IronWorkbenchTileEntity
+					.addRecipe(new IronWorkbenchRecipe(
+							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel") }),
+							Arrays.asList(new IRecipeInput[] {
+									new RecipeInputFluidContainer(FluidRegistry.getFluid("mineraloil"), 1),
+									new RecipeInputOreDict("foilMica"), new RecipeInputOreDict("foilCopper"),
+									new RecipeInputOreDict("foilSteel") }),
+							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("highVoltageCapacitor") })));
+			IronWorkbenchTileEntity
+					.addRecipe(new IronWorkbenchRecipe(
+							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel") }),
+							Arrays.asList(new IRecipeInput[] {
+									new RecipeInputFluidContainer(FluidRegistry.getFluid("mineraloil"), 1),
+									new RecipeInputOreDict("foilMica"), new RecipeInputOreDict("foilGold"),
+									new RecipeInputOreDict("foilSteel") }),
+							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("highVoltageCapacitor") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel"),
 							IHLUtils.getThisModItemStack("handDrillBronze"),
@@ -1339,7 +1210,7 @@ public class IHLMod implements IFuelHandler {
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("dustTin"),
 							new RecipeInputItemStack(new ItemStack(Blocks.glass_pane), 16),
-							new RecipeInputFluidContainer(FluidRegistry.getFluid("mercury"),1),
+							new RecipeInputFluidContainer(FluidRegistry.getFluid("mercury"), 1),
 							new RecipeInputFluidContainer(FluidRegistry.getFluid("turpentine"), 1),
 							new RecipeInputItemStack(IHLUtils.getThisModItemStack("fabric")) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("mirror", 16) })));
@@ -1389,36 +1260,6 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getInsulatedWire("Copper", 1, 15, "Rubber", 100),
 							IHLUtils.getOreDictItemStack("plateSteel"), new ItemStack(Blocks.glass_pane) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("spotlight") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
-					IHLUtils.getThisModItemStack("hammer"), IHLUtils.getThisModItemStack("tinSnipsSteel"),
-					IHLUtils.getThisModItemStack("drillSteelHardened"), IHLUtils.getThisModItemStack("handDrillBronze"),
-					IHLUtils.getThisModItemStack("tapM10x1SteelHardened"),
-					IHLUtils.getThisModItemStack("hackSawSteel") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getOreDictItemStackWithSize("plateSteel", 8),
-							IHLUtils.getThisModItemStackWithSize("incisorSteelDiamondCoated", 8),
-							IHLUtils.getThisModItemStackWithSize("boltM10x1Steel", 16),
-							IHLUtils.getThisModItemStackWithSize("nutM10x1Steel", 8),
-							IHLUtils.getThisModItemStackWithSize("barD10Steel", 4),
-							IHLUtils.getThisModItemStack("pipelineAccessoriesSteel"),
-							IHLUtils.getThisModItemStack("foilRubber") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("advancedShieldAssemblyUnitBlock") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel"),
-							IHLUtils.getThisModItemStack("hackSawSteel"), IHLUtils.getThisModItemStack("viseSteel"),
-							IHLUtils.getThisModItemStack("setOfFilesSteel") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getOreDictItemStackWithSize("plateSteel", 2),
-							IHLUtils.getOreDictItemStack("foilSteel"),
-							IHLUtils.getThisModItemStackWithSize("boltM10x1Steel", 8),
-							IHLUtils.getThisModItemStackWithSize("nutM10x1Steel", 8),
-							IHLUtils.getThisModItemStackWithSize("barD10Steel", 16),
-							IHLUtils.getThisModItemStack("pipelineAccessoriesSteel"),
-							IHLUtils.getThisModItemStack("extruderSetOfMoldedPartsSteel"),
-							IHLUtils.getThisModItemStackWithSize("linerIronGraphiteGreased", 4),
-							IHLUtils.getThisModItemStack("turboCompressorSetOfMoldedPartsBronze"),
-							IHLUtils.getThisModItemStack("foilRubber") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hydrotransportPulpRegenerator") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(
 					new IRecipeInput[] { RecipeInputs.cutter, RecipeInputs.saw, RecipeInputs.vise, RecipeInputs.file }),
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateSteel", 2),
@@ -1430,29 +1271,6 @@ public class IHLMod implements IFuelHandler {
 							RecipeInputs.get("foilRubber") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("paperMachine") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new IRecipeInput[] { RecipeInputs.cutter, RecipeInputs.saw, RecipeInputs.hammer,
-							RecipeInputs.file }),
-					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateSteel", 2),
-							new RecipeInputOreDict("foilSteel"), new RecipeInputItemStack(Ic2Items.elemotor),
-							RecipeInputs.get("boltM10x1Steel", 8), RecipeInputs.get("nutM10x1Steel", 8),
-							RecipeInputs.get("linerIronGraphiteGreased", 4),
-							RecipeInputs.get("turboCompressorSetOfMoldedPartsBronze", 2) }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("blowerBlock") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
-					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("dyeRed"),
-							new RecipeInputWire("Copper", 128, 15, "Rubber", 100, 10000) }),
-					Arrays.asList(
-							new ItemStack[] { IHLUtils.getThisModWireItemStackWithLength("EightPinDataCable", 16) })));
-			IronWorkbenchTileEntity
-					.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new IRecipeInput[] { RecipeInputs.cutter }),
-							Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateSteel", 2),
-									new RecipeInputOreDict("foilSteel"), new RecipeInputOreDict("foilMica"),
-									new RecipeInputOreDict("foilCopper"),
-									new RecipeInputWire("Copper", 8, 15, "Rubber", 100, 10000) }),
-							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("redstoneSignalConverter") }),
-							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("dustIronOxide", 8),
 							new RecipeInputOreDict("dustBauxite"), new RecipeInputOreDict("dustPotassiumOxide"), }),
@@ -1567,35 +1385,33 @@ public class IHLMod implements IFuelHandler {
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("sharpenedCarvingKnifeBronze") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getInsulatedWire("Steel", 1, 240, "Rubber", 100) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getUninsulatedWire("Steel", 1, 240) })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel") }),
-					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateGraphite", 2),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("highVoltageCapacitor", 3),3),
-							new RecipeInputFluidContainer(IHLFluid.IHLFluidType.MineralOil.fluid, 1),
-							new RecipeInputOreDict("dustSolderingAlloy"), new RecipeInputOreDict("foilMica"),
-							new RecipeInputWire(IHLUtils.getUninsulatedWire("Copper", 5, 15)),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("gu-81m", 4)),
-							new RecipeInputOreDict("foilCopper"),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("valveTube1C21P", 6)) }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("vacuumInductionMeltingFurnace") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
 			ItemStack detonator = IHLUtils.getItemStackWithTag("detonator", "detonator_delay", 5);
 			detonator.stackSize = 16;
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
 							new RecipeInputItemStack(new ItemStack(Items.string)),
 							new RecipeInputOreDict("dustGunpowder", 1),
-							new RecipeInputOreDict("dustPentaerythritolTetranitrate", 1),
+							new RecipeInputOreDictionaryList(new String[] {"dustPentaerythritolTetranitrate", "dustMercuryFulminate"}, 1),
 							new RecipeInputOreDict("ingotTarPitch", 1) }),
 					Arrays.asList(new ItemStack[] { detonator }), null));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
 					Arrays.asList(
 							new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
-									new RecipeInputOreDict("dustPentaerythritolTetranitrate", 8),
+									new RecipeInputOreDict("dustPentaerythritolTetranitrate", 4),
+									new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
+					Arrays.asList(
+							new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower", 1500) }),
+					null));
+			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
+					Arrays.asList(
+							new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
+									new RecipeInputOreDict("dustWood", 4),
+									new RecipeInputFluidContainer(FluidRegistry.getFluid("nitroglycerin"), 1),
 									new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
 					Arrays.asList(
 							new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower", 1000) }),
 					null));
+			
 			AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustSiliconDioxide", 2),
 					new RecipeInputOreDict("dustCoal", 4), "dustCarborundum");
 			AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustQuicklime"),
@@ -2090,6 +1906,28 @@ public class IHLMod implements IFuelHandler {
 							new RecipeOutputItemStack[] { new RecipeOutputItemStack(
 									IHLUtils.getOreDictItemStack("dustPentaerythritolTetranitrate"), 1f) },
 							200, false));
+			if(FluidRegistry.isFluidRegistered("bioethanol")){
+				ChemicalReactorTileEntity.addRecipe(
+						new UniversalRecipeInput(
+								new FluidStack[] { IHLUtils.getFluidStackWithSize("bioethanol", 450),
+										IHLUtils.getFluidStackWithSize("mercury", 144),
+										IHLUtils.getFluidStackWithSize("nitricacid", 300)},
+								null),
+						new UniversalRecipeOutput(
+								new FluidStack[] { IHLUtils.getFluidStackWithSize("acetaldehyde", 300) }, 
+								new RecipeOutputItemStack[] {
+										new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustMercuryFulminate"),1f) },
+								200));
+			}
+			ChemicalReactorTileEntity.addRecipe(
+					new UniversalRecipeInput(
+							new FluidStack[] { IHLUtils.getFluidStackWithSize("glyceryl", 100),
+									IHLUtils.getFluidStackWithSize("nitricacid", 300)},
+							null),
+					new UniversalRecipeOutput(
+							new FluidStack[] { IHLUtils.getFluidStackWithSize("nitroglycerin", 400) }, 
+							null,
+							200));
 
 			Crucible.addRecipe("ingotSteel", IHLUtils.getFluidStackWithSize("molten.steel", 144));
 			Crucible.addRecipe("ingotBronze", IHLUtils.getFluidStackWithSize("molten.bronze", 144));
@@ -2178,14 +2016,11 @@ public class IHLMod implements IFuelHandler {
 		if (Loader.isModLoaded("NotEnoughItems")) {
 			NEIModContainer.plugins.add(new NEIIHLConfig());
 		}
-		IHLMod.config.checkLists();
 		IHLMod.proxy.initBlockRenderer();
 		IHLMod.log.info("IHL loaded.");
 	}
 
 	private void registerEntities() {
-		EntityRegistry.registerModEntity(CollectorEntity.class, "CollectorEntity", 0, this, 80, 3, true);
-		EntityRegistry.registerModEntity(CollectorHeavyEntity.class, "CollectorHeavyEntity", 1, this, 80, 3, true);
 		EntityRegistry.registerModEntity(PowerCableNodeEntity.class, "PowerCableNodeEntity", 2, this, 80, 3, true);
 		EntityRegistry.registerModEntity(NodeEntity.class, "NodeEntity", 3, this, 80, 3, true);
 		EntityRegistry.registerModEntity(IHLEntityFallingPile.class, "IHLEntityFallingPile", 4, this, 80, 3, true);
@@ -2218,21 +2053,6 @@ public class IHLMod implements IFuelHandler {
 
 	@SuppressWarnings("deprecation")
 	private void loadGT5Recipes() {
-		ItemStack advBattery = ItemList.Hull_MV.get(1L, new Object[] { null });
-		ItemStack oreListIterator = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Gold, 1L);
-		ItemStack sc = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Silver, 1L);
-		ItemStack ec = GT_OreDictUnificator.get(OrePrefixes.cableGt08, Materials.Electrum, 1L);
-		ItemStack lp = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Lazurite, 1L);
-		ItemStack sp = GT_OreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1L);
-		ItemStack rotor_lv = ItemList.Rotor_LV.get(1L, new Object[] { null });
-		ItemStack rotor_mv = ItemList.Rotor_MV.get(1L, new Object[] { null });
-		ItemStack motor_lv = ItemList.Electric_Motor_LV.get(1L, new Object[] { null });
-		ItemStack motor_mv = ItemList.Electric_Motor_MV.get(1L, new Object[] { null });
-		ItemStack sensor_lv = ItemList.Sensor_LV.get(1L, new Object[] { null });
-		ItemStack sensor_mv = ItemList.Sensor_MV.get(1L, new Object[] { null });
-		ItemStack battery_lv_c = ItemList.Battery_RE_LV_Cadmium.get(1L, new Object[] { null });
-		ItemStack battery_lv_l = ItemList.Battery_RE_LV_Lithium.get(1L, new Object[] { null });
-		ItemStack battery_lv_s = ItemList.Battery_RE_LV_Sodium.get(1L, new Object[] { null });
 		ItemStack battery_mv_c = ItemList.Battery_RE_MV_Cadmium.get(1L, new Object[] { null });
 		ItemStack battery_mv_l = ItemList.Battery_RE_MV_Lithium.get(1L, new Object[] { null });
 		ItemStack battery_mv_s = ItemList.Battery_RE_MV_Sodium.get(1L, new Object[] { null });
@@ -2272,51 +2092,6 @@ public class IHLMod implements IFuelHandler {
 			gregtech.api.util.GT_ModHandler.addCraftingRecipe(
 					((AdvancedHandPump) ic2_advanced_handpump).getItemStack(0), new Object[] { "T  ", " P ", "  B", 'T',
 							OrePrefixes.pipeSmall.get(Materials.TungstenSteel), 'P', pump_hv, 'B', energy_crystal });
-		}
-
-		if (config.enableTunnelingShield) {
-			gregtech.api.util.GT_ModHandler
-					.addCraftingRecipe(IHLUtils.getThisModItemStack("IHLShieldAssemblyUnitBlock"),
-							gregtech.api.util.GT_ModHandler.RecipeBits.BUFFERED,
-							new Object[] { "RfR", "BwB", "PPP", 'R', OrePrefixes.stick.get(Materials.Steel), 'B',
-									OrePrefixes.bolt.get(Materials.Steel), 'P',
-									OrePrefixes.plate.get(Materials.Steel) });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(new ItemStack(driverBlock, 1),
-					new Object[] { "   ", " H ", " M ", 'H', advBattery, 'M', motor_mv });
-		}
-
-		if (config.enableCollectors) {
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_mv, 'S', sensor_mv, 'R',
-							OrePrefixes.stick.get(Materials.Aluminium), 'M', motor_mv, 'B', battery_mv_c });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_mv, 'S', sensor_mv, 'R',
-							OrePrefixes.stick.get(Materials.Aluminium), 'M', motor_mv, 'B', battery_mv_l });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_mv, 'S', sensor_mv, 'R',
-							OrePrefixes.stick.get(Materials.Aluminium), 'M', motor_mv, 'B', battery_mv_s });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_lv, 'S', sensor_lv, 'R',
-							OrePrefixes.stick.get(Materials.Steel), 'M', motor_lv, 'B', battery_lv_c });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_lv, 'S', sensor_lv, 'R',
-							OrePrefixes.stick.get(Materials.Steel), 'M', motor_lv, 'B', battery_lv_l });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", 'P', rotor_lv, 'S', sensor_lv, 'R',
-							OrePrefixes.stick.get(Materials.Steel), 'M', motor_lv, 'B', battery_lv_s });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(new ItemStack(chargerEjectorBlock, 1),
-					new Object[] { "PGP", "GCG", "GLG", 'P', lp, 'G', new ItemStack(Blocks.glass, 1), 'C',
-							oreListIterator, 'L', advBattery });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(new ItemStack(chargerEjectorBlock, 1), new Object[] {
-					"PGP", "GCG", "GLG", 'P', lp, 'G', new ItemStack(Blocks.glass, 1), 'C', sc, 'L', advBattery });
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(new ItemStack(chargerEjectorBlock, 1), new Object[] {
-					"PGP", "GCG", "GLG", 'P', lp, 'G', new ItemStack(Blocks.glass, 1), 'C', ec, 'L', advBattery });
-		}
-
-		if (config.enableFan) {
-			gregtech.api.util.GT_ModHandler.addCraftingRecipe(new ItemStack(blowerBlock, 1),
-					new Object[] { "PIP", "RHR", "IMI", 'P', sp, 'I', new ItemStack(Blocks.iron_bars, 1), 'R', rotor_mv,
-							'H', advBattery, 'M', motor_mv });
 		}
 
 		if (config.enableFlexibleCablesCrafting) {
@@ -2411,29 +2186,46 @@ public class IHLMod implements IFuelHandler {
 				IHLUtils.getThisModWireItemStackWithLength("pipeRubberWithSulfur", 16));
 	}
 
+	@SuppressWarnings("deprecation")
 	private void loadGT6Recipes() {
-		ItemStack hull_mv = Ic2Items.advancedMachine;
-		ItemStack gc = OreDictManager.INSTANCE.getStack(OP.cableGt08, MT.Gold, 1);
-		ItemStack sc = OreDictManager.INSTANCE.getStack(OP.cableGt08, MT.Silver, 1);
-		ItemStack ec = OreDictManager.INSTANCE.getStack(OP.cableGt08, MT.Electrum, 1);
-		ItemStack lp = OreDictManager.INSTANCE.getStack(OP.plate, MT.Lazurite, 1);
-		ItemStack sp = OreDictManager.INSTANCE.getStack(OP.plate, MT.Steel, 1);
-		ItemStack rotor_lv = OreDictManager.INSTANCE.getStack(OP.rotor, MT.Iron, 1);
-		ItemStack rotor_mv = OreDictManager.INSTANCE.getStack(OP.rotor, MT.Aluminium, 1);
-		ItemStack motor_lv = IL.Electric_Motor_LV.get(1, (Object) null);
-		ItemStack motor_mv = IL.Electric_Motor_MV.get(1, (Object) null);
-		ItemStack sensor_lv = IL.Sensor_LV.get(1, (Object) null);
-		ItemStack sensor_mv = IL.Sensor_MV.get(1, (Object) null);
-		ItemStack battery_lv_c = IL.Battery_RE_LV_Cadmium.get(1, (Object) null);
-		ItemStack battery_lv_l = IL.Battery_RE_LV_Lithium.get(1, (Object) null);
-		ItemStack battery_lv_s = IL.Battery_RE_LV_Sodium.get(1, (Object) null);
-		ItemStack battery_mv_c = IL.Battery_RE_MV_Cadmium.get(1, (Object) null);
-		ItemStack battery_mv_l = IL.Battery_RE_MV_Lithium.get(1, (Object) null);
-		ItemStack battery_mv_s = IL.Battery_RE_MV_Sodium.get(1, (Object) null);
+		ItemStack battery_mv_c = IL.Battery_RE_MV_Cadmium.get(1);
+		ItemStack battery_mv_l = IL.Battery_RE_MV_Lithium.get(1);
+		ItemStack battery_mv_s = IL.Battery_RE_MV_Sodium.get(1);
 		ItemStack energy_crystal = IC2Items.getItem("energyCrystal");
 		ItemStack pump = IL.Electric_Pump_MV.get(1, (Object) null);
 		ItemStack pump_hv = IL.Electric_Pump_HV.get(1, (Object) null);
 
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Invar_Full.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Invar_Used.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Plastic_Full.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Plastic_Used.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Platinum_Full.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Lighter_Platinum_Used.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_MatchBox_Full.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_MatchBox_Used.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Matches.get(1));
+		OreDictionary.registerOre("toolLighter", IL.Tool_Fire_Starter.get(1));
+		
+		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.ChemicalReactor.unlocalizedName), 
+				new Object[] { " R ", "PVP", " Mw",
+						Character.valueOf('R'), gregapi.data.OP.stick.dat(gregapi.data.MT.StainlessSteel),
+						Character.valueOf('V'), gregapi.data.OP.rotor.dat(gregapi.data.MT.StainlessSteel), 
+						Character.valueOf('P'), gregapi.data.OP.plateCurved.dat(gregapi.data.MT.StainlessSteel), 
+						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
+
+		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.CryogenicDistiller.unlocalizedName), 
+				new Object[] { " R ", "P P", " Mw",
+						Character.valueOf('R'), gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Copper),
+						Character.valueOf('P'), gregapi.data.OP.plateCurved.dat(gregapi.data.MT.Copper), 
+						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
+		
+		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.FluidizedBedReactor.unlocalizedName), 
+				new Object[] { "   ", "RPR", "VMw",
+						Character.valueOf('R'), gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Titanium),
+						Character.valueOf('P'), gregapi.data.OP.pipeHuge.dat(gregapi.data.MT.Titanium), 
+						Character.valueOf('V'), gregapi.data.OP.rotor.dat(gregapi.data.MT.Titanium), 
+						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
+		
 		IRecipeInput[] dsmInputs1 = new IRecipeInput[3];
 		ItemStack gregtechfile = IHLUtils.getOtherModItemStackWithDamage("gregtech", "gt.metatool.01", 18, 1);
 		dsmInputs1[0] = new RecipeInputItemStack(gregtechfile);
@@ -2451,83 +2243,27 @@ public class IHLMod implements IFuelHandler {
 		}
 
 		if (IHLMod.config.enableHandpump) {
-			GT_ModHandler.addCraftingRecipe(((IHLHandPump) ic2_handpump).getItemStack(0),
+			gregapi.util.UT.Crafting.shaped(((IHLHandPump) ic2_handpump).getItemStack(0),
 					new Object[] { "T  ", " P ", "  B", Character.valueOf('T'), OP.pipeSmall.get(MT.Steel),
 							Character.valueOf('P'), pump, Character.valueOf('B'), battery_mv_c });
-			GT_ModHandler.addCraftingRecipe(((IHLHandPump) ic2_handpump).getItemStack(0),
+			gregapi.util.UT.Crafting.shaped(((IHLHandPump) ic2_handpump).getItemStack(0),
 					new Object[] { "T  ", " P ", "  B", Character.valueOf('T'), OP.pipeSmall.get(MT.Steel),
 							Character.valueOf('P'), pump, Character.valueOf('B'), battery_mv_l });
-			GT_ModHandler.addCraftingRecipe(((IHLHandPump) ic2_handpump).getItemStack(0),
+			gregapi.util.UT.Crafting.shaped(((IHLHandPump) ic2_handpump).getItemStack(0),
 					new Object[] { "T  ", " P ", "  B", Character.valueOf('T'), OP.pipeSmall.get(MT.Steel),
 							Character.valueOf('P'), pump, Character.valueOf('B'), battery_mv_s });
-			GT_ModHandler.addCraftingRecipe(((AdvancedHandPump) ic2_advanced_handpump).getItemStack(0),
+			gregapi.util.UT.Crafting.shaped(((AdvancedHandPump) ic2_advanced_handpump).getItemStack(0),
 					new Object[] { "T  ", " P ", "  B", Character.valueOf('T'), OP.pipeSmall.get(MT.TungstenSteel),
 							Character.valueOf('P'), pump_hv, Character.valueOf('B'), energy_crystal });
 		}
-		if (IHLMod.config.enableTunnelingShield) {
-			GT_ModHandler.addCraftingRecipe(IHLUtils.getThisModItemStack("IHLShieldAssemblyUnitBlock"),
-					GT_ModHandler.RecipeBits.BUFFERED,
-					new Object[] { "RfR", "BwB", "PPP", Character.valueOf('R'), OP.stick.get(MT.Steel),
-							Character.valueOf('B'), OP.bolt.get(MT.Steel), Character.valueOf('P'),
-							OP.plate.get(MT.Steel) });
-			GT_ModHandler.addCraftingRecipe(new ItemStack(driverBlock, 1),
-					new Object[] { "   ", " H ", " M ", Character.valueOf('H'), IC2Items.getItem("machine"),
-							Character.valueOf('M'), IC2Items.getItem("elemotor") });
-		}
-		if (IHLMod.config.enableCollectors) {
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_mv, Character.valueOf('S'),
-							sensor_mv, Character.valueOf('R'), OP.stick.get(MT.Aluminium), Character.valueOf('M'),
-							motor_mv, Character.valueOf('B'), battery_mv_c });
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_mv, Character.valueOf('S'),
-							sensor_mv, Character.valueOf('R'), OP.stick.get(MT.Aluminium), Character.valueOf('M'),
-							motor_mv, Character.valueOf('B'), battery_mv_l });
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorHeavyItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_mv, Character.valueOf('S'),
-							sensor_mv, Character.valueOf('R'), OP.stick.get(MT.Aluminium), Character.valueOf('M'),
-							motor_mv, Character.valueOf('B'), battery_mv_s });
-
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_lv, Character.valueOf('S'),
-							sensor_lv, Character.valueOf('R'), OP.stick.get(MT.Steel), Character.valueOf('M'), motor_lv,
-							Character.valueOf('B'), battery_lv_c });
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_lv, Character.valueOf('S'),
-							sensor_lv, Character.valueOf('R'), OP.stick.get(MT.Steel), Character.valueOf('M'), motor_lv,
-							Character.valueOf('B'), battery_lv_l });
-			GT_ModHandler.addCraftingRecipe(((CollectorItem) collectorItem).getItemStack(0),
-					new Object[] { "PSP", "RMR", "PBP", Character.valueOf('P'), rotor_lv, Character.valueOf('S'),
-							sensor_lv, Character.valueOf('R'), OP.stick.get(MT.Steel), Character.valueOf('M'), motor_lv,
-							Character.valueOf('B'), battery_lv_s });
-
-			GT_ModHandler.addCraftingRecipe(new ItemStack(IHLMod.chargerEjectorBlock, 1),
-					new Object[] { "PGP", "GCG", "GLG", Character.valueOf('P'), lp, Character.valueOf('G'),
-							new ItemStack(Blocks.glass, 1), Character.valueOf('C'), gc, Character.valueOf('L'),
-							hull_mv });
-			GT_ModHandler.addCraftingRecipe(new ItemStack(IHLMod.chargerEjectorBlock, 1),
-					new Object[] { "PGP", "GCG", "GLG", Character.valueOf('P'), lp, Character.valueOf('G'),
-							new ItemStack(Blocks.glass, 1), Character.valueOf('C'), sc, Character.valueOf('L'),
-							hull_mv });
-			GT_ModHandler.addCraftingRecipe(new ItemStack(IHLMod.chargerEjectorBlock, 1),
-					new Object[] { "PGP", "GCG", "GLG", Character.valueOf('P'), lp, Character.valueOf('G'),
-							new ItemStack(Blocks.glass, 1), Character.valueOf('C'), ec, Character.valueOf('L'),
-							hull_mv });
-		}
-		if (IHLMod.config.enableFan) {
-			GT_ModHandler.addCraftingRecipe(new ItemStack(blowerBlock, 1),
-					new Object[] { "PIP", "RHR", "IMI", Character.valueOf('P'), sp, Character.valueOf('I'),
-							new ItemStack(Blocks.iron_bars, 1), Character.valueOf('R'), rotor_mv,
-							Character.valueOf('H'), hull_mv, Character.valueOf('M'), motor_mv });
-		}
 		if (IHLMod.config.enableFlexibleCablesCrafting) {
-			GT_ModHandler.addCraftingRecipe(IHLUtils.getThisModItemStack("ironWorkbench"),
+			gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack("ironWorkbench"),
 					new Object[] { "PPS", "RRh", "RRd", Character.valueOf('P'), OP.plate.get(MT.Iron),
 							Character.valueOf('S'), OP.screw.get(MT.Iron), Character.valueOf('R'),
 							OP.stick.get(MT.Iron) });
-			GT_ModHandler.addCraftingRecipe(IHLUtils.getThisModItemStack("setOfDies1_5sqmm"),
+			gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack("setOfDies1_5sqmm"),
 					new Object[] { "   ", "fPs", "   ", Character.valueOf('P'), OP.plate.get(MT.Steel) });
-			GT_ModHandler.addCraftingRecipe(IHLUtils.getItemStackWithTag("setOfDies1_5sqmm", "transverseSection", 240),
+			gregapi.util.UT.Crafting.shaped(IHLUtils.getItemStackWithTag("setOfDies1_5sqmm", "transverseSection", 240),
 					new Object[] { " f ", " P ", " s ", Character.valueOf('P'), OP.plate.get(MT.Steel) });
 		}
 		if (pfaalimestone != null) {
@@ -2614,6 +2350,7 @@ public class IHLMod implements IFuelHandler {
 						new FluidStack(FluidRegistry.getFluid("glue"), 240),
 						new FluidStack(FluidRegistry.getFluid("water"), 100) },
 				64, 32, 0);
+		
 		ExtruderTileEntity.addRecipe(IHLUtils.getOreDictItemStackWithSize("dustRubber", 5),
 				IHLUtils.getOreDictItemStackWithSize("dustTinySulfur", 1),
 				IHLUtils.getFluidStackWithSize("molten.rubber", 144 * 5));
@@ -2640,21 +2377,6 @@ public class IHLMod implements IFuelHandler {
 		crystal.setItemDamage(OreDictionary.WILDCARD_VALUE);
 		advBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
 		chargedReBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
-		if (IHLMod.config.enableTunnelingShield) {
-			Recipes.advRecipes.addRecipe(new ItemStack(driverBlock, 1),
-					new Object[] { "   ", " E ", " M ", Character.valueOf('E'), IC2Items.getItem("elemotor"),
-							Character.valueOf('M'), IC2Items.getItem("machine") });
-			Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStack("IHLShieldAssemblyUnitBlock"),
-					new Object[] { "OOO", "PPP", "   ", Character.valueOf('O'), IC2Items.getItem("obsidianDust"),
-							Character.valueOf('P'), IC2Items.getItem("plateiron") });
-		}
-		if (IHLMod.config.enableFan) {
-			Recipes.advRecipes.addRecipe(new ItemStack(blowerBlock, 1),
-					new Object[] { "PBP", "IEI", "PMP", Character.valueOf('P'), IC2Items.getItem("plateiron"),
-							Character.valueOf('B'), new ItemStack(Blocks.iron_bars, 1), Character.valueOf('I'),
-							new ItemStack(Items.iron_ingot, 1), Character.valueOf('E'), IC2Items.getItem("elemotor"),
-							Character.valueOf('M'), IC2Items.getItem("machine") });
-		}
 		if (IHLMod.config.enableRubberTreeSack) {
 			Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
 					new Object[] { "CCC", "CCC", " F ", Character.valueOf('C'), IC2Items.getItem("platecopper"),

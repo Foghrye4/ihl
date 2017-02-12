@@ -33,21 +33,6 @@ public class IHLToolRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType irt, ItemStack stack, Object... arg2) 
 	{
-		if(irt.equals(ItemRenderType.EQUIPPED_FIRST_PERSON))
-		{
-			if(stack.getItemDamage()==IHLTool.Type.Thermometer.itemDamage && stack.stackTagCompound!=null)
-			{
-				if(stack.stackTagCompound.getByte("showTemperature")>0)
-				{
-					RenderGameOverlayEventHandler.instance.temperature=stack.stackTagCompound.getLong("temperature");
-					RenderGameOverlayEventHandler.instance.displayCurrentGUITimer=2000;
-			    }
-				else
-				{
-					RenderGameOverlayEventHandler.instance.displayCurrentGUITimer=500;
-				}
-			}
-		}
 		IIcon icon = stack.getItem().getIcon(stack, 0);
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);
 		if(irt.equals(ItemRenderType.INVENTORY))

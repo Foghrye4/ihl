@@ -50,12 +50,12 @@ public class ExplosiveBlock extends Block implements ITileEntityProvider{
     	ItemStack result = new ItemStack(item);
     	result.stackTagCompound=new NBTTagCompound();
     	result.stackTagCompound.setInteger("explosionType", 1);//0 - IC2; 1- IHL
-    	result.stackTagCompound.setInteger("explosionPower", 100);
+    	result.stackTagCompound.setInteger("explosionPower", 31000);
 		itemList.add(result);
 		result = new ItemStack(item);
     	result.stackTagCompound=new NBTTagCompound();
     	result.stackTagCompound.setInteger("explosionType", 1);//0 - IC2; 1- IHL
-    	result.stackTagCompound.setInteger("explosionPower", 31000);//31000
+    	result.stackTagCompound.setInteger("explosionPower", Integer.MAX_VALUE);//31000
 		itemList.add(result);
 	}
 	

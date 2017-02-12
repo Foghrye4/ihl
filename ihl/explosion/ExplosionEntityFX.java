@@ -45,7 +45,7 @@ public class ExplosionEntityFX extends EntityFX {
     	this.lastTickPosZ=this.posZ=this.prevPosZ=this.center[2]=centerZ1;
     	this.radius=radius1;
 		float r2 = radius*radius;
-		int numParticles = (int)(r2*radius/32)+64;
+		int numParticles = Math.min((int)(r2*radius/32)+64,512);
 		this.startPos = new double[numParticles][3];
 		this.pos = new double[numParticles][3];
 		this.prevPos = new double[numParticles][3];
