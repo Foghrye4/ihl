@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import java.util.Map.Entry;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -26,6 +27,8 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ExplosionEvent;
 
 public class ExplosionVectorBlockV2 {
 	final Set<Integer> startVectors = new HashSet<Integer>();
@@ -39,7 +42,7 @@ public class ExplosionVectorBlockV2 {
 	private final Map<Integer, ItemStack> cachedDrops = new HashMap<Integer, ItemStack>(128);
 	final Map<Integer, WorldSavedDataBlastWave> blastWaveByDimensionId = new HashMap<Integer, WorldSavedDataBlastWave>();
 	private final Map<ExtendedBlockStorage, Entity[]> cachedEntities = new HashMap<ExtendedBlockStorage, Entity[]>();
-	public boolean isCalculating = false;
+	private final Random random = new Random();
 
 	public ExplosionVectorBlockV2() {
 		this.precalculateExplosion();
@@ -219,11 +222,13 @@ public class ExplosionVectorBlockV2 {
 					}
 				} else {
 					block.onNeighborBlockChange(world, absX, absY, absZ, block);
-					if ((++absY & 15) != 0) {
-						int array_index = (absY & 15) << 8 | (absZ & 15) << 4 | (absX & 15);
-						if (ebs.getBlockLSBArray()[array_index] == 0 && (ebs.getBlockMSBArray() == null
-								|| ebs.getBlockMSBArray().get(absX & 15, absY & 15, absZ & 15) == 0)) {
-							this.placeDrops(world, absX, absY, absZ);
+					if (random.nextInt(8) == 0) {
+						if ((++absY & 15) != 0) {
+							int array_index = (absY & 15) << 8 | (absZ & 15) << 4 | (absX & 15);
+							if (ebs.getBlockLSBArray()[array_index] == 0 && (ebs.getBlockMSBArray() == null
+									|| ebs.getBlockMSBArray().get(absX & 15, absY & 15, absZ & 15) == 0)) {
+								this.placeDrops(world, absX, absY, absZ);
+							}
 						}
 					}
 				}
@@ -275,6 +280,9 @@ public class ExplosionVectorBlockV2 {
 		Iterator<Entry<Integer, ItemStack>> di = this.cachedDrops.entrySet().iterator();
 		if (di.hasNext()) {
 			Entry<Integer, ItemStack> cde = di.next();
+			while (di.hasNext()) {
+				cde = di.next();
+			}
 			ItemStack stack = cde.getValue();
 			if (stack != null && stack.getItem() != null && stack.stackSize > 0) {
 				if (stack.stackSize <= stack.getMaxStackSize()) {
@@ -328,19 +336,27 @@ public class ExplosionVectorBlockV2 {
 					startPower, directionMask);
 		}
 		// Free and clean resources
-		this.cachedDrops.clear();
 		this.cachedEntities.clear();
 	}
 
 	public void doExplosion(World world, int sourceX, int sourceY, int sourceZ, final Set<Integer> startVectors1,
 			int startPower) {
 		IHLMod.log.info("Starting explosion server");
-		isCalculating = true;
 		Explosion explosion = new Explosion(world, null, sourceX, sourceY, sourceZ, 100f);
-		for (int[] directionMask : directionMasks) {
-			this.doExplosion(world, sourceX, sourceY, sourceZ, startVectors1, startPower, directionMask, explosion);
+		if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(world, explosion))) {
+			for (int[] directionMask : directionMasks) {
+				this.doExplosion(world, sourceX, sourceY, sourceZ, startVectors1, startPower, directionMask, explosion);
+			}
+			sendChunkUpdateToPlayersInExplosionAffectedZone(world, sourceX, sourceY, sourceZ);
+			for (Entry<Integer, ItemStack> entry : this.cachedDrops.entrySet()) {
+				IHLEntityFallingPile fallingPile = new IHLEntityFallingPile(world);
+				fallingPile.setPosition(sourceX + 0.5d, sourceY + 0.5d, sourceZ + 0.5d);
+				fallingPile.setEntityItemStack(entry.getValue());
+				fallingPile.setVelocity(random.nextDouble() - 0.5d, random.nextDouble() * 2,
+						random.nextDouble() - 0.5d);
+				world.spawnEntityInWorld(fallingPile);
+			}
+			this.cachedDrops.clear();
 		}
-		sendChunkUpdateToPlayersInExplosionAffectedZone(world, sourceX, sourceY, sourceZ);
-		isCalculating = false;
 	}
 }

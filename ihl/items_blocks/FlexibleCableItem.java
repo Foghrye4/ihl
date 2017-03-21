@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.tile.IEnergyTile;
@@ -35,13 +35,8 @@ import ihl.utils.IHLUtils;
 
 public class FlexibleCableItem extends Item implements IWire {
 
-	@SideOnly(Side.CLIENT)
-	IIcon thickCopper, thinIron, thickIron, insulatedCopperRawruber, insulatedThickCopperRawruber,
-			insulatedIronRawruber, insulatedThickIronRawruber, insulatedCopperRuber, insulatedThickCopperRuber,
-			insulatedIronRuber, insulatedThickIronRuber;
 	public static FlexibleCableItem instance;
 	public final Set<String> yellowColoredWires = new HashSet<String>(3);
-	public boolean isDataCable = false;
 
 	public FlexibleCableItem() {
 		super();
@@ -98,8 +93,8 @@ public class FlexibleCableItem extends Item implements IWire {
 		if (world.isRemote)
 			world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "step.stone", 1.0F, 0.8F);
 		if (!world.isRemote && t != null
-				&& ((t instanceof IEnergyNetNode && !isDataCable)
-						|| (t instanceof IMultiPowerCableHolder && !isDataCable))
+				&& ((t instanceof IEnergyNetNode)
+						|| (t instanceof IMultiPowerCableHolder))
 				&& stack.stackTagCompound.getInteger("fullLength") >= 1) {
 			double ppx, ppy, ppz;
 			ICableHolder te;
@@ -381,7 +376,7 @@ public class FlexibleCableItem extends Item implements IWire {
 				info.add("Insulation thickness: " + this.getInsulationThickness(itemStack) / 10f + " mm");
 				info.add("Insulation breakdown voltage: " + this.getVoltageLimit(itemStack) / 1000 + " kV");
 			}
-
+			info.add(StatCollector.translateToLocal("ihl.powerCableTooltip"));
 		}
 	}
 
@@ -399,35 +394,6 @@ public class FlexibleCableItem extends Item implements IWire {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister par1IconRegister) {
 		this.itemIcon = par1IconRegister.registerIcon(IHLModInfo.MODID + ":copperWire");
-		this.thickCopper = par1IconRegister.registerIcon(IHLModInfo.MODID + ":copperWire16x");
-		this.thinIron = par1IconRegister.registerIcon(IHLModInfo.MODID + ":steelWire");
-		this.thickIron = par1IconRegister.registerIcon(IHLModInfo.MODID + ":steelWire16x");
-		this.insulatedIronRawruber = par1IconRegister.registerIcon(IHLModInfo.MODID + ":flexibleCableSteel2");
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(ItemStack stack, int i) {
-		if (stack.stackTagCompound != null) {
-			if (this.getInsulationMaterial(stack).equals("null")) {
-				if (this.getTransverseSection(stack) >= 240) {
-					if (yellowColoredWires.contains(this.getMaterial(stack))) {
-						return this.thickCopper;
-					} else {
-						return this.thickIron;
-					}
-				} else {
-					if (yellowColoredWires.contains(this.getMaterial(stack))) {
-						return this.itemIcon;
-					} else {
-						return this.thinIron;
-					}
-				}
-			} else {
-				return this.insulatedIronRawruber;
-			}
-		}
-		return this.itemIcon;
 	}
 
 	@Override

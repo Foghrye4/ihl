@@ -175,8 +175,7 @@ public class VulcanizationExtrudingMoldTileEntity extends TileEntity
 
 	private ItemStack processWire(ItemStack wire, boolean doProcess) {
 		UniversalRecipeOutput rOutput = VulcanizationExtrudingMoldTileEntity.recipeManager.getOutputFor(
-				Arrays.asList(new FluidStack[] { this.fluidTank.getFluid() }), Arrays.asList(new ItemStack[] { wire }),
-				false, false);
+				Arrays.asList(new FluidStack[] { this.fluidTank.getFluid() }), Arrays.asList(new ItemStack[] { wire }));
 		if (rOutput == null || this.energy < this.energyConsume) {
 			return wire;
 		}

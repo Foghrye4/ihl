@@ -20,12 +20,10 @@ import ihl.processing.chemistry.FractionatorBottomTileEntity;
 import ihl.processing.chemistry.FractionatorCoverTileEntity;
 import ihl.processing.chemistry.FractionatorSectionTileEntity;
 import ihl.processing.chemistry.GaedesMercuryRotaryPumpTileEntity;
-import ihl.processing.chemistry.GoldChimneyKneeTileEntity;
 import ihl.processing.chemistry.LabElectrolyzerTileEntity;
 import ihl.processing.chemistry.LeadOvenTileEntity;
 import ihl.processing.chemistry.LoomTileEntity;
 import ihl.processing.chemistry.PaperMachineTileEntity;
-import ihl.processing.chemistry.PrecipitatorCondenserTileEntity;
 import ihl.processing.chemistry.RefluxCondenserTileEntity;
 import ihl.processing.metallurgy.AchesonFurnanceTileEntity;
 import ihl.processing.metallurgy.CoilerTileEntity;
@@ -93,28 +91,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 	textureFrontMachineCasing,
 	textureFrontPaperMachine, 
 	textureBackMachineCasing,
-	frequencyGeneratorBack,
-	frequencyGeneratorBottom,
-	frequencyGeneratorFront,
-	frequencyGeneratorLeft,
-	frequencyGeneratorRight, 
-	frequencyGeneratorTop,
 	bronzeTubTop,
 	bronzeTubSide,
-	glassBoxTop,
-	glassBoxSide,
-	glassBoxBottom,
-	glassBoxInnerSide,
-	glassBoxInnerBottom,
-	vacuumInductionMeltingFurnaceFront,
-	vacuumInductionMeltingFurnaceBack,
-	vacuumInductionMeltingFurnaceLeft,
-	vacuumInductionMeltingFurnaceRight,
-	hydrotransportPulpRegeneratorFront,
-	hydrotransportPulpRegeneratorBack,
-	redstoneSignalConverterEmitterSide,
-	redstoneSignalConverterEmptySide,
-	redstoneSignalConverterSensorSide,
 	steel,
    	redPaint,
 	greenPaint,
@@ -286,28 +264,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
 	   	this.textureBackCryogenicDistiller = par1IconRegister.registerIcon(IHLModInfo.MODID + ":cryogenicDistillerInputSide");
 	   	this.textureFrontChemicalReactor = par1IconRegister.registerIcon(IHLModInfo.MODID + ":chemicalReactorOutputSide");
 	   	this.textureFrontPaperMachine = par1IconRegister.registerIcon(IHLModInfo.MODID + ":paperMachineFront");
-	   	this.frequencyGeneratorBack = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorBack");
-	   	this.frequencyGeneratorFront = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorFront");
-	   	this.frequencyGeneratorTop = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorTop");
-	   	this.frequencyGeneratorLeft = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorLeft");
-	   	this.frequencyGeneratorRight = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorRight");
-	   	this.frequencyGeneratorBottom = par1IconRegister.registerIcon(IHLModInfo.MODID + ":frequencyGeneratorBottom");
 	   	this.bronzeTubTop = par1IconRegister.registerIcon(IHLModInfo.MODID + ":tubBronzeTop");
 	   	this.bronzeTubSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":tubBronzeSide");
-	   	this.glassBoxBottom = par1IconRegister.registerIcon(IHLModInfo.MODID + ":glassBoxBottom");
-	   	this.glassBoxInnerBottom = par1IconRegister.registerIcon(IHLModInfo.MODID + ":glassBoxInnerBottom");
-	   	this.glassBoxInnerSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":glassBoxInnerSide");
-	   	this.glassBoxSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":glassBoxSide");
-	   	this.glassBoxTop = par1IconRegister.registerIcon(IHLModInfo.MODID + ":glassBoxTop");
-	   	this.vacuumInductionMeltingFurnaceFront = par1IconRegister.registerIcon(IHLModInfo.MODID + ":vacuumInductionMeltingFurnaceFront");
-	   	this.vacuumInductionMeltingFurnaceBack = par1IconRegister.registerIcon(IHLModInfo.MODID + ":vacuumInductionMeltingFurnaceBack");
-	   	this.vacuumInductionMeltingFurnaceLeft = par1IconRegister.registerIcon(IHLModInfo.MODID + ":vacuumInductionMeltingFurnaceLeft");
-	   	this.vacuumInductionMeltingFurnaceRight = par1IconRegister.registerIcon(IHLModInfo.MODID + ":vacuumInductionMeltingFurnaceRight");
-	   	this.hydrotransportPulpRegeneratorFront = par1IconRegister.registerIcon(IHLModInfo.MODID + ":hydrotransportPulpRegeneratorFront");
-	   	this.hydrotransportPulpRegeneratorBack = par1IconRegister.registerIcon(IHLModInfo.MODID + ":hydrotransportPulpRegeneratorBack");
-	   	this.redstoneSignalConverterEmitterSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":redstoneSignalConverterEmitterSide");
-	   	this.redstoneSignalConverterEmptySide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":redstoneSignalConverterEmptySide");
-	   	this.redstoneSignalConverterSensorSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":redstoneSignalConverterSensorSide");
 	   	this.steel = par1IconRegister.registerIcon(IHLModInfo.MODID + ":steel");
 	   	this.redPaint = par1IconRegister.registerIcon(IHLModInfo.MODID + ":redPaint");
 	   	this.greenPaint = par1IconRegister.registerIcon(IHLModInfo.MODID + ":greenPaint");
@@ -647,8 +605,6 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider{
     	Coiler("coiler",CoilerTileEntity.class, false, new ItemStack(Items.stick)),
     	Lathe1("lathePart1",LathePart1TileEntity.class, false, IHLUtils.getThisModItemStack("stickSteel")),
     	Lathe2("lathePart2",LathePart2TileEntity.class, false, IHLUtils.getOreDictItemStack("plateSteel")),
-    	PrecipitatorCondenser("goldPrecipitatorCondenser",PrecipitatorCondenserTileEntity.class, false, IHLUtils.getThisModItemStack("dustPorcelain")),
-    	GoldChimneyKnee("goldChimneyKnee",GoldChimneyKneeTileEntity.class, false, IHLUtils.getThisModItemStack("dustPorcelain")),
     	LeadOven("leadOven",LeadOvenTileEntity.class, true, IHLUtils.getThisModItemStack("dustPorcelain")),
     	DetonationSprayingMachine("cannonBronze",DetonationSprayingMachineTileEntity.class, false, new ItemStack(Items.stick)),
     	BronzeTub("tubBronze",ImpregnatingMachineTileEntity.class, false, true, null),

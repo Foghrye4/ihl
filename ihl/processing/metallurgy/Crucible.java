@@ -148,7 +148,7 @@ public class Crucible extends Item implements IHandHeldInventory, IFluidContaine
     	ItemStack content = inventory.getStackInSlot(0);
     	if(content!=null)
     	{
-    		UniversalRecipeOutput routput = recipeManager.getOutputFor(null, Arrays.asList(new ItemStack [] {content}),false, false);
+    		UniversalRecipeOutput routput = recipeManager.getOutputFor(null, Arrays.asList(new ItemStack [] {content}));
     		if(routput!=null && !routput.getFluidOutputs().isEmpty())
     		{
 				FluidStack fluidStack = routput.getFluidOutputs().get(0).copy();

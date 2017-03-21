@@ -6,11 +6,10 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class AchesonFurnaceGui extends GuiContainer {
-	protected static final ResourceLocation achesonFurnaceBackground = new ResourceLocation("ihl", "textures/gui/GUIAchesonFurnance.png");
+	protected static final ResourceLocation achesonFurnaceBackground = new ResourceLocation("ihl", "textures/gui/GUIAchesonFurnace.png");
 	private MachineBaseContainer container;
 
     public AchesonFurnaceGui(MachineBaseContainer machineBaseContainer) {
-            //the container is instanciated and passed to the superclass for handling
             super(machineBaseContainer);
             this.container=machineBaseContainer;
     }
@@ -27,8 +26,8 @@ public class AchesonFurnaceGui extends GuiContainer {
             }
             if (this.container.tileEntity.progress > 0)
             {
-            	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(50),50);
-            	this.drawTexturedModalRect(64, 63, 197, 0, i1 + 1, 13);
+            	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(17),17);
+            	this.drawTexturedModalRect(70,34, 197, 0, i1 + 1, 13);
             }
             fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("ihl.gui.achesonFurnance"), 40, 12, 16768125);
     }

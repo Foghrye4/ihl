@@ -1,5 +1,7 @@
 package ihl.explosion;
 
+import java.util.ArrayList;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,6 +12,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -71,7 +74,7 @@ public class PileBlock extends Block implements ITileEntityProvider
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(IHLModInfo.MODID + ":fluidAcetyleneFlowing");
+		this.blockIcon = par1IconRegister.registerIcon(IHLModInfo.MODID + ":pileTextureSpace");
 	}
 	
 	@Override
@@ -122,4 +125,9 @@ public class PileBlock extends Block implements ITileEntityProvider
 	
 	@Override
 	public void	dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int flag){}
+
+	@Override
+	public ArrayList<ItemStack>	getDrops(World world, int x, int y, int z, int meta, int fortune) {
+		return new ArrayList<ItemStack>();
+	}
 }

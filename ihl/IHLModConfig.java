@@ -38,6 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class IHLModConfig 
 {
 	public int explosionVectorSizeBits=7;
+	public int explosionPowerBase=100;
 	
 	public int handpumpTier=1;
 	public int handpumpMaxCharge=30000;
@@ -58,7 +59,6 @@ public class IHLModConfig
 	
 	public boolean enableFlexibleCablesCrafting=true;
 	public boolean enableFlexibleCablesGridPowerLossCalculations=true;
-	public double additionalPowerLossesAtFrequencyGenerator = 0.01D;
 	public boolean generateApatiteOre=true;
 	public boolean generateSaltpeterOre=true;
 	public boolean generateLimestone=true;
@@ -75,10 +75,12 @@ public class IHLModConfig
 	public boolean generateDatolite=true;
 	public boolean generateSaltwater=true;
 	public boolean generateBischofite=true;
+	public int chanceOreWillNotBeGenerated = 100;
 	public int mirrorReflectionRange=14;
 	public int mirrorReflectionUpdateSpeed=128;
 	public String preventMachineBlockRegistrationName="null";
 	public boolean skipRecipeLoad=false;
+	public int machineryEnergyConsume=100;
 	
 	public IHLModConfig(FMLPreInitializationEvent evt) throws IOException
 	{
@@ -120,13 +122,15 @@ public class IHLModConfig
 		tditEnergyConsumePerStack = config.get(Configuration.CATEGORY_GENERAL, "tditEnergyConsumePerStack", tditEnergyConsumePerStack).getInt();
 			
 		enableFlexibleCablesGridPowerLossCalculations = config.get(Configuration.CATEGORY_GENERAL, "enableFlexibleCablesGridPowerLossCalculations", enableFlexibleCablesGridPowerLossCalculations).getBoolean(enableFlexibleCablesGridPowerLossCalculations);
-		additionalPowerLossesAtFrequencyGenerator = config.get(Configuration.CATEGORY_GENERAL, "additionalPowerLossesAtFrequencyGenerator", additionalPowerLossesAtFrequencyGenerator).getDouble(additionalPowerLossesAtFrequencyGenerator);
 		enableFlexibleCablesCrafting = config.get(Configuration.CATEGORY_GENERAL, "enableFlexibleCablesCrafting", enableFlexibleCablesCrafting).getBoolean(enableFlexibleCablesCrafting);
 		mirrorReflectionRange = config.get(Configuration.CATEGORY_GENERAL, "mirrorReflectionRange", mirrorReflectionRange).getInt();
 		mirrorReflectionUpdateSpeed = config.get(Configuration.CATEGORY_GENERAL, "mirrorReflectionUpdateSpeed", mirrorReflectionUpdateSpeed).getInt();
 		
 		explosionVectorSizeBits = config.get(Configuration.CATEGORY_GENERAL, "explosionVectorSizeBits", explosionVectorSizeBits).getInt();
+		explosionPowerBase = config.get(Configuration.CATEGORY_GENERAL, "explosionPowerBase", explosionPowerBase).getInt();
+		chanceOreWillNotBeGenerated = config.get(Configuration.CATEGORY_GENERAL, "chanceOreWillNotBeGenerated", chanceOreWillNotBeGenerated).getInt();
 		
+		machineryEnergyConsume  = config.get(Configuration.CATEGORY_GENERAL, "machineryEnergyConsume", machineryEnergyConsume).getInt();
 		config.save();
 	}
 	

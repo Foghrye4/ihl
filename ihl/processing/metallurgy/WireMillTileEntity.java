@@ -124,7 +124,7 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
 			}
 			else
 			{
-				dice.consume(0, 1);
+				dice.consume(rInputDice);
 			}
 		}
 		if(this.drainInputSlot.get()!=null && !rInput.getItemInputs().isEmpty() && rInput.getItemInputs().get(0).matches(this.drainInputSlot.get()))
@@ -157,7 +157,7 @@ public class WireMillTileEntity extends BasicElectricMotorTileEntity implements 
 	
     public UniversalRecipeOutput getOutput()
     {
-    	return WireMillTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return WireMillTileEntity.recipeManager.getOutputFor(this.getInput());
     }
     
     public static void addRecipe(FluidStack moltenMetal, IRecipeInput inputDice,ItemStack output1)

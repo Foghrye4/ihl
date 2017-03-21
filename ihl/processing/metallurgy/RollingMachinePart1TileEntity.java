@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import ic2.api.recipe.IRecipeInput;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot.Access;
@@ -38,7 +39,7 @@ public class RollingMachinePart1TileEntity extends BasicElectricMotorTileEntity{
 	
     public UniversalRecipeOutput getOutput()
     {
-    	return RollingMachinePart1TileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return RollingMachinePart1TileEntity.recipeManager.getOutputFor(this.getInput());
     }
 	
 	@Override
@@ -101,9 +102,10 @@ public class RollingMachinePart1TileEntity extends BasicElectricMotorTileEntity{
 	@Override
 	public void operate() 
 	{
-		List<RecipeOutputItemStack> output = RollingMachinePart1TileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		List<IRecipeInput> rinput = recipeManager.getRecipeInput(getInput()).getItemInputs();
+		List<RecipeOutputItemStack> output = RollingMachinePart1TileEntity.recipeManager.getOutputFor(getInput()).getItemOutputs();
 		this.output.add(output);
-		this.input.consume(0, 1);
+		this.input.consume(rinput.get(0));
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

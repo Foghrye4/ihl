@@ -216,7 +216,7 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
     
     public UniversalRecipeOutput getOutput()
     {
-    	return ImpregnatingMachineTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return ImpregnatingMachineTileEntity.recipeManager.getOutputFor(this.getInput());
     }
 
 	@SuppressWarnings("rawtypes")
@@ -229,7 +229,7 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 				if(i!=i1)
 				{
 					List[] rInput = new List[]{Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList()};
-					if(ImpregnatingMachineTileEntity.recipeManager.getOutputFor(rInput, false, false)!=null)
+					if(ImpregnatingMachineTileEntity.recipeManager.getOutputFor(rInput)!=null)
 					{
 						return rInput;
 					}
@@ -245,7 +245,7 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 		UniversalRecipeOutput output1 = getOutput();
 		for(int i=0; i<recipeInput.getItemInputs().size();i++)
 		{
-			this.input.consume(i,recipeInput.getItemInputs().get(i).getAmount());
+			this.input.consume(recipeInput.getItemInputs().get(i));
 		}
 		this.fluidTank.drain(recipeInput.getFluidInputs(), true);
 		this.fluidTank.fill(output1.getFluidOutputs(), true);

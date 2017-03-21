@@ -6,7 +6,7 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class MuffleFurnaceGui extends GuiContainer {
-	protected static final ResourceLocation muffleFurnaceBackground = new ResourceLocation("ihl", "textures/gui/GUIMuffleFurnace.png");
+	protected static final ResourceLocation muffleFurnaceBackground = new ResourceLocation("ihl", "textures/gui/GUIAchesonFurnace.png");
 	private MachineBaseContainer container;
 
     public MuffleFurnaceGui(MachineBaseContainer machineBaseContainer) {
@@ -17,22 +17,18 @@ public class MuffleFurnaceGui extends GuiContainer {
     
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        int xOffset = (this.width - xSize) / 2;
-        int yOffset = (this.height - ySize) / 2;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.renderEngine.bindTexture(muffleFurnaceBackground);
             int i1;
             if (this.container.tileEntity.getEnergy() > 0D)
             {
                 i1 = Math.min(this.container.tileEntity.getGUIEnergy(12),12);
-                this.drawTexturedModalRect(8, 14 + 12 - i1, 179, 12 - i1, 14, i1 + 2);
+                this.drawTexturedModalRect(8, 6 + 12 - i1, 179, 12 - i1, 14, i1 + 2);
             }
             if (this.container.tileEntity.progress > 0)
             {
-            	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(50),50);
-        	    GL11.glEnable(GL11.GL_BLEND);
-        	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            	this.drawTexturedModalRect(44, 57, 197, 0, i1 + 1, 13);
+            	i1 = Math.min(this.container.tileEntity.gaugeProgressScaled(17),17);
+            	this.drawTexturedModalRect(70,34, 197, 0, i1 + 1, 13);
             }
             fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("ihl.gui.muffleFurnace"), 40, 12, 16768125);
 

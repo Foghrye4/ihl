@@ -40,7 +40,7 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	
     public UniversalRecipeOutput getOutput()
     {
-    	return WoodenRollingMachinePart1TileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return WoodenRollingMachinePart1TileEntity.recipeManager.getOutputFor(this.getInput());
     }
 	
 	@Override
@@ -104,11 +104,11 @@ public class WoodenRollingMachinePart1TileEntity extends BasicElectricMotorTileE
 	public void operate() 
 	{
 		List<IRecipeInput> rInput = WoodenRollingMachinePart1TileEntity.recipeManager.getRecipeInput(getInput()).getItemInputs();
-		List<RecipeOutputItemStack> rOutput = WoodenRollingMachinePart1TileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		List<RecipeOutputItemStack> rOutput = WoodenRollingMachinePart1TileEntity.recipeManager.getOutputFor(getInput()).getItemOutputs();
 		this.output.add(rOutput);
 		for(int i=0;i<rInput.size();i++)
 		{
-			this.input.consume(i, rInput.get(i).getAmount());
+			this.input.consume(rInput.get(i));
 		}
 	}
 	

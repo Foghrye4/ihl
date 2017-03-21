@@ -15,10 +15,6 @@ import ihl.metallurgy.constants.*;
 import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
 import ihl.recipes.IRecipeInputFluid;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -926,18 +922,10 @@ public class IHLUtils {
 
 		if (block1 != Blocks.air) {
 			--ebs.blockRefCount;
-
-			if (block1.getTickRandomly()) {
-				--ebs.tickRefCount;
-			}
 		}
 
 		if (block != Blocks.air) {
 			++ebs.blockRefCount;
-
-			if (block.getTickRandomly()) {
-				++ebs.tickRefCount;
-			}
 		}
 
 		int i1 = Block.getIdFromBlock(block);

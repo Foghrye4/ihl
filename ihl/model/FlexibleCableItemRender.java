@@ -109,11 +109,7 @@ public class FlexibleCableItemRender implements IItemRenderer {
 				GL11.glRotatef(360f / this.segmentsAmount, 1f, 0f, 0f);
 				GL11.glTranslatef(0.004f, 0f, 0f);
 				GL11.glRotatef(spiralStepAngle, 0f, 0f, 1f);
-				if (((FlexibleCableItem) stack.getItem()).isDataCable) {
-					GL11.glColor3f(1f, 0.2f, 0f);
-				} else {
-					GL11.glColor3f(1f, 1f, 1f);
-				}
+				GL11.glColor3f(1f, 1f, 1f);
 				if (i == 0) {
 					if (isNoInsulation(stack)) {
 						if (FlexibleCableItem.instance.yellowColoredWires
@@ -163,9 +159,7 @@ public class FlexibleCableItemRender implements IItemRenderer {
 	}
 
 	private int getCableType(ItemStack stack) {
-		if (((FlexibleCableItem) stack.getItem()).isDataCable) {
-			return 3;
-		} else if (isNoInsulation(stack)) {
+		if (isNoInsulation(stack)) {
 			if (FlexibleCableItem.instance.yellowColoredWires.contains(FlexibleCableItem.instance.getMaterial(stack))) {
 				return 1;
 			} else {
@@ -176,7 +170,6 @@ public class FlexibleCableItemRender implements IItemRenderer {
 	}
 
 	private boolean isNoInsulation(ItemStack stack) {
-		return stack.stackTagCompound != null && FlexibleCableItem.instance.getInsulationMaterial(stack).equals("null")
-				&& !((FlexibleCableItem) stack.getItem()).isDataCable;
+		return stack.stackTagCompound != null && FlexibleCableItem.instance.getInsulationMaterial(stack).equals("null");
 	}
 }

@@ -3,7 +3,6 @@ package ihl.processing.chemistry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import ic2.core.ContainerBase;
 import ic2.core.block.invslot.InvSlot;
@@ -103,7 +102,7 @@ public class CryogenicDistillerTileEntity extends BasicElectricMotorTileEntity i
 	}
 
 	public UniversalRecipeOutput getOutput() {
-		return CryogenicDistillerTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+		return CryogenicDistillerTileEntity.recipeManager.getOutputFor(this.getInput());
 	}
 
 	@Override

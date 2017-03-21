@@ -78,8 +78,7 @@ public class UniversalRecipeManager {
 		this.keywordMap.put(keyword, input);
 	}
 
-	public UniversalRecipeOutput getOutputFor(List<FluidStack> fluidInputs, List<ItemStack> itemInputs,
-			boolean adjustInput, boolean inputAffectOutput) {
+	public UniversalRecipeOutput getOutputFor(List<FluidStack> fluidInputs, List<ItemStack> itemInputs) {
 		if (fluidInputs == null && itemInputs == null) {
 			return null;
 		} else {
@@ -94,15 +93,8 @@ public class UniversalRecipeManager {
 						continue;
 					}
 
-					if (recipeInput.adjustAmounts(fluidInputs, itemInputs, true, false)) {
-						UniversalRecipeOutput output = entry.getValue();
-						if (inputAffectOutput) {
-							int multiplier = recipeInput.getMultiplierAndAdjustAmounts(fluidInputs, itemInputs);
-							return output.copyWithMultiplier(multiplier);
-						} else if (adjustInput) {
-							recipeInput.adjustAmounts(fluidInputs, itemInputs, true, true);
-						}
-						return output;
+					if (recipeInput.matches(fluidInputs, itemInputs, true)) {
+						return entry.getValue();
 					}
 				}
 
@@ -128,7 +120,7 @@ public class UniversalRecipeManager {
 						continue;
 					}
 
-					if (recipeInput.adjustAmounts(fluidInputs1, itemInputs1, true, false)) {
+					if (recipeInput.matches(fluidInputs1, itemInputs1, true)) {
 						return recipeInput;
 					}
 				}
@@ -139,8 +131,8 @@ public class UniversalRecipeManager {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public UniversalRecipeOutput getOutputFor(List[] input, boolean adjustInput, boolean inputAffectOutput) {
-		return this.getOutputFor(input[0], input[1], adjustInput, inputAffectOutput);
+	public UniversalRecipeOutput getOutputFor(List[] input) {
+		return this.getOutputFor(input[0], input[1]);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

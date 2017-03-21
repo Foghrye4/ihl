@@ -95,10 +95,6 @@ public class NEIIHLConfig implements IConfigureNEI
         API.registerUsageHandler(new CrucibleRecipeHandler());
         API.registerRecipeHandler(new FractionationColumnRecipeHandler());
         API.registerUsageHandler(new FractionationColumnRecipeHandler());
-        API.registerRecipeHandler(new ChimneyKneeRecipeHandler());
-        API.registerUsageHandler(new ChimneyKneeRecipeHandler());
-        API.registerRecipeHandler(new PrecipitatorCondenserRecipeHandler());
-        API.registerUsageHandler(new PrecipitatorCondenserRecipeHandler());
         API.registerRecipeHandler(new IronWorkbenchRecipeHandler());
         API.registerUsageHandler(new IronWorkbenchRecipeHandler());
         this.addSubsets();

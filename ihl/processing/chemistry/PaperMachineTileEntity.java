@@ -171,7 +171,7 @@ public class PaperMachineTileEntity extends BasicElectricMotorTileEntity impleme
 
 	public UniversalRecipeOutput getOutput()
     {
-    	return PaperMachineTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return PaperMachineTileEntity.recipeManager.getOutputFor(this.getInput());
     }
 
 	@Override

@@ -5,12 +5,6 @@
       "handpumpOne"
     ]
   },
-  "collectorHurt": {
-    "category": "neutral",
-    "sounds": [
-      "collectorHurt"
-    ]
-  },
   "lostHeadCry": {
     "category": "hostile",
     "sounds": [

@@ -17,7 +17,6 @@ public class UniversalRecipeInput {
 
 	private final List<IRecipeInputFluid> fluidInputs = new ArrayList<IRecipeInputFluid>();
 	private final List<IRecipeInput> itemInputs = new ArrayList<IRecipeInput>();
-	private int multiplier = Integer.MAX_VALUE;
 
 	public UniversalRecipeInput(Object[] fluidStacks, Object[] iRecipeInputs) {
 		if (fluidStacks != null) {
@@ -55,7 +54,7 @@ public class UniversalRecipeInput {
 	}
 
 	public boolean matches(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1) {
-		return this.adjustAmounts(fluidInputs1, itemInputs1, false, false);
+		return this.matches(fluidInputs1, itemInputs1, false);
 	}
 
 	public List<IRecipeInputFluid> getFluidInputs() {
@@ -84,9 +83,7 @@ public class UniversalRecipeInput {
 		return this.matches(rInputsFluids, rInputsItems);
 	}
 
-	public boolean adjustAmounts(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1, boolean doCheckAmounts,
-			boolean doAdjustAmounts) {
-		this.multiplier = Integer.MAX_VALUE;
+	public boolean matches(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1, boolean doCheckAmounts) {
 		if (incorrectInputAmount(fluidInputs1, itemInputs1)) {
 			return false;
 		}
@@ -96,21 +93,9 @@ public class UniversalRecipeInput {
 				IRecipeInputFluid fs = fi.next();
 				FluidStack fs1 = getMatchedFluidStack(fs, fluidInputs1);
 				if (fs1 == null || !fs.matches(fs1)) {
-					multiplier = 0;
 					return false;
 				} else if (doCheckAmounts && fs1.amount < fs.getAmount()) {
-					multiplier = 0;
 					return false;
-				} else if (doAdjustAmounts) {
-					if (fs.getAmount() > 0) {
-						int multiplier1 = fs1.amount / fs.getAmount();
-						if (multiplier1 < multiplier) {
-							multiplier = multiplier1;
-						}
-					}
-					fs1.amount -= fs.getAmount();
-					if (fs1.amount <= 0)
-						fs1 = null;
 				}
 			}
 		}
@@ -120,21 +105,9 @@ public class UniversalRecipeInput {
 				IRecipeInput is = ii.next();
 				ItemStack is1 = getMatchedItemStack(is, itemInputs1);
 				if (is1 == null || !is.matches(is1)) {
-					multiplier = 0;
 					return false;
 				} else if (doCheckAmounts && is1.stackSize < is.getAmount()) {
-					multiplier = 0;
 					return false;
-				} else if (doAdjustAmounts) {
-					if (is.getAmount() > 0) {
-						int multiplier1 = is1.stackSize / is.getAmount();
-						if (multiplier1 < multiplier) {
-							multiplier = multiplier1;
-						}
-					}
-					if (IHLUtils.reduceItemStackAmountUsingIRecipeInput(is, is1, multiplier)) {
-						is1 = null;
-					}
 				}
 			}
 		}
@@ -159,35 +132,6 @@ public class UniversalRecipeInput {
 			}
 		}
 		return null;
-	}
-
-	public boolean adjustAmounts(UniversalRecipeInput input, boolean doAdjustAmounts) {
-		List<IRecipeInput> rInputs = input.getItemInputs();
-		Iterator<IRecipeInput> ii = rInputs.iterator();
-		List<ItemStack> rInputsItems = new ArrayList<ItemStack>();
-		while (ii.hasNext()) {
-			IRecipeInput is = ii.next();
-			rInputsItems.add(is.getInputs().get(0));
-		}
-		List<FluidStack> rInputsFluids = new ArrayList<FluidStack>();
-		List<IRecipeInputFluid> rInputsF = input.getFluidInputs();
-		Iterator<IRecipeInputFluid> iiF = rInputsF.iterator();
-		while (iiF.hasNext()) {
-			IRecipeInputFluid is = iiF.next();
-			rInputsFluids.add(is.getInputs().get(0));
-		}
-		return this.adjustAmounts(rInputsFluids, rInputsItems, true, doAdjustAmounts);
-	}
-
-	public int getMultiplierAndAdjustAmounts(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1) {
-		if (this.adjustAmounts(fluidInputs1, itemInputs1, true, true)) {
-			if (multiplier < Integer.MAX_VALUE) {
-				return multiplier;
-			} else
-				return 1;
-		} else {
-			return 0;
-		}
 	}
 
 	public boolean containItemStack(ItemStack ingredient) {

@@ -33,7 +33,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.reactor.IReactor;
-import ic2.core.Ic2Items;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
 import ihl.flexible_cable.SetOfDiesMiniGUI;
@@ -119,14 +118,6 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
 	
 	public static void init()
 	{
-		if(IHLUtils.getFirstOreDictName(Ic2Items.bronzeAxe).equals(""))
-		{
-			OreDictionary.registerOre("craftingToolAxe", Ic2Items.bronzeAxe.getItem());
-		}
-		if(IHLUtils.getFirstOreDictName(Ic2Items.bronzePickaxe).equals(""))
-		{
-			OreDictionary.registerOre("craftingToolPickaxe", Ic2Items.bronzePickaxe.getItem());
-		}
 		IHLTool item = new IHLTool(); 
 		GameRegistry.registerItem(item,item.getUnlocalizedName());
 		Type[] var1 = Type.values();

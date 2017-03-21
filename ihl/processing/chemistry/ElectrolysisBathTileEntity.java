@@ -194,7 +194,7 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
     
     public UniversalRecipeOutput getOutput()
     {
-    	return ElectrolysisBathTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return ElectrolysisBathTileEntity.recipeManager.getOutputFor(this.getInput());
     }
 
 	@SuppressWarnings("rawtypes")
@@ -203,7 +203,7 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
 		for(int i=0;i<fluidTank.getNumberOfFluids();i++)
 		{
 			List[] rInput = new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid(i)}), this.input.getItemStackList()};
-			if(ElectrolysisBathTileEntity.recipeManager.getOutputFor(rInput, false, false)!=null)
+			if(ElectrolysisBathTileEntity.recipeManager.getOutputFor(rInput)!=null)
 			{
 				return rInput;
 			}
@@ -217,7 +217,7 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
 		UniversalRecipeOutput output1 = getOutput();
 		for(int i=0; i<recipeInput.getItemInputs().size();i++)
 		{
-			this.input.consume(i,recipeInput.getItemInputs().get(i).getAmount());
+			this.input.consume(recipeInput.getItemInputs().get(i));
 		}
 		this.fluidTank.fill(output1.getFluidOutputs(), true);
 	}

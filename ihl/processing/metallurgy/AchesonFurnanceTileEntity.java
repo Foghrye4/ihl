@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
-import ic2.core.block.invslot.InvSlot.Access;
 import ihl.IHLMod;
-import ihl.processing.chemistry.ApparatusProcessableInvSlot;
+import ihl.processing.invslots.IHLInvSlotOutput;
 import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
@@ -22,15 +20,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AchesonFurnanceTileEntity extends MachineBaseTileEntity {
 
-	public final ApparatusProcessableInvSlot inputElectrode;
-	protected static UniversalRecipeManager recipeManager = new UniversalRecipeManager("achesonfurnace");
-	private final RecipeInputOreDict[] validElectrodeTypes = new RecipeInputOreDict[] {
-			new RecipeInputOreDict("stickCoal"), new RecipeInputOreDict("stickGraphite"),
-			new RecipeInputOreDict("plateCoal"), new RecipeInputOreDict("plateGraphite") };
+	protected static final UniversalRecipeManager recipeManager = new UniversalRecipeManager("achesonfurnace");
+	public final IHLInvSlotOutput outputSlot;
 
 	public AchesonFurnanceTileEntity() {
 		super(2);
-		inputElectrode = new ApparatusProcessableInvSlot(this, "inputElectrode", 1, Access.IO, 2, 1);
+	 	this.outputSlot = new IHLInvSlotOutput(this, "output", 0, 1);
 	}
 
 	public static void addRecipe(IRecipeInput input1, IRecipeInput input2, String output1) {
@@ -71,36 +66,23 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity {
 
 	@Override
 	public void operate() {
-		List<RecipeOutputItemStack> output = AchesonFurnanceTileEntity.recipeManager
-				.getOutputFor(getInput(), true, true).getItemOutputs();
-		for (int i = 0; i < this.inputElectrode.size(); i++) {
-			ItemStack electrodeIS = this.inputElectrode.get(i);
-			if (this.validElectrodeTypes[0].matches(electrodeIS)) {
-				this.inputElectrode.put(i, IHLUtils.getThisModItemStack("stickGraphite"));
-			} else if (this.validElectrodeTypes[2].matches(electrodeIS)) {
-				this.inputElectrode.put(i, IHLUtils.getThisModItemStack("plateGraphite"));
-			}
-		}
-		for (int i = 0; i < this.input.size(); i++) {
-			if (output.size() > i) {
-				ItemStack stack = output.get(i).itemStack.copy();
-				stack.stackSize = Math.round(output.get(i).quantity);
-				this.input.put(i, stack);
-			}
-			if (this.input.get(i) != null && this.input.get(i).stackSize <= 0) {
-				this.input.put(i, null);
-			}
-		}
 		ItemStack crucible = input.getItemStack(IHLMod.crucible);
 		if (crucible != null) {
 			((Crucible) crucible.getItem()).processContent(crucible, this);
+			return;
 		}
+		List<RecipeOutputItemStack> output = recipeManager
+				.getOutputFor(getInput()).getItemOutputs();
+		List<IRecipeInput> rinput = recipeManager.getRecipeInput(getInput()).getItemInputs();
+		for (int i = 0; i < rinput.size(); i++) {
+				this.input.consume(rinput.get(i));
+		}
+		this.outputSlot.add(output);
 	}
 
 	@Override
 	public boolean canOperate() {
-		return this.isValidElectrode(this.inputElectrode.get(0)) && this.isValidElectrode(this.inputElectrode.get(1))
-				&& this.getOutput() != null;
+		return this.getOutput() != null;
 	}
 
 	@Override
@@ -114,17 +96,6 @@ public class AchesonFurnanceTileEntity extends MachineBaseTileEntity {
 
 	@Override
 	public UniversalRecipeOutput getOutput() {
-		return AchesonFurnanceTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
-	}
-
-	private boolean isValidElectrode(ItemStack stack) {
-		if (stack != null) {
-			for (int i = 0; i < this.validElectrodeTypes.length; i++) {
-				if (validElectrodeTypes[i].matches(stack)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return AchesonFurnanceTileEntity.recipeManager.getOutputFor(this.getInput());
 	}
 }

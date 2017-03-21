@@ -111,7 +111,7 @@ public class SpotlightTileEntity extends LightBulbTileEntity implements INetwork
 		if(needLightTargetUpdate)
 		{
 			this.generateGlowningAirList();
-			this.updateLightState();
+			this.updateLightState(this.getActive());
 			needLightTargetUpdate=false;
 		}
 		if(this.prevRotationPitch!=this.rotationPitch)
@@ -214,7 +214,7 @@ public class SpotlightTileEntity extends LightBulbTileEntity implements INetwork
 	}
 	
 	@Override
-	protected void updateLightState()
+	protected void updateLightState(boolean spreadDarkness)
     {
 		if(this.getActive())
 		{

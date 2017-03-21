@@ -3,8 +3,11 @@ package ihl.processing.metallurgy;
 import java.util.List;
 import java.util.Map;
 
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
 import ihl.IHLMod;
+import ihl.processing.invslots.IHLInvSlotOutput;
 import ihl.recipes.RecipeOutputItemStack;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
@@ -19,10 +22,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MuffleFurnanceTileEntity extends MachineBaseTileEntity {
 
 	protected static UniversalRecipeManager recipeManager = new UniversalRecipeManager("mufflefurnace");
+	public final IHLInvSlotOutput outputSlot;
 
 	public MuffleFurnanceTileEntity() {
 		super(2);
-		this.input.setStackSizeLimit(32);
+	 	this.outputSlot = new IHLInvSlotOutput(this, "output", 0, 1);
 	}
 
 	@Override
@@ -81,27 +85,17 @@ public class MuffleFurnanceTileEntity extends MachineBaseTileEntity {
 			mold.stackTagCompound.setBoolean("isContainStearin", false);
 			return;
 		}
-		if (this.getOutput() != null) {
-			UniversalRecipeOutput routput = recipeManager
-					.getOutputFor(null, this.input.getItemStackList(), true, true);
-			List<RecipeOutputItemStack> output = routput.getItemOutputs();
-			for (int i = 0; i < this.input.size(); i++) {
-				if (i < output.size() && output.get(i) != null) {
-					ItemStack outStack = output.get(i).itemStack.copy();
-					outStack.stackSize = Math.round(output.get(i).quantity);
-					if (this.input.get(i) != null) {
-						outStack.stackTagCompound = this.input.get(i).stackTagCompound;
-					}
-					this.input.put(i, outStack);
-				}
-				if (this.input.get(i) != null && this.input.get(i).stackSize <= 0)
-					this.input.put(i, null);
-			}
+		List<RecipeOutputItemStack> output = recipeManager
+				.getOutputFor(getInput()).getItemOutputs();
+		List<IRecipeInput> rinput = recipeManager.getRecipeInput(getInput()).getItemInputs();
+		for (int i = 0; i < rinput.size(); i++) {
+				this.input.consume(rinput.get(i));
 		}
+		this.outputSlot.add(output);
 	}
 
-	public static void addRecipe(ItemStack input1, ItemStack output) {
-		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] { input1 })),
+	public static void addRecipe(IRecipeInput recipeInputOreDict, ItemStack output) {
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput[] { recipeInputOreDict })),
 				new UniversalRecipeOutput(null, (new ItemStack[] { output }), 20));
 	}
 
@@ -111,7 +105,7 @@ public class MuffleFurnanceTileEntity extends MachineBaseTileEntity {
 
 	@Override
 	public UniversalRecipeOutput getOutput() {
-		return MuffleFurnanceTileEntity.recipeManager.getOutputFor(null, this.input.getItemStackList(), false, false);
+		return MuffleFurnanceTileEntity.recipeManager.getOutputFor(null, this.input.getItemStackList());
 	}
 
 	public static void addRecipe(UniversalRecipeInput universalRecipeInput,
@@ -119,8 +113,8 @@ public class MuffleFurnanceTileEntity extends MachineBaseTileEntity {
 		recipeManager.addRecipe(universalRecipeInput, universalRecipeOutput);
 	}
 
-	public static void addRecipe(ItemStack input1, ItemStack output, float f) {
-		recipeManager.addRecipe(new UniversalRecipeInput(null, (new ItemStack[] { input1 })), new UniversalRecipeOutput(
+	public static void addRecipe(IRecipeInput recipeInputOreDict, ItemStack output, float f) {
+		recipeManager.addRecipe(new UniversalRecipeInput(null, (new IRecipeInput[] { recipeInputOreDict })), new UniversalRecipeOutput(
 				null, (new RecipeOutputItemStack[] { new RecipeOutputItemStack(output, f) }), 20));
 	}
 }

@@ -174,7 +174,7 @@ public class LabElectrolyzerTileEntity extends BasicElectricMotorTileEntity impl
 	}
 
 	public UniversalRecipeOutput getOutput() {
-		return LabElectrolyzerTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+		return LabElectrolyzerTileEntity.recipeManager.getOutputFor(this.getInput());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

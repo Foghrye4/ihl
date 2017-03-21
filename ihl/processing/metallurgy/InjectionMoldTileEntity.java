@@ -82,24 +82,17 @@ public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler
     				ArrayList<ItemStack> resultList = OreDictionary.getOres(this.resultSuffix+formattedFluidName);
     				if(resultList.isEmpty() || fluidAmountPerItem<=0)
     				{
-//    					IHLMod.log.info("Injection mold: resultList.isEmpty() || fluidAmountPerItem<=0");
     					resultList=new ArrayList<ItemStack>();
     					List<FluidStack> fi = Arrays.asList(new FluidStack[] {this.fluidTank.getFluid()});
     					List<ItemStack> ii = Arrays.asList(new ItemStack[] {IHLUtils.getThisModItemStackWithDamage("injectionMold", this.resultSuffix.hashCode() & Integer.MAX_VALUE)});
-    					UniversalRecipeOutput ro = recipeManager.getOutputFor(fi, ii, false, false);
+    					UniversalRecipeOutput ro = recipeManager.getOutputFor(fi, ii);
     					if(ro!=null)
     					{
-  //      					IHLMod.log.info("Injection mold: ro not null");
     						ItemStack stack = ro.getItemOutputs().get(0).itemStack.copy();
     						stack.stackSize=Math.round(ro.getItemOutputs().get(0).quantity);
         					resultList.add(stack);
         					UniversalRecipeInput ri = recipeManager.getRecipeInput(fi, ii);
         					fluidAmountPerItem = ri.getFluidInputs().get(0).getAmount();
-    //    					IHLMod.log.info("fluidAmountPerItem="+fluidAmountPerItem);
-    					}
-    					else
-    					{
-      //  					IHLMod.log.info("Injection mold: ro is null. Input stack: "+ii.get(0).toString());
     					}
     				}
     				int fluidAmountPerItem2 = Details.getMeltingFluidAmount("nugget");

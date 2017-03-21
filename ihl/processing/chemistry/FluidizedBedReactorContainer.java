@@ -13,8 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidizedBedReactorContainer extends ContainerBase<FluidizedBedReactorTileEntity> {
 
     protected FluidizedBedReactorTileEntity tileEntity;
-    public int lastFluidAmount = -1;
-	public int lastNumberOfFluids = -1;
+    public int lastFluidsHash = -1;
     public short lastProgress = -1;
     public short lastTemperature = -1;
     public short lastEnergy = -1;
@@ -53,7 +52,7 @@ public class FluidizedBedReactorContainer extends ContainerBase<FluidizedBedReac
         for (int i = 0; i < this.crafters.size(); ++i)
         {
             ICrafting icrafting = (ICrafting)this.crafters.get(i);
-            if (this.tileEntity.getTankAmount() != this.lastFluidAmount || this.tileEntity.getNumberOfFluidsInTank() != this.lastNumberOfFluids)
+            if (fluidTankFluidList.hashCode() != this.lastFluidsHash)
             {
                 IC2.network.get().sendContainerField(this, "fluidTankFluidList");
             }
@@ -71,8 +70,7 @@ public class FluidizedBedReactorContainer extends ContainerBase<FluidizedBedReac
                 icrafting.sendProgressBarUpdate(this, 2, (short) this.tileEntity.energy);
             }
         }
-        this.lastNumberOfFluids = this.tileEntity.getNumberOfFluidsInTank();
-        this.lastFluidAmount = this.tileEntity.getTankAmount();
+        this.lastFluidsHash = fluidTankFluidList.hashCode();
         this.lastProgress = this.tileEntity.progress;
         this.lastTemperature = this.tileEntity.temperature;
         this.lastEnergy = (short) this.tileEntity.energy;

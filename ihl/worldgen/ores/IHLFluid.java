@@ -181,7 +181,7 @@ public class IHLFluid extends Fluid {
 		fluidRubberTreeSap("fluidRubberTreeSap", "fluidRubberTreeSap", 10019, 293, 273, 393, 1200f, "fluidrubbertreesap", Material.water, true, true, false, false),
 		SpruceResin("SpruceResin","fluidSpruceResin", 10018, 293, 273, 533, 1080, "spruceresin", Material.water, true, true, true, false),
 		CablingColophony("CablingColophony", 10017, 363, 363, 533, 1070, "cablingcolophony", Material.water, true, false, true),
-		Glyceryl("Glyceryl", 10016, 293, 291, 583, 1261, "glyceryl", Material.water, true, false, true),
+		Glycerol("Glycerol", 10016, 293, 291, 583, 1261, "glycerol", Material.water, true, false, true),
 		SeedOil("SeedOil", 10015, 293, 256, 583, 920, "seedoil", Material.water, true, false, true),
 		AquaRegia("AquaRegia", 10014, 293, 231, 356, 1060),
 		SodiumPeroxide("SodiumPeroxide", 10013, 950, 950, 2223, 1800),
@@ -202,10 +202,6 @@ public class IHLFluid extends Fluid {
 		MoltenCopper("MoltenCopper", "fluidMolten", 10048, 1356, 1356, 2840, 8920, "molten.copper", Material.lava, false, false, false),
 		MoltenBronze("MoltenBronze", 10005, 940, 940, 2840, 8000, "molten.bronze", Material.lava, false, false, false),
 		MoltenGold("MoltenGold", 10005, 1337, 1337, 3129, 17310, "molten.gold", Material.lava, false, false, false),
-		VapourSulfuricAcid("VapourSulfuricAcid", 10004, 610, 283, 610, 4.522F, "vapour.sulfuricacid", new MaterialLiquid(
-				MapColor.redColor), false, false, false),
-		SulfuricAnhydride("SulfuricAnhydride", 10003, 45, 17, 45, 2, "sulfuricanhydride", new MaterialLiquid(
-				MapColor.redColor), true, false, false),
 		SulfuricAcid("SulfuricAcid", 10002, 293, 283, 610, 1836),
 		NitricAcid("NitricAcid", 10001, 293, 231, 356, 1100);
 

@@ -89,13 +89,13 @@ public class ExtruderTileEntity extends BasicElectricMotorTileEntity{
 	{
 		UniversalRecipeInput ri = ExtruderTileEntity.recipeManager.getRecipeInput(getInput());
 		this.fluidTank.fill(getOutput().getFluidOutputs().get(0), true);
-		this.input.consume(0,ri.getItemInputs().get(0).getAmount());
-		this.input2.consume(0,ri.getItemInputs().get(1).getAmount());
+		this.input.consume(ri.getItemInputs().get(0));
+		this.input2.consume(ri.getItemInputs().get(1));
 	}
 	
     public UniversalRecipeOutput getOutput()
     {
-    	return ExtruderTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return ExtruderTileEntity.recipeManager.getOutputFor(this.getInput());
     }
     
 	@SuppressWarnings({ "unchecked", "rawtypes" })

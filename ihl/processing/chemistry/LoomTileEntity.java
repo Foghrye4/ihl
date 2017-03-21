@@ -105,7 +105,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 	public void operate() 
 	{
 		List<IRecipeInput> input1 = LoomTileEntity.recipeManager.getRecipeInput(getInput()).getItemInputs();
-		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput()).getItemOutputs();
 		this.output.add(output1);
 		if(input1.get(0) instanceof RecipeInputWire)
 		{
@@ -118,7 +118,7 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 		}
 		else
 		{
-			this.input.consume(0, input1.get(0).getAmount());
+			this.input.consume(input1.get(0));
 		}
 	}
 	
@@ -130,8 +130,8 @@ public class LoomTileEntity extends TileEntityInventory implements IHasGui, INet
 	
 	public boolean canOperate()
 	{
-		if(LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false)==null) return false;
-		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+		if(LoomTileEntity.recipeManager.getOutputFor(getInput())==null) return false;
+		List<?> output1 = LoomTileEntity.recipeManager.getOutputFor(getInput()).getItemOutputs();
 		return this.output.canAdd(output1);
 	}
 

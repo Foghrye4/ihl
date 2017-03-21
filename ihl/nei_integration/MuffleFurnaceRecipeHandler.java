@@ -22,25 +22,25 @@ public class MuffleFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
     protected int[] getInputPosX()
     {
-        return new int[]{51-5,69-5};
+        return new int[]{40-5,40-5};
     }
 
     @Override
     protected int[] getInputPosY()
     {
-        return new int[]{34-11};
+        return new int[]{40-11,22-11};
     }
 
     @Override
     protected int[] getOutputPosX()
     {
-        return new int[]{105-5,123-5};
+        return new int[]{98-5};
     }
-
+    
     @Override
     protected int[] getOutputPosY()
     {
-        return new int[]{34-11};
+        return new int[]{32-11};
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MuffleFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
 	public String getGuiTexture()
     {
-        return "ihl:textures/gui/GUIMuffleFurnace.png";
+        return "ihl:textures/gui/GUIAchesonFurnace.png";
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MuffleFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
     public void loadTransferRects()
     {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(40-5, 55-11, 55, 15), this.getRecipeId(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(57-5, 29-11, 40, 30), this.getRecipeId(), new Object[0]));
     }
 
     

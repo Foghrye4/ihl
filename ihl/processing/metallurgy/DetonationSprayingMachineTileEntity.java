@@ -1,7 +1,5 @@
 package ihl.processing.metallurgy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import cpw.mods.fml.relauncher.Side;
@@ -102,7 +100,7 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
     
     public UniversalRecipeOutput getOutput()
     {
-    	return DetonationSprayingMachineTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return DetonationSprayingMachineTileEntity.recipeManager.getOutputFor(this.getInput());
     }
 
 	public List<?>[] getInput()
@@ -126,7 +124,8 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
 	 //file tags - "GT.ToolStats"->"MaxDamage" & "Damage"
 		if(this.canOperate())
 		{
-			List<RecipeOutputItemStack> output1 = DetonationSprayingMachineTileEntity.recipeManager.getOutputFor(getInput(), false, false).getItemOutputs();
+			List<IRecipeInput> input1 = DetonationSprayingMachineTileEntity.recipeManager.getRecipeInput(getInput()).getItemInputs();
+			List<RecipeOutputItemStack> output1 = DetonationSprayingMachineTileEntity.recipeManager.getOutputFor(getInput()).getItemOutputs();
 			ItemStack resultStack = output1.get(0).itemStack.copy();
 			resultStack.stackSize=this.input.get(0).stackSize;
 			if(resultStack.stackTagCompound==null)
@@ -162,9 +161,10 @@ public class DetonationSprayingMachineTileEntity extends TileEntityInventory imp
 					}
 				}
 			}
+			for(IRecipeInput stack:input1){
+				this.input.consume(stack);
+			}
 			this.input.put(0,resultStack);
-			this.input.consume(1,1);
-			this.input.consume(2,1);
 	        ExplosionIC2 explosion = new ExplosionIC2(worldObj, null, this.xCoord+0.5D, this.yCoord+0.5D, this.zCoord+0.5D, 0.5F, 0.3F, ExplosionIC2.Type.Normal, null, 0);
 	        explosion.doExplosion();
             IC2.network.get().initiateTileEntityEvent(this, 0, true);

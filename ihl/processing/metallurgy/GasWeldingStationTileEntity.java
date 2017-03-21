@@ -148,7 +148,7 @@ public class GasWeldingStationTileEntity extends TileEntityInventory implements 
 
     public boolean canProduceGas()
     {
-    	UniversalRecipeOutput rOutput = GasWeldingStationTileEntity.acetyleneRecipeManager.getOutputFor(Arrays.asList(new FluidStack[]{this.flammableGasTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get()}), false, false);
+    	UniversalRecipeOutput rOutput = GasWeldingStationTileEntity.acetyleneRecipeManager.getOutputFor(Arrays.asList(new FluidStack[]{this.flammableGasTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get()}));
     	return rOutput!=null;
     }
     
@@ -157,7 +157,7 @@ public class GasWeldingStationTileEntity extends TileEntityInventory implements 
 		if(canProduceGas())
 		{
 			UniversalRecipeInput rInput = GasWeldingStationTileEntity.acetyleneRecipeManager.getRecipeInput(Arrays.asList(new FluidStack[]{this.flammableGasTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get()}));
-	    	UniversalRecipeOutput rOutput = GasWeldingStationTileEntity.acetyleneRecipeManager.getOutputFor(Arrays.asList(new FluidStack[]{this.flammableGasTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get()}), false, false);
+	    	UniversalRecipeOutput rOutput = GasWeldingStationTileEntity.acetyleneRecipeManager.getOutputFor(Arrays.asList(new FluidStack[]{this.flammableGasTank.getFluid()}), Arrays.asList(new ItemStack[]{this.input.get()}));
 			FluidStack output1 = rOutput.getFluidOutputs().get(0).copy();
 			FluidStack output2 = rOutput.getFluidOutputs().get(1).copy();
 			this.flammableGasTank.drain(rInput.getFluidInputs().get(0), true);

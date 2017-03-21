@@ -6,10 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 public class MuffleFurnanceContainer extends MachineBaseContainer {
 
 	public MuffleFurnanceContainer(EntityPlayer entityPlayer,
-			MachineBaseTileEntity tileEntity1) {
+			MuffleFurnanceTileEntity tileEntity1) {
 		super(entityPlayer, tileEntity1);
-        this.addSlotToContainer(new SlotInvSlot(tileEntity1.input, 0, 51, 34));
-        this.addSlotToContainer(new SlotInvSlot(tileEntity1.input, 1, 69, 34));
+        this.addSlotToContainer(new SlotInvSlot(tileEntity1.input, 0, 40, 22));		
+        this.addSlotToContainer(new SlotInvSlot(tileEntity1.input, 1, 40, 40));		
+        this.addSlotToContainer(new SlotInvSlot(tileEntity1.outputSlot, 0, 98, 32));		
 	}
 
 }

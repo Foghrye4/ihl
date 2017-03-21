@@ -11,6 +11,7 @@ import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
+import ihl.IHLMod;
 import ihl.flexible_cable.FlexibleCableHolderBaseTileEntity;
 import ihl.flexible_cable.NodeEntity;
 import ihl.utils.IHLInvSlotDischarge;
@@ -34,6 +35,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	public BasicElectricMotorTileEntity() {
 		super();
+		energyConsume = IHLMod.config.machineryEnergyConsume/100d;
 		dischargeSlot = new IHLInvSlotDischarge(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
 	}
 

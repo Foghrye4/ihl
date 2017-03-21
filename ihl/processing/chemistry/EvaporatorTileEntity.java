@@ -196,7 +196,7 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
         }
         else
         {
-            UniversalRecipeOutput output = recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null, false, false);
+            UniversalRecipeOutput output = recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null);
             return output == null ? false : (this.outputSlot.canAdd(output.getItemOutputs()) ? true : false);
         }
     }
@@ -280,7 +280,7 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
         }
         else
         {
-            UniversalRecipeOutput output = recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null, false, false);
+            UniversalRecipeOutput output = recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null);
             return output == null ? null : (this.outputSlot.canAdd(output.getItemOutputs()) ? output : null);
         }
     }

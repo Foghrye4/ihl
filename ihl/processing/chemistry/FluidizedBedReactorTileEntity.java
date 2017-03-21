@@ -178,7 +178,7 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 
 	public UniversalRecipeOutput getOutput()
     {
-    	return FluidizedBedReactorTileEntity.recipeManager.getOutputFor(this.getInput(), false, false);
+    	return FluidizedBedReactorTileEntity.recipeManager.getOutputFor(this.getInput());
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -192,7 +192,7 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 				if(i!=i1)
 				{
 					List[] rInput = new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList()};
-					if(FluidizedBedReactorTileEntity.recipeManager.getOutputFor(rInput, false, false)!=null)
+					if(FluidizedBedReactorTileEntity.recipeManager.getOutputFor(rInput)!=null)
 					{
 						return rInput;
 					}
@@ -208,7 +208,7 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 		UniversalRecipeInput recipeInput = FluidizedBedReactorTileEntity.recipeManager.getRecipeInput(getInput());
 		UniversalRecipeOutput output1 = getOutput();
 		this.fluidTank.drain(recipeInput.getFluidInputs(), true);
-		this.input.consume(0, recipeInput.getItemInputs().get(0).getAmount());
+		this.input.consume(recipeInput.getItemInputs().get(0));
 		if(recipeInput.getItemInputs().get(0).getAmount()==0)
 		{
 			ItemStack stack = this.input.get();
@@ -219,10 +219,10 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 			stack.stackTagCompound.setInteger("catalyst_uses",stack.stackTagCompound.getInteger("catalyst_uses")+1);
 			if(stack.stackTagCompound.getInteger("catalyst_uses")>1000)
 			{
-				this.input.consume(0,1);
+				this.input.consume(recipeInput.getItemInputs().get(0));
 			}
 		}
-		if(recipeInput.getItemInputs().size()>1)this.input.consume(1, recipeInput.getItemInputs().get(1).getAmount());
+		if(recipeInput.getItemInputs().size()>1)this.input.consume(recipeInput.getItemInputs().get(1));
 		if(output1.getFluidOutputs().size()>0)this.fluidTank.fill(output1.getFluidOutputs().get(0).copy(), true);
 		if(output1.getFluidOutputs().size()>1)this.fluidTank.fill(output1.getFluidOutputs().get(1).copy(), true);
 		if(!output1.getItemOutputs().isEmpty() && output1.getItemOutputs().get(0)!=null)this.outputSlot.add(output1.getItemOutputs());

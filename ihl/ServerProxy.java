@@ -275,26 +275,4 @@ public class ServerProxy {
 	
 	public void requestTileEntityInitdataFromClientToServer(int x, int y, int z){}
 
-	public void sendChunksLightUpdateQuery(World world, int x, int y, int z, Set<Long> clientSideChunkXZKeySet) 
-	{
-		int chunkNum = clientSideChunkXZKeySet.size();
-		ByteBuf bb = Unpooled.buffer(8+(chunkNum<<3));
-		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
-		try 
-		{
-			byteBufOutputStream.write(4);
-			byteBufOutputStream.write(chunkNum);
-			Iterator<Long> cluI = clientSideChunkXZKeySet.iterator();
-			while(cluI.hasNext())
-			{
-				byteBufOutputStream.writeLong(cluI.next());
-			}
-			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(world.provider.dimensionId, x, y, z, 256d));
-			byteBufOutputStream.close();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-	}
 }

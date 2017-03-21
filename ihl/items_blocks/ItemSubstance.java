@@ -271,8 +271,6 @@ public class ItemSubstance extends Item implements IItemHasMiniGUI {
 		CrushedPurifiedCinnabar(109, "crushedPurifiedCinnabar", true, "HgS"),
 		CrushedCinnabar(108, "crushedCinnabar", true, "HgS"),
 		OvenRawPorcelain(107, "ovenRawPorcelain"),
-		PrecipitatorCondenserRawPorcelain(106, "precipitatorCondenserRawPorcelain"),
-		ChimneyKneeRawPorcelain(105, "chimneyKneeRawPorcelain"),
 		TungstenDust(104, "dustTungsten", true, "W"),
 		ElectrolysisBathPorcelain(103, "electrolysisBathPorcelain"),
 		ElectrolysisBathRawPorcelain(102, "electrolysisBathRawPorcelain"),

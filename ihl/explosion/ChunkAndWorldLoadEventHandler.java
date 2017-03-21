@@ -37,10 +37,6 @@ public class ChunkAndWorldLoadEventHandler {
 					IHLMod.explosionHandler.breakBlocksAndGetDescendants(event.world, bwArray[1], bwArray[2],
 							bwArray[3], explosion, bwArray[0], bwArray[4], directionMask);
 				}
-				if (!IHLMod.explosionHandler.isCalculating) {
-					IHLMod.explosionHandler.sendChunkUpdateToPlayersInExplosionAffectedZone(event.world, bwArray[1],
-							bwArray[2], bwArray[3]);
-				}
 			}
 		}
 	}

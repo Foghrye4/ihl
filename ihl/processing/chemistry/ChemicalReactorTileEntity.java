@@ -190,7 +190,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 	@SuppressWarnings("unchecked")
 	public UniversalRecipeOutput getOutput()
     {
-    	return ChemicalReactorTileEntity.recipeManager.getOutputFor(this.getInput()[0],this.getInput()[1], false, false);
+    	return ChemicalReactorTileEntity.recipeManager.getOutputFor(this.getInput()[0],this.getInput()[1]);
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -203,7 +203,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 			{
 				if(i!=i1)
 				{
-					if(ChemicalReactorTileEntity.recipeManager.getOutputFor(Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList(), false, false)!=null)
+					if(ChemicalReactorTileEntity.recipeManager.getOutputFor(Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList())!=null)
 					{
 						return new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList()};
 					}
@@ -221,7 +221,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 		UniversalRecipeOutput output1 = getOutput();
 		for(int i=0; i<recipeInput.getItemInputs().size();i++)
 		{
-			this.input.consume(i,recipeInput.getItemInputs().get(i).getAmount());
+			this.input.consume(recipeInput.getItemInputs().get(i));
 		}
 		if(output1.specialConditions)
 		{

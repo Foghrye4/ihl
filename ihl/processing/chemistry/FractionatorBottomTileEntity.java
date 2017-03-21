@@ -113,7 +113,7 @@ public class FractionatorBottomTileEntity extends TileEntityInventory
         FluidStack fsCurrentInput = this.fluidTank.getFluid();
         if(fsCurrentInput!=null && fsCurrentInput.amount>100 && systemHeat>0)
         {
-        	UniversalRecipeOutput rOutput = FractionatorBottomTileEntity.recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null, false, false);
+        	UniversalRecipeOutput rOutput = FractionatorBottomTileEntity.recipeManager.getOutputFor(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null);
         	UniversalRecipeInput rInput = FractionatorBottomTileEntity.recipeManager.getRecipeInput(Arrays.asList(new FluidStack [] {this.fluidTank.getFluid()}),null);
         	if(rOutput!=null)
         	{

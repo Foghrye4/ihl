@@ -63,11 +63,11 @@ public class ExplosiveTileEntity extends TileEntity {
 			for (int oid : OreDictionary.getOreIDs(player.getCurrentEquippedItem())) {
 				if (OreDictionary.getOreName(oid).matches("toolLighter")) {
 					ignite();
-					return true;
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public void ignite() {

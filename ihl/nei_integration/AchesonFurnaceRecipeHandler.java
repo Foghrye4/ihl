@@ -1,17 +1,12 @@
 package ihl.nei_integration;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import codechicken.nei.PositionedStack;
 import ihl.processing.metallurgy.AchesonFurnaceGui;
 import ihl.processing.metallurgy.AchesonFurnanceTileEntity;
-import ihl.recipes.RecipeInputOreDictionaryList;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
-import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 
@@ -26,25 +21,25 @@ public class AchesonFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
     protected int[] getInputPosX()
     {
-        return new int[]{34-5,34-5};
+        return new int[]{40-5,40-5};
     }
 
     @Override
     protected int[] getInputPosY()
     {
-        return new int[]{41-11,23-11};
+        return new int[]{40-11,22-11};
     }
 
     @Override
     protected int[] getOutputPosX()
     {
-        return new int[]{107-5,107-5};
+        return new int[]{98-5};
     }
     
     @Override
     protected int[] getOutputPosY()
     {
-        return new int[]{41-11,23-11};
+        return new int[]{32-11};
     }
 
     @Override
@@ -62,13 +57,13 @@ public class AchesonFurnaceRecipeHandler extends MachineRecipeHandler
     @Override
 	public String getGuiTexture()
     {
-        return "ihl:textures/gui/GUIAchesonFurnaceNEI.png";
+        return "ihl:textures/gui/GUIAchesonFurnace.png";
     }
 
     @Override
     public void loadTransferRects()
     {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(40-5, 55-11, 90, 30), this.getRecipeId(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(57-5, 29-11, 40, 30), this.getRecipeId(), new Object[0]));
     }
 
     @Override
@@ -82,17 +77,4 @@ public class AchesonFurnaceRecipeHandler extends MachineRecipeHandler
     {
         return AchesonFurnanceTileEntity.getRecipes();
     }
-    
-    @Override
-    public List<PositionedStack> getAdditionalIngredients()
-    {
-    	List<PositionedStack> ps = new ArrayList<PositionedStack>();
-    	RecipeInputOreDictionaryList ari = new RecipeInputOreDictionaryList(new String[] {"stickCoal","stickGraphite"});
-    	ps.add(new PositionedStack(ari.getInputs(),16-5,41-11));
-    	ps.add(new PositionedStack(ari.getInputs(),52-5,41-11));
-    	ps.add(new PositionedStack(IHLUtils.getOreDictItemStack("stickGraphite"),89-5,41-11));
-    	ps.add(new PositionedStack(IHLUtils.getOreDictItemStack("stickGraphite"),125-5,41-11));
-        return ps;
-    }
-    
 }
