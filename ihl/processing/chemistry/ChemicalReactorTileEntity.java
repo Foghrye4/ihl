@@ -122,7 +122,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 
 	@Override
 	public boolean canFill(ForgeDirection direction, Fluid arg1) {
-		return direction.equals(ForgeDirection.getOrientation(this.getFacing()).getOpposite());
+		return true;
 	}
 
 	@Override

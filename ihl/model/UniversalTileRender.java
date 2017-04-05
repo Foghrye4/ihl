@@ -6,6 +6,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.tile.IWrenchable;
 import ihl.IHLModInfo;
 import ihl.flexible_cable.IronWorkbenchModel;
@@ -15,6 +17,7 @@ private ModelBase model = new IronWorkbenchModel();
 private ResourceLocation tex = new ResourceLocation(IHLModInfo.MODID+":textures/blocks/ironWorkbench.png");
 private final float scale=1F/16F;
 
+@SideOnly(value=Side.CLIENT)
 public UniversalTileRender(ModelBase model1, ResourceLocation texture)
 {
 	this.model=model1;

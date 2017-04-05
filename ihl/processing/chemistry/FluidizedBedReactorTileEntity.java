@@ -116,7 +116,7 @@ public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity 
 
 	@Override
 	public boolean canFill(ForgeDirection direction, Fluid arg1) {
-		return direction.equals(ForgeDirection.getOrientation(this.getFacing()).getOpposite());
+		return true;
 	}
 
 	@Override

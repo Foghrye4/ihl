@@ -15,6 +15,7 @@ import ihl.crop_harvestors.SackTileEntity;
 import ihl.enviroment.LightBulbModel;
 import ihl.enviroment.LightBulbRender;
 import ihl.enviroment.LightBulbTileEntity;
+import ihl.enviroment.LightHandler;
 import ihl.enviroment.MirrorRender;
 import ihl.enviroment.MirrorTileEntity;
 import ihl.enviroment.SpotlightModel;
@@ -41,6 +42,7 @@ import ihl.items_blocks.FlexibleCableItem;
 import ihl.items_blocks.IHLTool;
 import ihl.items_blocks.MachineBaseBlock.MachineType;
 import ihl.model.*;
+import ihl.processing.chemistry.DosingPumpTileEntity;
 import ihl.processing.chemistry.ElectrolysisBathModel;
 import ihl.processing.chemistry.ElectrolysisBathTileEntity;
 import ihl.processing.chemistry.FractionatorBottomModel;
@@ -121,18 +123,28 @@ import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(value = Side.CLIENT)
 public class ClientProxy extends ServerProxy {
 
 	public boolean loadMirrorRender = true;
 	public IHLRenderUtils renderUtils;
 	public Map<MachineType, Integer> sharedBlockRenders = new HashMap<MachineType, Integer>();
 	public Map<Class<? extends TileEntity>, ISelectionBoxSpecialRenderer> selectionBoxSpecialRendererRegistry = new HashMap<Class<? extends TileEntity>, ISelectionBoxSpecialRenderer>();
+	public LightHandler lightHandler;
 
 	public ClientProxy() {
 	}
 
+	public LightHandler getLightHandler() {
+
+		return this.lightHandler;
+	}
+
 	@Override
 	public void load() throws ParserConfigurationException {
+		if (lightHandler == null) {
+			lightHandler = new LightHandler();
+		}
 		if (channel == null) {
 			channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(IHLModInfo.MODID);
 			channel.register(this);
@@ -470,6 +482,24 @@ public class ClientProxy extends ServerProxy {
 			byteBufOutputStream.writeInt(x);
 			byteBufOutputStream.writeInt(y);
 			byteBufOutputStream.writeInt(z);
+			channel.sendToServer(new FMLProxyPacket(byteBufOutputStream.buffer(), IHLModInfo.MODID));
+			byteBufOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendIntegerFieldValueFromClientToServer(int value, String fieldName, TileEntity tileEntity) {
+		ByteBuf bb = Unpooled.buffer(64);
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try {
+			byteBufOutputStream.write(2);
+			byteBufOutputStream.writeInt(tileEntity.getWorldObj().provider.dimensionId);
+			byteBufOutputStream.writeInt(tileEntity.xCoord);
+			byteBufOutputStream.writeInt(tileEntity.yCoord);
+			byteBufOutputStream.writeInt(tileEntity.zCoord);
+			byteBufOutputStream.writeInt(value);
+			byteBufOutputStream.writeUTF(fieldName);
 			channel.sendToServer(new FMLProxyPacket(byteBufOutputStream.buffer(), IHLModInfo.MODID));
 			byteBufOutputStream.close();
 		} catch (IOException e) {

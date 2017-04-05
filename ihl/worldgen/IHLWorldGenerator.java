@@ -17,7 +17,7 @@ public class IHLWorldGenerator implements IWorldGenerator {
 
 	private static final Block[] replaceableMinerals = new Block[] { Blocks.stone, Blocks.gravel , Blocks.gold_ore, Blocks.coal_ore, Blocks.iron_ore, Blocks.lapis_ore, Blocks.clay, Blocks.diamond_ore, Blocks.redstone_ore, Blocks.emerald_ore};
 	private static final Block[] replaceableSand = new Block[] { Blocks.sand };
-	private static final Block[] replaceableForOil = new Block[] { Blocks.lava, Blocks.flowing_lava};
+	private static final Block[] replaceableForOil = new Block[] { Blocks.lava, Blocks.flowing_lava, Blocks.obsidian};
 	public static IHLWorldGenerator instance;
 	private final Set<WorldGeneratorBase> generators = new HashSet<WorldGeneratorBase>(8);
 
@@ -74,7 +74,7 @@ public class IHLWorldGenerator implements IWorldGenerator {
 		}
 		if (IHLMod.config.generateOil)
 		{	
-			generators.add(new WorldGeneratorUndergroundLake(IHLFluid.getBlock("oil"), Blocks.clay, replaceableForOil));
+			generators.add(new WorldGeneratorUndergroundLake(IHLFluid.getBlock("oil"), Blocks.obsidian, replaceableForOil));
 		}
 		if (IHLMod.config.generateSaltwater)
 		{

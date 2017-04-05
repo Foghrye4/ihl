@@ -21,6 +21,9 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +34,7 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * @author CovertJaguar <http://www.railcraft.info>
  */
+@SideOnly(value=Side.CLIENT)
 public class FluidRenderer {
 
 	private static RenderBlocks renderBlocks = new RenderBlocks();

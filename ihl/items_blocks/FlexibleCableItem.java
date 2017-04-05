@@ -362,19 +362,19 @@ public class FlexibleCableItem extends Item implements IWire {
 		}
 		return 0xFFFFFF;
 	}
-
+	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag) {
 		if (itemStack.stackTagCompound != null) {
-			info.add("Length: " + itemStack.stackTagCompound.getInteger("length") + " m");
-			info.add("Wire material: " + this.getMaterial(itemStack));
-			info.add("Resistivity: " + this.getResistance(itemStack) / 1000F + " V^2/(EU*m)");
-			info.add("Transverse section: " + this.getTransverseSection(itemStack) / 10F + " sq. mm.");
+			info.add(StatCollector.translateToLocal("ihl.lenght")+": " + itemStack.stackTagCompound.getInteger("length") + " m");
+			info.add(StatCollector.translateToLocal("ihl.wire_material")+"Wire material: " + this.getMaterial(itemStack));
+			info.add(StatCollector.translateToLocal("ihl.resistivity")+"Resistivity: " + this.getResistance(itemStack) / 1000F + " V^2/(EU*m)");
+			info.add(StatCollector.translateToLocal("ihl.transverse_section")+"Transverse section: " + this.getTransverseSection(itemStack) / 10F + " sq. mm.");
 			if (itemStack.stackTagCompound.hasKey("insulationMaterial")) {
-				info.add("Insulation material: " + this.getInsulationMaterial(itemStack));
-				info.add("Insulation thickness: " + this.getInsulationThickness(itemStack) / 10f + " mm");
-				info.add("Insulation breakdown voltage: " + this.getVoltageLimit(itemStack) / 1000 + " kV");
+				info.add(StatCollector.translateToLocal("ihl.insulation_material")+"Insulation material: " + this.getInsulationMaterial(itemStack));
+				info.add(StatCollector.translateToLocal("ihl.insulation_thickness")+"Insulation thickness: " + this.getInsulationThickness(itemStack) / 10f + " mm");
+				info.add(StatCollector.translateToLocal("ihl.insulation_beakdown_voltage")+"Insulation breakdown voltage: " + this.getVoltageLimit(itemStack) / 1000 + " kV");
 			}
 			info.add(StatCollector.translateToLocal("ihl.powerCableTooltip"));
 		}

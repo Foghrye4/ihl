@@ -1,9 +1,12 @@
 package ihl.model;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.Tessellator;
 
+@SideOnly(value=Side.CLIENT)
 public class ModelToplessBox {
 	    /**
 	     * The (x,y,z) vertex positions and (u,v) texture coordinates for each of the 8 points on a cube

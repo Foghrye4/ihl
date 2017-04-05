@@ -11,9 +11,13 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.World;
 
+@SideOnly(value=Side.CLIENT)
 public class IHLBlockRenderer {
 	
 	private RenderBlocks renderBlocks;

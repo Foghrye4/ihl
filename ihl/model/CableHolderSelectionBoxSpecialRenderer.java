@@ -13,6 +13,10 @@ import net.minecraft.util.MovingObjectPosition;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(value=Side.CLIENT)
 public class CableHolderSelectionBoxSpecialRenderer implements ISelectionBoxSpecialRenderer
 {
     @Override

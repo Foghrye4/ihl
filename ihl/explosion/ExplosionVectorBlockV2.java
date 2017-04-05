@@ -32,12 +32,12 @@ import net.minecraftforge.event.world.ExplosionEvent;
 
 public class ExplosionVectorBlockV2 {
 	final Set<Integer> startVectors = new HashSet<Integer>();
-	private final int[][] directionMasks = new int[8][3];
-	private final int bits = IHLMod.config.explosionVectorSizeBits;
+	public final int[][] directionMasks = new int[8][3];
+	public final int bits = IHLMod.config.explosionVectorSizeBits;
 	private final int maxValue = (1 << bits) - 1;
-	private final int halfValue = (1 << bits - 1) - 1;
+	public final int halfValue = (1 << bits - 1) - 1;
 	private final int maxArraySize = 1 << bits * 3;
-	private final int[][] vectors = new int[maxArraySize][2];
+	public final int[][] vectors = new int[maxArraySize][2];
 	private final Set<Chunk> chunksToUpdate = new HashSet<Chunk>(64);
 	private final Map<Integer, ItemStack> cachedDrops = new HashMap<Integer, ItemStack>(128);
 	final Map<Integer, WorldSavedDataBlastWave> blastWaveByDimensionId = new HashMap<Integer, WorldSavedDataBlastWave>();
@@ -57,11 +57,11 @@ public class ExplosionVectorBlockV2 {
 		directionMasks[7] = new int[] { -1, -1, -1 };
 	}
 
-	private int encodeXYZ(int x, int y, int z) {
+	public int encodeXYZ(int x, int y, int z) {
 		return x << bits * 2 | y << bits | z;
 	}
 
-	private int[] decodeXYZ(int l) {
+	public int[] decodeXYZ(int l) {
 		return new int[] { l >> bits * 2, l >> bits & maxValue, l & maxValue };
 	}
 

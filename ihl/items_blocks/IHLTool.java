@@ -228,7 +228,7 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
 		Grindstone("grindstone",4,2000,0.5f,false,null,(String[])null),
 		Hammer("hammer",3,20000,2.5f,false,null,"craftingToolHardHammer","craftingToolForgeHammer"),
 		TinSnipsSteel("tinSnipsSteel",2,2000,0.5f,false,null,"craftingToolWireCutter"),
-		SetOfDies1_5sqmm("setOfDies1_5sqmm",0,2000,0.5f,false,null,(String[])null);
+		SetOfDies1_5sqmm("setOfDies1_5sqmm",0,2000,0.5f,false,"ihl.setOfDiesHint",(String[])null);
 		Type(String unlocalizedName1,int itemDamage1, int maxToolDamage1, float damageVersusEntity1, boolean isWeapon1, String hint1, String... oreDictName1)
 		{
 			unLocalizedName=unlocalizedName1;
@@ -256,7 +256,7 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
        	info.add(EnumChatFormatting.WHITE+StatCollector.translateToLocal("ihl.attack_damage") +EnumChatFormatting.DARK_BLUE + damageVersusEntityMap.get(itemStack.getItemDamage()));
        	if(hintMap.containsKey(itemStack.getItemDamage()))
        	{
-       		info.add(EnumChatFormatting.DARK_RED+StatCollector.translateToLocal(hintMap.get(itemStack.getItemDamage())));
+       		info.add(EnumChatFormatting.RED+StatCollector.translateToLocal(hintMap.get(itemStack.getItemDamage())));
        	}
        	if(itemStack.stackTagCompound.hasKey("transverseSection"))
        	{

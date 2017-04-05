@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -60,10 +61,30 @@ public abstract class WorldGeneratorBase {
 		return false;
 	}
 
+	protected boolean replaceAllExceptOre(World world, int absX, int absY, int absZ, final Block block) {
+		if (!world.getChunkProvider().chunkExists(absX >> 4, absZ >> 4)) {
+			throw new IllegalStateException("quered chunk is not yet generated!");
+		}
+		Chunk chunk = world.getChunkFromBlockCoords(absX, absZ);
+		ExtendedBlockStorage ebs = chunk.getBlockStorageArray()[absY >> 4];
+		if (ebs != null) { 
+			Block olblock = ebs.getBlockByExtId(absX & 15, absY & 15, absZ & 15);
+			if(!olblock.equals(ore) && 
+				!olblock.equals(Blocks.bedrock) && 
+				!olblock.equals(Blocks.netherrack) && 
+				!olblock.equals(Blocks.stone) && 
+				!olblock.equals(Blocks.clay)) {
+			IHLUtils.setBlockRaw(ebs, absX & 15, absY & 15, absZ & 15, block);
+			return true;
+			}
+		}
+		return false;
+	}
+
 	private int[] getPOI(World world, int chunkX, int chunkZ, int xOffset, int zOffset) {
 		long seed = (long) chunkX << 16 ^ chunkZ << 8 ^ Block.getIdFromBlock(ore);
 		random.setSeed(seed);
-		return new int[] { random.nextInt(16) + xOffset * 16, random.nextInt(world.getActualHeight()/2),
+		return new int[] { random.nextInt(16) + xOffset * 16, random.nextInt(world.getActualHeight() / 2),
 				random.nextInt(16) + zOffset * 16 };
 	}
 }

@@ -70,7 +70,6 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setFacing(short facing1) {
-		short facing2 = (short) Math.max(facing1, 2);
 		double d = 0.3D;
 		double f = -0.1D;
 		if (IC2.platform.isSimulating() && this.addedToEnergyNet) {
@@ -81,7 +80,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(connectionX - range, connectionY - range,
 				connectionZ - range, connectionX + range, connectionY + range, connectionZ + range);
 		List<NodeEntity> nodeList = worldObj.getEntitiesWithinAABB(NodeEntity.class, searchArea);
-		super.setFacing(facing2);
+		super.setFacing(facing1);
 		switch (getFacing()) {
 		case 4:
 			setConnectionX(this.xCoord + 0.5D);

@@ -25,6 +25,7 @@ public class LightBulbBlock extends Block implements ITileEntityProvider {
 		this.setResistance(0.5F);
 		this.setCreativeTab(IHLCreativeTab.tab);
 		this.setBlockTextureName("glass");
+		this.setLightOpacity(16);
 	}
 
 	@Override
@@ -108,11 +109,11 @@ public class LightBulbBlock extends Block implements ITileEntityProvider {
 	}
 
 	public int getLightValue(IBlockAccess world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
+/*		TileEntity te = world.getTileEntity(x, y, z);
 		if (te != null && te instanceof LightBulbTileEntity) {
 			LightBulbTileEntity ate = (LightBulbTileEntity) te;
 			return ate.getActive() ? 15 : 0;
-		}
+		}*/
 		return 0;
 	}
 }

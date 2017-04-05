@@ -8,7 +8,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(value=Side.CLIENT)
 public class IronWorkbenchBlockRender implements ISimpleBlockRenderingHandler
 {
     public static int renderId;

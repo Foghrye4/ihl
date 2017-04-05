@@ -183,7 +183,7 @@ public class ServerProxy {
 	}
 	
     @SubscribeEvent
-	public void onPacketFromClientToServer(FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException
+	public void onPacketFromClientToServer(FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
     	ByteBuf data = event.packet.payload();
     	ByteBufInputStream byteBufInputStream = new ByteBufInputStream(data);
@@ -214,6 +214,20 @@ public class ServerProxy {
             		te.writeToNBT(nbt);
             		player = (EntityPlayerMP) world.getEntityByID(playerEntityId);
             		player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(x,y,z,6,nbt));
+        		}
+        		break;
+        	case 2:
+        		worldDimensionId = byteBufInputStream.readInt();
+        		x = byteBufInputStream.readInt();
+        		y = byteBufInputStream.readInt();
+        		z = byteBufInputStream.readInt();
+        		world = MinecraftServer.getServer().worldServerForDimension(worldDimensionId);
+        		te = world.getTileEntity(x, y, z);
+        		if(te!=null && !te.isInvalid())
+        		{
+            		int value = byteBufInputStream.readInt();
+        			fieldName = byteBufInputStream.readUTF();
+        			te.getClass().getDeclaredField(fieldName).set(te, value);
         		}
         		break;
         }

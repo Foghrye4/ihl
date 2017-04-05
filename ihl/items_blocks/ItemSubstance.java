@@ -178,6 +178,7 @@ public class ItemSubstance extends Item implements IItemHasMiniGUI {
 			info.add(StatCollector.translateToLocal("ihl.detonator_delay") + " "
 					+ itemStack.stackTagCompound.getInteger("detonator_delay")
 					+ StatCollector.translateToLocal("ihl.seconds"));
+			info.add(StatCollector.translateToLocal("ihl.detonatorHint"));
 		}
 	}
 

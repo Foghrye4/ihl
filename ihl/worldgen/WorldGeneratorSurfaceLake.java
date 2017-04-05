@@ -1,12 +1,10 @@
 package ihl.worldgen;
 
 import ihl.utils.IHLMathUtils;
-import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class WorldGeneratorSurfaceLake extends WorldGeneratorBase {
 
@@ -25,9 +23,12 @@ public class WorldGeneratorSurfaceLake extends WorldGeneratorBase {
 			int y2 = y += IHLMathUtils.sign(surroundPOI[1] - world.getActualHeight() / 4 - y);
 			for (int iz = z; iz < 16 && iz >= 0; iz += IHLMathUtils.sign(surroundPOI[2] - z)) {
 				y2 += IHLMathUtils.sign(surroundPOI[1] - world.getActualHeight() / 4 - y2);
-				if (y2 > world.getActualHeight() * 3 / 8
-						&& world.getBlock(ix + startX, 64, iz + startZ) == Blocks.air) {
-					this.replace(world, ix + startX, 63, iz + startZ, ore);
+				int dx = ix-x;
+				int dz = iz-z;
+				int d = dx*dx+dz*dz;
+				if (d < 64 && y2 > world.getActualHeight() * 3 / 8
+						&& world.getBlock(ix + startX, 63, iz + startZ) == Blocks.air) {
+					this.replace(world, ix + startX, 62, iz + startZ, ore);
 				}
 				if (surroundPOI[2] == z) {
 					break;

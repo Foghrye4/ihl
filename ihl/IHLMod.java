@@ -249,6 +249,10 @@ public class IHLMod implements IFuelHandler {
 		GameRegistry.registerBlock(tditBlock, "tditBlock");
 		GameRegistry.registerTileEntity(TDITTileEntity.class, "tditTileEntity");
 		GameRegistry.registerItem(tditft, "tditftItem");
+		MinecraftForge.EVENT_BUS.register(new ChunkAndWorldLoadEventHandler());
+		IHLMod.log.info("IHL precalculating explosion.");
+		IHLMod.explosionHandler = new ExplosionVectorBlockV2();
+		IHLMod.log.info("Explosion calculated.");
 		proxy.load();
 		registerEntities();
 		OreDictionary.registerOre("ingotBrick", Items.brick);
@@ -260,10 +264,6 @@ public class IHLMod implements IFuelHandler {
 		OreDictionary.registerOre("platePaper", new ItemStack(Items.paper, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("dustGunpowder", new ItemStack(Items.gunpowder, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("blockExplosive", IHLUtils.getThisModItemStack("ihlExplosive"));
-		MinecraftForge.EVENT_BUS.register(new ChunkAndWorldLoadEventHandler());
-		IHLMod.log.info("IHL precalculating explosion.");
-		IHLMod.explosionHandler = new ExplosionVectorBlockV2();
-		IHLMod.log.info("Explosion calculated.");
 	}
 
 	@EventHandler
@@ -836,6 +836,20 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getThisModItemStackWithSize("barD10Steel", 4) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("chemicalReactor") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
+			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+					Arrays.asList(new IRecipeInput[] { 
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("handDrillBronze")),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("drillSteelHardened"))
+							}),
+					Arrays.asList(new IRecipeInput[] { 
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("electricMotorLVLEDC")),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("pipelineAccessoriesSteel")),
+							new RecipeInputOreDict("foilRubber"),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("highPressureVesselSteel")),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStack("pistonCylinderSteel")),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("boltM10x1Steel",8)),
+							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("nutM10x1Steel",8))}),
+					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("dosingPump") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
 					IHLUtils.getThisModItemStack("hammer"), IHLUtils.getThisModItemStack("handDrillBronze"),
 					IHLUtils.getThisModItemStack("hackSawSteel"), IHLUtils.getThisModItemStack("drillSteelHardened"),

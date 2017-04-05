@@ -3,6 +3,8 @@ package ihl.model;
 import ihl.items_blocks.IHLTool;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
@@ -11,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
+@SideOnly(value=Side.CLIENT)
 public class IHLToolRenderer implements IItemRenderer
 {
 	
