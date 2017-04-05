@@ -2,8 +2,12 @@ language.name=HAYO
 language.region=CN
 language.code=zh_CN
 
+ihl.powerCableTooltip=这根黑科技线缆可以穿过未载入的区块传输能源。
 ihl.detonator_delay=起爆延迟:
-tile.pileBlock.name=一堆东西
+ihl.explosionPower=爆炸当量:
+ihl.mTNT=克TNT炸药
+ihl.seconds=s
+tile.pileBlock.name=碎片堆
 detonator.name=雷管
 dustPentaerythritolTetranitrate.name=季戊四醇四硝酸酯
 dustPentaerythritol.name=季戊四醇
@@ -12,46 +16,24 @@ ingotPotassium.name=钾锭
 catalystIron.name=铁催化剂
 catalystIronOxide.name=氧化铁催化剂粗胚
 catalystRawIronOxide.name=氧化铁催化剂粗胚(未烧结)
-dustIronOxideCatalystMix.name=氧化铁催化剂粗胚粉
-dustSodiumFormate.name=甲酸钠
-dustMercuryChloride.name=氯化汞
-dustCalciumAcetate.name=钙
+dustIronOxideCatalystMix.name=氧化铁催化剂粉
+dustSodiumFormate.name=甲酸钠粉
+dustMercuryChloride.name=氯化汞粉
+dustMercuryFulminate.name=雷酸汞粉
+dustCalciumAcetate.name=钙粉
 itemCellMethanol=甲醇单元
-
+itemCellNitroGlycerin=硝酸甘油单元
 item.skull.name=遗失之魂碎片
 item.guidebook.name=IHL手册
 item.handpump.name=IHL手动泵
 item.advanced_handpump.name=IHL高级手动泵
-
-
+item.collector.name=IHL Collector
+item.collectorHeavy.name=IHL Heavy Collector
 item.handpump_discharged.name=IHL手动泵
-
-item.IHLDriver.name=IHL TS-02螺丝刀
-ihl.gui.ts02=IHL TS-02
-ihl.gui.ts02reverse_on=反向模式 开启
-ihl.gui.ts02reverse_off=反向模式 关闭
-ihl.gui.ts02auto_reverse_on=自动反向模式 开启
-ihl.gui.ts02auto_reverse_off=自动反向模式 关闭
-
-
-
-
-
-
-
-
-tile.IHLDriverBlock.name=IHL TS-02 螺丝刀
-
 
 tile.boneBlock.name=骨头块
 entity.LostHead.name=遗失之魂
-tile.basicHarvestorBlock.name=IHL自动收获机
-tile.blowerBlock.name=IHL工业风扇
 tile.ihlExplosive.name=炸药包
-ihl.gui.blower=空速:
-ihl.gui.blowerUnits=m/s
-tile.glassBox.name=玻璃盒
-item.glassBox.name=玻璃盒
 tile.evaporatorBlock.name=蒸发器
 tile.electricEvaporatorBlock.name=电热蒸发器
 tile.sackBlock.name=乳胶收集袋
@@ -86,11 +68,6 @@ itemDustIridiumAndSodiumOxide.name=氧化铱和钠
 tile.tditBlock.name=跨维物品传送器
 item.tditFrequencyTransmitter.name=T.D.I.T. 频率发射器
 
-item.flexibleCableWithClamp.name=电线卷
-item.flexibleCableCopper2x.name=电线卷
-item.flexibleCableCopper4x.name=电线卷
-item.flexibleCableCopper8x.name=电线卷
-item.flexibleCableCopper16x.name=电线卷
 tile.cableAnchor.name=接线盒
 wire.name=未绝缘电线
 cable.name=电线
@@ -98,7 +75,7 @@ tile.ironWorkbench.name=铁制工作台
 item.ironWorkbenchItem.name=铁制工作台
 setOfDies1_5sqmm.name=一套拉丝磨具
 ihl.gui.achesonFurnance=艾奇逊电炉
-ihl.gui.coiler=Coiler
+ihl.gui.coiler=卷线机
 ihl.gui.muffleFurnace=隔焰炉
 
 tile.blockAquaRegia.name=王水
@@ -115,7 +92,7 @@ tile.blockSeedOil.name=种子油
 tile.blockMoltenSteel.name=熔融钢
 tile.debugScanner.name=矿物辞典扫描仪
 tile.oreApatite.name=磷灰石矿石
-tile.oreSaltpeter.name=硝矿石
+tile.oreSaltpeter.name=硝石矿石
 tile.achesonFurnance.name=艾奇逊电炉
 item.crucible.name=高温陶瓷坩埚
 item.bucket_SpruceResin.name=松脂桶
@@ -150,13 +127,13 @@ tile.blockMoltenBronze.name=熔融青铜
 tile.blockVapourSulfuricAcid.name=硫酸蒸汽
 tile.blockSulfuricAcidAnhydride.name=硫酸酐蒸汽
 tile.blockSulfuricAcid.name=硫酸
-tile.wireMill.name=线缆挤出机
+tile.wireMill.name=线材轧机
 tile.vulcanizationExtrudingMold.name=硫化混合挤出口
-tile.extruder.name=挤出机
+tile.extruder.name=硫化橡胶挤出模
 tile.rollingMachinePart1.name=辊压机 p.#1
 tile.rollingMachinePart2.name=辊压机 p.#2
 tile.loom.name=纺织机
-tile.coiler.name=卷曲机
+tile.coiler.name=卷线机
 tile.lathePart1.name=车床 p.#1
 tile.lathePart2.name=车床 p.#2
 tile.fiberglassSpinnerets.name=玻璃纤维喷丝板
@@ -171,7 +148,6 @@ pipeRubberWithSulfur.name=天然橡胶管道
 pipeVulcanizedRubber.name=硫化橡胶管道
 tinSnipsSteel.name=铁皮剪
 hammer.name=锤子
-pencil.name=铅笔
 grindstone.name=磨刀石
 chisel.name=凿子
 needleFile.name=细锉
@@ -185,9 +161,9 @@ diceM10x1SteelHardened.name=M10x1型圆模 (淬火)
 graverSteelHardened.name=雕刻刀 (淬火)
 sharpenedCarvingKnifeBronze.name=开封青铜小刀
 tile.oreTrona.name=天然碱矿石
-tile.oreLimestone.name=石灰石矿石
+tile.oreLimestone.name=石灰石
 tile.oreGypsum.name=石膏矿石
-tile.orePotassiumFeldspar.name=钾长石矿石
+tile.orePotassiumFeldspar.name=钾长石
 tile.injectionMold.name=浇筑模具
 itemCellNitricAcid.name=硝酸单元
 itemCellSulfuricAcid.name=硫酸单元
@@ -224,7 +200,7 @@ diceM10x1Steel.name=M10x1型圆模(尚未淬火)
 tapM10x1Steel.name=M10x1型丝锥(尚未淬火)
 shaftSteel.name=钢轴
 meshGlass.name=玻璃纤维网
-extruderSetOfMoldedPartsSteel.name=挤出机 套件
+extruderSetOfMoldedPartsSteel.name=硫化橡胶挤出模 套件
 boltM10x1Steel.name=M10x1型螺栓
 linerIronGraphiteGreased.name=铁石墨轴瓦 (上油并且可以用了)
 linerIronGraphiteHot.name=红热铁石墨轴瓦
@@ -244,18 +220,18 @@ diceM10x1SteelHot.name=红热M10x1型圆模
 tapM10x1SteelHot.name=红热M10x1型丝锥
 plateNonVulcanizedRubber.name=天然橡胶板
 machineCasingSetOfPartsSteel.name=基本机器组件
-setOfPartsForLVElemotorSteel.name=DC引擎组件
+setOfPartsForLVElemotorSteel.name=直流电机组件
 detonationSprayingMachineSetOfMoldedPartsBronze.name=爆炸喷涂机套件
 foilRubberWithSulfur.name=天然橡胶卷
 foilRubber.name=硫化橡胶卷
 dustCalciumCarbide.name=碳化钙粉
 barD10Gold.name=微型金条(D=10 mm)
 ingotHotSteel.name=红热钢锭
-
-
+blankGasReducerSteel.name=Forged billet for gas reducer
+setOfPartsGasReducerSteel.name=Machined billet for gas reducer
 gasReducerSteel.name=气体解压机
-
-
+electricMotorLVLEDC.name=低压低效能直流电机
+item.electricMotorLVLEDC.name=低压低效能直流电机
 fiberGlass.name=玻璃纤维
 tile.blockAir.name=压缩空气
 tile.blockNitrogen.name=压缩氮气
@@ -266,8 +242,8 @@ tile.gasWeldingStation.name=气焊机
 tile.woodenRollingMachinePart1.name=轧制机组件 #1
 tile.woodenRollingMachinePart2.name=轧制机组件 #2
 tile.blockLiquidGlass.name=熔融玻璃
-
-tile.spruceBlock.name=带刻痕的云杉原木
+tile.blockNatriumHydroxideDissolvedInWater.name=氢氧化钠溶液
+tile.spruceBlock.name=割开的云杉木
 tile.impregnatingMachine.name=(保留)
 tile.blockSulfuricAnhydride.name=硫酸酐
 fabric.name=纱布
@@ -317,12 +293,12 @@ tile.frequencyGenerator.name=直流转交流逆变器
 tile.batterySwitchUnit.name=开关电源
 tile.oreChromite.name=铬铁矿石
 tile.oreStibnite.name=辉锑矿石
-tile.oreDatolite.name=硅钙硼石矿石
+tile.oreDatolite.name=硅钙硼石
 tile.blockBoricAcid.name=硼酸
 ignitron.name=水银半波整流管
 stickBoronCarbide.name=碳化硼电极
 foilLead.name=铅箔
-dustLeadPlumbate.name=四氧化三铅(铅丹)
+dustLeadPlumbate.name=四氧化三铅(铅丹)粉
 vacuumSwitch.name=真空开关管
 hallSensor.name=霍尔传感器
 batteryCellsEbonite.name=硬橡胶电池外壳
@@ -374,7 +350,7 @@ dustPorcelain.name=瓷粉
 foilGold.name=金箔
 dustTungsticAcid.name=钨酸粉
 turboCompressorSetOfMoldedPartsBronze.name=涡轮压缩机部件
-
+cycloneFilterSteel.name=漩风滤器
 dustTungstenOxide.name=氧化钨粉
 dustCalciumTungstate.name=钨酸钙粉
 dustSodiumHydrogenSulfate.name=硫酸氢钠粉
@@ -384,23 +360,23 @@ dustPotassiumSulphate.name=硫酸钾
 dustRockSalt.name=氯化钾(岩盐)粉
 crushedPurifiedGyubnera.name=纯净粉碎钨锰铁矿
 crushedGyubnera.name=粉碎钨锰铁矿
-dustManganeseOxide.name=氧化锰
-dustIronOxide.name=氧化铁 (III)
+dustManganeseOxide.name=氧化锰粉
+dustIronOxide.name=氧化铁 (III)粉
 smallRoundSteel.name=小型钢圈
 smallRoundPolishedSteel.name=小型抛光钢圈
 rollingMachineSetOfMoldedpartsSteel.name=辊压机组件
 pistonCylinderSteel.name=活塞和气缸
-blankPistonCylinderSteel.name=Blanks for 活塞和气缸
+blankPistonCylinderSteel.name=空白活塞和气缸
 mixerSteel.name=钢混合器
 pipelineAccessoriesSteel.name=管道配件
 dustTrona.name=天然碱粉
 dustSilicon.name=硅粉
 highPressureVesselSteel.name=高压容器
 gasJetSteel.name=气体喷射管
-dustIridiumAndSodiumOxide.name=氧化铱和钠
+dustIridiumAndSodiumOxide.name=氧化铱和钠粉
 dustPlatinumGroupSludge.name=铂族泥
 dustTinyPlatinumGroupSludge.name=小撮铂族泥
-dustSodiumPeroxide.name=过氧化钠
+dustSodiumPeroxide.name=过氧化钠粉
 itemCellFuel.name=柴油单元
 itemCellMineralOil.name=矿物油单元
 itemCellFuelOil.name=重油单元
@@ -432,16 +408,16 @@ glassBlowingTubeSteel.name=玻璃吹管
 item.precipitatorCondenserRawPorcelain.name=冷凝器(未烧结)
 precipitatorCondenserRawPorcelain.name=冷凝器(未烧结)
 rollingMachineSetOfMoldedPartsSteel.name=辊压机套件
-tile.oreBischofite.name=水氯镁石矿石
+tile.oreBischofite.name=水氯镁石
 tile.blockMoltenSodiumChloride.name=熔融氯化钠
 tile.blockMoltenMagnesium.name=熔融镁
 tile.horizontalMiningPipeX.name=采矿管道
 tile.horizontalMiningPipeZ.name=采矿管道
 tile.lightBulb.name=灯泡
-ihl.as_byproduct_of_processing_of=作为幅产物产出
+ihl.as_byproduct_of_processing_of=作为附产物产出
 ihl.in_chemical_reactor=在化学反应器.
-
-
+ihl.check_usage=Check usage here:
+ihl.transversesection=横断面: 
 
 fluid.nitricacid=硝酸
 fluid.sulfuricacid=硫酸
@@ -500,33 +476,32 @@ fluid.solution.lithiumchloride=氯化锂溶液
 fluid.solution.calciumchloride=氯化钙溶液
 
 ihl.use_with_cryogenic_distiller=和低温蒸馏器一起使用
-ihl.dsmhint=使用燧石和钢 on this block to get result.
+ihl.dsmhint=在这个方块上使用燧石和钢以获得产物。
 ihl.gui.lathe=车床
-ihl.gui.missing.engine=需要电力引擎 /n 在此处放置电力引擎以启动机器。
 tile.glowningAir.name=空气
 tile.glassBoxBlock.name=玻璃盒
 tile.spotlight.name=聚光灯
 lampHolderPorcelain.name=瓷灯座
 lampHolderRawPorcelain.name=瓷灯座 (未烧结)
-ihl.durability=Durability: 
+ihl.durability=耐久: 
 ihl.mutton_drop_hint=使用这个工具杀羊可以获得羊油.
 ihl.attack_damage=伤害: 
 fiberGlassDieSteel.name=玻璃纤维模具
 item.fiberGlass.name=玻璃纤维
 tile.gasWeldingStation.tooltip=确认在蓝色容器中 /n 的氧气量与红色 /n 容器中的乙炔量
-
-tile.lathePart1.tooltip=Check if machine are ready, check /n electric motor slot, check if machine /n is supplied with energy and check if a /n second part of 车床 oriented correctly
-
-
-
-
-
+tile.gaedesMercuryRotaryPump.tooltip=确认机器一切正常 /n check electric motor slot /n and check if machine is /n supplied with energy
+tile.lathePart1.tooltip=确认机器一切正常 check /n electric motor slot, check if machine /n is supplied with energy and check if a /n second part of 车床 oriented correctly
+advancedShieldAssemblyUnitBlock.name=Hydrotransport shield assembly unit
+IHLShieldAssemblyUnitBlock.name=Shield assembly unit
+tile.IHLMultiBlockSpacerBlock.name=Multiblock spacer
+tile.vacuumInductionMeltingFurnace.name=Vacuum induction melting furnace
+tile.hydrotransportPulpRegenerator.name=水力纸浆再生器
 tile.blockZeolitePulp.name=钠沸石浆
-tile.blockMoltenTarPitch.name=熔融 焦油沥青
-dustSodiumZeolite.name=钠沸石
-dustSodiumZeoliteCoked.name=焦化钠沸石
-dustSodiumAluminate.name=铝酸钠
-dustSodiumHydroxide.name=氢氧化钠
+tile.blockMoltenTarPitch.name=熔融焦油沥青
+dustSodiumZeolite.name=钠沸石粉
+dustSodiumZeoliteCoked.name=焦化钠沸石粉
+dustSodiumAluminate.name=铝酸钠粉
+dustSodiumHydroxide.name=氢氧化钠粉
 dustTinyTungsten.name=小撮钨粉
 dustBauxite.name=铝土粉
 incisorSteelDiamondCoated.name=钻石涂层刮刀
@@ -547,44 +522,24 @@ destroy_mold_to_get_results=破坏模具以获得产物
 item.breadWithLard.name=羊油面包
 redstoneEmitter.name=红石信号发生器
 redstoneSensor.name=红石信号传感器
-
-
+ihl.wiremill.tip=这台机器需要在边上 /n 紧贴一台卷线机如果 /n 需要对线缆进行绝缘 /n 你需要在卷线机和线 /n 材轧机之间放置一台 /n 硫化橡胶挤出模。
+ihl.coiler.tip=你可以在铁质工作 /n 台里合并未使用的 /n 纤维或电线卷。
 mB=mB
 ihl.ingot=锭
-
+ihl.tub=tub
 ihl.blankChisel=粗制凿子
 ihl.carvingKnife=小刀
 ihl.toolHeadHammerSmall=锤头
 ihl.barD10=微型条
 ihl.stick=杆
-ihl.setOfPartsForLVElemotor=DC 引擎 组件
-
+ihl.setOfPartsForLVElemotor=直流电机组件
+ihl.pipelineAccessories=管道配件
 ihl.highPressureVessel=高压容器
 ihl.gasJet=气体喷射管
 ihl.handDrillSetOfMoldedParts=手提钻组件
 ihl.detonationSprayingMachineSetOfMoldedParts=爆炸喷涂机组件
 ihl.viseSetOfMoldedParts=夹具组件
 ihl.rollingMachineSetOfMoldedParts=辊压机部件
-ihl.polishingPucks=polishing pucks
+ihl.polishingPucks=抛光圆盘
 ihl.turboCompressorSetOfMoldedParts=涡轮压缩机部件
-ihl.extruderSetOfMoldedParts=挤出机 组件
-
-
-ihl.guidebook.title01=走起
-ihl.guidebook.section01.1=铁质工作台是IHL的核心设备。 工作台的界面分为四个部分。
-ihl.guidebook.section01.2=/n 1. First left one - 铁质工作台 and crafting devices, which are surrounding workbench in a range of 1 block. A red exclamation mark under device icon means, that by some reason device is not ready for use. For Gaedes 汞 rotary pump it means missing engine or missing electricity or simple previous operation is not ended. For gas welding station - not enough 乙炔 or 氧气 in gas cylinders to perform an operation. If status of crafting device is changed while player is still looking into GUI, visible status will not change accordingly. You may reopen GUI or put away or add new material/tool to reset outputs and crafting devices status. /n 2. Second one - is a tools slots. Tools will not be spent on a craft process, nethertheless they will be damaged after crafting. /n 3. Third one - is a materials slots. Depending on which recipe is choosed, material will be consumed accordingly. Note, that if recipe need 128 m of 铜 wire, there will be exactly that amount cutted from wire, leaving remaining quantity on its place. /n 4. Fourth. This is possible results of current combination of crafting devices, tools and materials. By clicking slot player will choose one certain output. All possible outputs differs from each other with colored frames. A result of operation will be added to players' inventory. If there is no free space, slot clicking will not result in anything.
-ihl.guidebook.title02=Distillation column
-ihl.guidebook.section02.1=The distillation column is a setup, which is used for separating fluids on a fraction. For example - separate raw oil in 柴油 and 重油.
-ihl.guidebook.section02.2=For working distillation column you need heat source (for example electric heat generator), fractionator bottom, fractionator cover, reflux condenser and any amount of fractionator sections you want (more sections - faster process). Also you need 2 fluid tank at outputs (basically 青铜 tub is ok) and at least 2 IC2 fluid regulator devices, which can be replaced with gregtech pumps with pipes, or any other block, who could output fluids in tanks.
-ihl.guidebook.title03=Cable production
-ihl.guidebook.section03.1=For fast and effectively flexible cable production you may use following setup:
-ihl.guidebook.section03.2=Assembly production line as shown on picture. There is no discharge slot in those machines, but there is electric motor slot instead, which is must be filled with electric motor for machines to work. Most of machines are created via casting. Use 隔焰炉 for injection mold, if it was crafted with 硬脂精, before placing it. Melt metals in 高温陶瓷坩埚, using 隔焰炉 to obtain molten metal. Right click with filled 高温陶瓷坩埚 on placed injection mold, wait for 2–3 seconds and destroy mold. 焦油沥青 can be obtained from bucket with 松脂, which is gained by placing sap gathering sack on spruce tree. To get glass fibers use fiberglass spinnerets, 油酸 or 种子油 and glass blocks and place coiler near machine as showed on picture, but without vulcanization mold. Mutton lard can be gained from sheep, if you kill them with sharpened 小刀. Everything else is showed in NEI.
-ihl.guidebook.title04=HVDC线缆
-ihl.guidebook.section04.1=High Voltage Direct Current line allow you to transfer alomost losslessly huge amounts of energy via flexible cables.
-ihl.guidebook.section04.2=At first you need frequency generator. This device will generate alternating voltage, which are nessesary for a second device - rectifier/transformer (RTU). Both of them have no GUI. By right-clicking RTU you can raise output voltage, and by pressing "IC2 mode" button (which are "M" by default on keyboard) and right-clicking with this key pressed you can lower one. At a other side of map you must place as much battery-switch units (BSU) as nessesary to lower voltage to standart 400V. A number of BSU must be so n=V/500. For example for 8000 V you need 8000/500=16 BSU connected to each other side-by-side.
-ihl.guidebook.title05=硫酸
-ihl.guidebook.section05.1=IHL itself use a more or less scientifically accurate way of chemical synthesis. Thus, to synthesise 硫酸 you need to reproduce a vintage so-called "chamber method" by assembling setup according picture below.
-ihl.guidebook.section05.2=You need to burn down sulfur with 硝 in 化学反应炉 (made from porcelain) and at the same time let steam in 弯曲烟囱 with integrated steam injector (100 mb/tick will be enough) and in a same time cool down precipitator with any cold liquid (a cheapest one, of course, is water and 10 mb per tick is enough). Using liquid 氮气, for example, does not give you any benefits. If you did everything right you will get a lot of 硫酸 very fast.
-ihl.guidebook.title06=乳胶收集
-ihl.guidebook.section06.1=你可以从IC2橡胶树中收集乳胶或从云杉树中收集松脂。
-ihl.guidebook.section06.2=Place a sack correctly on rubber tree trunk or spruce. If you made everything right, soon you will see a sap drops falling into sack. You can drain sack with ic2流体单元,通用流体单元, 使用BC和GT的管道也是可以的。你也可以直接把蒸发器放在它下方 - sack will autoutput at tileentity below it. Use 蒸发器 or coagulator (GT6) or centrifuge (GT5) to convert 乳胶 to sticky resin item. Conversion rate for solid fuel 蒸发器 is 100 mB per one sticky resin item.
+ihl.extruderSetOfMoldedParts=硫化橡胶挤出模 组件
