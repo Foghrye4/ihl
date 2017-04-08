@@ -72,7 +72,7 @@ public class LightSource {
 		dx=dx>0?(dx<<16)/d:0;
 		dy=dy>0?(dy<<16)/d:0;
 		dz=dz>0?(dz<<16)/d:0;
-		int brightness = Math.min(power*(dx+dy+dz)>>16,255);
+		int brightness = Math.min(power*(dx+dy+dz)>>16,16);
 		return new int[]{brightness, this.red, this.blue, this.green};
 	}
 }

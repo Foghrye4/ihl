@@ -33,16 +33,14 @@ public class RenderBlocksExt extends RenderBlocks {
 	}
 
 	private void transformColour(int x, int y, int z, int[] normal) {
-		for (LightSource lightSource : ((ClientProxy)IHLMod.proxy).getLightHandler().lightSources) {
+		/*		for (LightSource lightSource : ((ClientProxy)IHLMod.proxy).getLightHandler().lightSources) {
 			if (lightSource.isBlockIlluminated(x, y, z)) {
 				int[] lightValue = lightSource.getLightValue((int) x, (int) y, (int) z, normal);
 				System.out.println("this.brightnessBottomRight="+this.brightnessBottomRight);
-//				this.brightnessTopLeft |= lightValue[0];
-//				this.brightnessBottomLeft |= lightValue[0];
-//				this.brightnessTopRight |= lightValue[0];
-				this.brightnessBottomRight |= lightValue[0]>>4;
-				System.out.println("lightValue[0]="+lightValue[0]);
-				System.out.println("this.brightnessBottomRight|lightValue[0]="+this.brightnessBottomRight);
+				this.brightnessTopLeft |= lightValue[0];
+				this.brightnessBottomLeft |= lightValue[0];
+				this.brightnessTopRight |= lightValue[0];
+				this.brightnessBottomRight |= lightValue[0];
 				this.colorRedTopLeft *= (255 - lightValue[0]) * lightValue[1] / 255 / 255f;
 				this.colorRedBottomLeft *= (255 - lightValue[0]) * lightValue[1] / 255 / 255f;
 				this.colorRedTopRight *= (255 - lightValue[0]) * lightValue[1] / 255 / 255f;
@@ -56,7 +54,7 @@ public class RenderBlocksExt extends RenderBlocks {
 				this.colorGreenTopRight *= (255 - lightValue[0]) * lightValue[3] / 255 / 255f;
 				this.colorGreenBottomRight *= (255 - lightValue[0]) * lightValue[3] / 255 / 255f;
 			}
-		}
+		}*/
 	}
 
 	@Override

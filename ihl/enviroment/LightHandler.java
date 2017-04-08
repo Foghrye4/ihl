@@ -59,7 +59,7 @@ public class LightHandler {
 	private void litBlocksAndGetDescendants(World world, int[] evSource, int[] lightSource, BitSet illuminatedBlocksSet,
 			int ev, int power, int[] directionMask, int[] borders) {
 		power = this.getNewPower(world, ev, evSource, lightSource, power, directionMask, illuminatedBlocksSet, borders);
-		power = (power<<1)/3 - 1;
+		power = (power<<4)/17 - 1;
 		if (power > 1) {
 			if (vectors[ev][0] == 0) {
 				int[] xyz = IHLMod.explosionHandler.decodeXYZ(ev);

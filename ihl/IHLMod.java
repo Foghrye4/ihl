@@ -361,8 +361,6 @@ public class IHLMod implements IFuelHandler {
 			IHLUtils.addIC2MaceratorRecipe("oreDatolite", IHLUtils.getThisModItemStackWithSize("dustDatolite", 4));
 			IHLUtils.addIC2MaceratorRecipe("oreBischofite", IHLUtils.getThisModItemStackWithSize("dustBischofite", 4));
 			IHLUtils.addIC2MaceratorRecipe("ingotBrick", IHLUtils.getOreDictItemStackWithSize("dustBrick", 1));
-			IHLUtils.addIC2ExtrudingRecipe(IHLUtils.getThisModItemStack("dustIronOxideCatalystMix"),
-					IHLUtils.getThisModItemStack("catalystRawIronOxide"));
 			Recipes.advRecipes.addShapelessRecipe(IHLUtils.getThisModItemStackWithSize("dustIrongraphite", 2),
 					new Object[] { new RecipeInputOreDict("dustIron"), new RecipeInputOreDict("dustGraphite") });
 			Recipes.advRecipes.addShapelessRecipe(IHLUtils.getOreDictItemStackWithSize("dustPorcelain", 4),
@@ -532,8 +530,6 @@ public class IHLMod implements IFuelHandler {
 					IHLUtils.getOreDictItemStack("plateCoal"), 20F);
 			FurnaceRecipes.smelting().func_151394_a(IHLUtils.getOreDictItemStackWithSize("dustCalcite", 3),
 					IHLUtils.getOreDictItemStack("dustQuicklime"), 2F);
-			FurnaceRecipes.smelting().func_151394_a(IHLUtils.getThisModItemStack("catalystRawIronOxide"),
-					IHLUtils.getThisModItemStack("catalystIronOxide"), 2F);
 			ItemSubstance.postInit();
 			ItemStack lathingTool = Ic2Items.LathingTool.copy();
 			lathingTool.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -1790,7 +1786,7 @@ public class IHLMod implements IFuelHandler {
 							new UniversalRecipeInput(
 									new FluidStack[] { IHLUtils.getFluidStackWithSize("hydrogen", 90) },
 									new IRecipeInput[] { new RecipeInputItemStack(
-											IHLUtils.getThisModItemStack("catalystIronOxide")) }),
+											IHLUtils.getThisModItemStack("dustIronOxideCatalystMix")) }),
 							new UniversalRecipeOutput(null, new RecipeOutputItemStack[] {
 									new RecipeOutputItemStack(IHLUtils.getThisModItemStack("catalystIron"), 1f) },
 									200));
@@ -1806,7 +1802,7 @@ public class IHLMod implements IFuelHandler {
 					new UniversalRecipeInput(
 							new FluidStack[] { IHLUtils.getFluidStackWithSize("ammonia", 100),
 									IHLUtils.getFluidStackWithSize("oxygen", 150) },
-							new IRecipeInput[] { new RecipeInputOreDict("dustIridium", 0) }),
+							new IRecipeInput[] { new RecipeInputOreDictionaryList(new String[] {"dustIridium", "dustPlatinum"}, 0) }),
 					new UniversalRecipeOutput(new FluidStack[] { IHLUtils.getFluidStackWithSize("nitricacid", 250) },
 							null, 200));
 			ChemicalReactorTileEntity.addRecipe(
@@ -2290,14 +2286,12 @@ public class IHLMod implements IFuelHandler {
 		crystal.setItemDamage(OreDictionary.WILDCARD_VALUE);
 		advBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
 		chargedReBattery.setItemDamage(OreDictionary.WILDCARD_VALUE);
-		if (IHLMod.config.enableRubberTreeSack) {
-			Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
-					new Object[] { "CCC", "CCC", " F ", Character.valueOf('C'), IC2Items.getItem("platecopper"),
-							Character.valueOf('F'), IC2Items.getItem("electroFurnace") });
-			Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
-					new Object[] { "   ", " C ", " F ", Character.valueOf('C'), Ic2Items.electronicCircuit.copy(),
-							Character.valueOf('F'), new ItemStack(evaporatorBlock, 1)});
-		}
+		Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
+				new Object[] { "CCC", "CCC", " F ", Character.valueOf('C'), IC2Items.getItem("platecopper"),
+						Character.valueOf('F'), IC2Items.getItem("electroFurnace") });
+		Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
+				new Object[] { "   ", " C ", " F ", Character.valueOf('C'), Ic2Items.electronicCircuit.copy(),
+						Character.valueOf('F'), new ItemStack(evaporatorBlock, 1)});
 		if (IHLMod.config.enableFlexibleCablesCrafting) {
 			ItemStack cutter = Ic2Items.cutter.copy();
 			cutter.setItemDamage(OreDictionary.WILDCARD_VALUE);
