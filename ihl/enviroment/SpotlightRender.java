@@ -70,6 +70,7 @@ private final float scale=1F/16F;
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		model.Base.render(scale);
         GL11.glTranslatef(model.RotatingPart1.rotationPointX*scale, model.RotatingPart1.rotationPointY*scale, model.RotatingPart1.rotationPointZ*scale);
+		GL11.glColor4f((cte.colour>>>16)/255f,((cte.colour>>>8)&255)/255f, (cte.colour&255)/255f,1f);
 		switch(cte.getFacing())
 		{
 			case 0:

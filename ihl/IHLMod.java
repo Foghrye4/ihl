@@ -119,6 +119,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -174,7 +175,7 @@ public class IHLMod implements IFuelHandler {
 	public static FluidDictionary fluidDictionary;
 	public static Map<String, Integer> moltenAmounts = new HashMap<String, Integer>();
 	public static ExplosionVectorBlockV2 explosionHandler;
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt) throws IOException, ParserConfigurationException {
 		fluidDictionary = new FluidDictionary();
@@ -258,7 +259,7 @@ public class IHLMod implements IFuelHandler {
 		OreDictionary.registerOre("ingotBrick", Items.brick);
 		OreDictionary.registerOre("dustGunpowder", Items.gunpowder);
 		OreDictionary.registerOre("toolLighter", Items.flint_and_steel);
-		OreDictionary.registerOre("charcoal", new ItemStack(Items.coal,1,1));
+		OreDictionary.registerOre("charcoal", new ItemStack(Items.coal, 1, 1));
 		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.dirt, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("blockDirt", new ItemStack(Blocks.grass, 1, OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("platePaper", new ItemStack(Items.paper, 1, OreDictionary.WILDCARD_VALUE));
@@ -422,8 +423,8 @@ public class IHLMod implements IFuelHandler {
 					IHLUtils.getOreDictItemStack("dustTin"), IHLUtils.getThisModItemStack("dustTinyAntimony") });
 			Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStack("achesonFurnance"),
 					new Object[] { "BPB", "S S", "B B", Character.valueOf('B'), new RecipeInputOreDict("ingotBrick"),
-							Character.valueOf('P'), new RecipeInputOreDict("plateSteel"),
-							Character.valueOf('S'), new RecipeInputOreDict("stickCoal")});
+							Character.valueOf('P'), new RecipeInputOreDict("plateSteel"), Character.valueOf('S'),
+							new RecipeInputOreDict("stickCoal") });
 			Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStack("muffleFurnance"),
 					new Object[] { "BCB", "SDP", "BSB", Character.valueOf('B'), new RecipeInputOreDict("ingotBrick"),
 							Character.valueOf('P'), new RecipeInputOreDict("plateSteel"), Character.valueOf('C'),
@@ -530,6 +531,8 @@ public class IHLMod implements IFuelHandler {
 					IHLUtils.getOreDictItemStack("plateCoal"), 20F);
 			FurnaceRecipes.smelting().func_151394_a(IHLUtils.getOreDictItemStackWithSize("dustCalcite", 3),
 					IHLUtils.getOreDictItemStack("dustQuicklime"), 2F);
+			FurnaceRecipes.smelting().func_151394_a(IHLUtils.getThisModItemStack("catalystRawIronOxide"),
+					IHLUtils.getThisModItemStack("catalystIronOxide"), 2F);
 			ItemSubstance.postInit();
 			ItemStack lathingTool = Ic2Items.LathingTool.copy();
 			lathingTool.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -755,8 +758,7 @@ public class IHLMod implements IFuelHandler {
 							new ItemStack(Items.stick, 8), IHLUtils.getThisModItemStackWithSize("nailSteel", 8) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("loom") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(
-							new ItemStack[] { IHLUtils.getThisModItemStack("hammer")}),
+					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hammer") }),
 					Arrays.asList(new ItemStack[] {
 							IHLUtils.getThisModItemStack("detonationSprayingMachineSetOfMoldedPartsBronze"),
 							new ItemStack(Blocks.planks), IHLUtils.getThisModItemStackWithSize("nailSteel", 8) }),
@@ -832,24 +834,27 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getThisModItemStackWithSize("barD10Steel", 4) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("chemicalReactor") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new IRecipeInput[] { 
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("handDrillBronze")),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("drillSteelHardened"))
-							}),
-					Arrays.asList(new IRecipeInput[] { 
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("electricMotorLVLEDC")),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("pipelineAccessoriesSteel")),
-							new RecipeInputOreDict("foilRubber"),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("highPressureVesselSteel")),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStack("pistonCylinderSteel")),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("boltM10x1Steel",8)),
-							new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("nutM10x1Steel",8))}),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("dosingPump") })));
+			IronWorkbenchTileEntity.addRecipe(
+					new IronWorkbenchRecipe(
+							Arrays.asList(
+									new IRecipeInput[] {
+											new RecipeInputItemStack(IHLUtils.getThisModItemStack("handDrillBronze")),
+											new RecipeInputItemStack(
+													IHLUtils.getThisModItemStack("drillSteelHardened")) }),
+							Arrays.asList(new IRecipeInput[] {
+									new RecipeInputItemStack(IHLUtils.getThisModItemStack("electricMotorLVLEDC")),
+									new RecipeInputItemStack(IHLUtils.getThisModItemStack("pipelineAccessoriesSteel")),
+									new RecipeInputOreDict("foilRubber"),
+									new RecipeInputItemStack(IHLUtils.getThisModItemStack("highPressureVesselSteel")),
+									new RecipeInputItemStack(IHLUtils.getThisModItemStack("pistonCylinderSteel")),
+									new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("boltM10x1Steel", 8)),
+									new RecipeInputItemStack(
+											IHLUtils.getThisModItemStackWithSize("nutM10x1Steel", 8)) }),
+							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("dosingPump") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
 					IHLUtils.getThisModItemStack("hammer"), IHLUtils.getThisModItemStack("handDrillBronze"),
 					IHLUtils.getThisModItemStack("hackSawSteel"), IHLUtils.getThisModItemStack("drillSteelHardened"),
-					IHLUtils.getThisModItemStack("diceM10x1SteelHardened")}),
+					IHLUtils.getThisModItemStack("diceM10x1SteelHardened") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("barD10SteelHot", 7),
 							IHLUtils.getOreDictItemStack("plateSteel"), new ItemStack(Items.leather),
 							IHLUtils.getThisModItemStackWithSize("nailSteel", 8), new ItemStack(Blocks.log) }),
@@ -1166,6 +1171,40 @@ public class IHLMod implements IFuelHandler {
 								new RecipeInputItemStack(new ItemStack(Blocks.wool)) }),
 						Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("mirror", 16) })));
 			}
+			Map<String, Integer> dyeMap = new HashMap<String, Integer>();
+			dyeMap.put("dyePurple", 0xff00ff);
+			dyeMap.put("dyeCyan", 0x00ffff);
+			dyeMap.put("dyeLightGray", 0xaaaaaa);
+			dyeMap.put("dyeGray", 0x888888);
+			dyeMap.put("dyePink", 0xff8888);
+			dyeMap.put("dyeLime", 0x88ff88);
+			dyeMap.put("dyeLightBlue", 0x8888ff);
+			dyeMap.put("dyeBlue", 0x0000ff);
+			dyeMap.put("dyeGreen", 0x00ff00);
+			dyeMap.put("dyeRed", 0xff0000);
+			dyeMap.put("dyeBlack", 0x000000);
+			dyeMap.put("dyeMagenta", 0xff88ff);
+			dyeMap.put("dyeOrange", 0xff8800);
+			dyeMap.put("dyeWhite", 0xffffff);
+			dyeMap.put("dyeBrown", 0x804000);
+			dyeMap.put("dyeYellow", 0xffff00);
+			Map<String, Integer> paneGlassMap = new HashMap<String, Integer>();
+			paneGlassMap.put("paneGlassPurple", 0xff00ff);
+			paneGlassMap.put("paneGlassCyan", 0x00ffff);
+			paneGlassMap.put("paneGlassLightGray", 0xaaaaaa);
+			paneGlassMap.put("paneGlassGray", 0x888888);
+			paneGlassMap.put("paneGlassPink", 0xff8888);
+			paneGlassMap.put("paneGlassLime", 0x88ff88);
+			paneGlassMap.put("paneGlassLightBlue", 0x8888ff);
+			paneGlassMap.put("paneGlassBlue", 0x0000ff);
+			paneGlassMap.put("paneGlassGreen", 0x00ff00);
+			paneGlassMap.put("paneGlassRed", 0xff0000);
+			paneGlassMap.put("paneGlassBlack", 0x000000);
+			paneGlassMap.put("paneGlassMagenta", 0xff88ff);
+			paneGlassMap.put("paneGlassOrange", 0xff8800);
+			paneGlassMap.put("paneGlassWhite", 0xffffff);
+			paneGlassMap.put("paneGlassBrown", 0x804000);
+			paneGlassMap.put("paneGlassYellow", 0xffff00);
 			IronWorkbenchTileEntity.addRecipe(
 					new IronWorkbenchRecipe(
 							Arrays.asList(
@@ -1179,6 +1218,25 @@ public class IHLMod implements IFuelHandler {
 							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("lightBulb", 16) }),
 							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation"),
 									IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump") })));
+			for (Map.Entry<String, Integer> dyeEntry : dyeMap.entrySet()) {
+				ItemStack lightBulb = IHLUtils.getThisModItemStackWithSize("lightBulb", 16);
+				lightBulb.stackTagCompound = new NBTTagCompound();
+				lightBulb.stackTagCompound.setInteger("colour", dyeEntry.getValue());
+				IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+						Arrays.asList(
+								new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel"),
+										IHLUtils.getThisModItemStack("glassBlowingTubeSteel"),
+										IHLUtils.getThisModItemStack("hackSawSteel") }),
+						Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("foilTungsten"),
+								new RecipeInputOreDict("foilCopper"),
+								new RecipeInputItemStack(
+										IHLUtils.getThisModItemStackWithSize("lampHolderPorcelain", 16)),
+								new RecipeInputOreDict("dustGlass"), new RecipeInputOreDict(dyeEntry.getKey()) }),
+						Arrays.asList(new ItemStack[] { lightBulb }),
+						Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation"),
+								IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump") })));
+			}
+
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hammer"),
 							IHLUtils.getThisModItemStack("tinSnipsSteel"), IHLUtils.getThisModItemStack("hackSawSteel"),
@@ -1189,6 +1247,24 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getInsulatedWire("Copper", 1, 15, "Rubber", 100),
 							IHLUtils.getOreDictItemStack("plateSteel"), new ItemStack(Blocks.glass_pane) }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("spotlight") })));
+
+			for (Map.Entry<String, Integer> paneGlassEntry : paneGlassMap.entrySet()) {
+				ItemStack spotlight = IHLUtils.getThisModItemStack("spotlight");
+				spotlight.stackTagCompound = new NBTTagCompound();
+				spotlight.stackTagCompound.setInteger("colour", paneGlassEntry.getValue());
+				IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
+						IHLUtils.getThisModItemStack("hammer"), IHLUtils.getThisModItemStack("tinSnipsSteel"),
+						IHLUtils.getThisModItemStack("hackSawSteel"), IHLUtils.getThisModItemStack("setOfFilesSteel"),
+						IHLUtils.getThisModItemStack("viseSteel") }),
+						Arrays.asList(new IRecipeInput[] {
+								new RecipeInputItemStack(IHLUtils.getThisModItemStack("lightBulb")),
+								new RecipeInputOreDict("foilSteel"),
+								new RecipeInputWire(IHLUtils.getInsulatedWire("Copper", 1, 15, "Rubber", 100)),
+								new RecipeInputOreDict("plateSteel"),
+								new RecipeInputOreDict(paneGlassEntry.getKey()) }),
+						Arrays.asList(new ItemStack[] { spotlight })));
+
+			}
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(
 					new IRecipeInput[] { RecipeInputs.cutter, RecipeInputs.saw, RecipeInputs.vise, RecipeInputs.file }),
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateSteel", 2),
@@ -1204,7 +1280,7 @@ public class IHLMod implements IFuelHandler {
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("dustIronOxide", 8),
 							new RecipeInputOreDict("dustBauxite"), new RecipeInputOreDict("dustPotassiumOxide"), }),
 					Arrays.asList(
-							new ItemStack[] { IHLUtils.getThisModItemStackWithSize("dustIronOxideCatalystMix", 10) })));
+							new ItemStack[] { IHLUtils.getThisModItemStackWithSize("catalystRawIronOxide", 10) })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hackSawSteel"),
 							IHLUtils.getThisModItemStack("viseSteel"), IHLUtils.getThisModItemStack("setOfFilesSteel"),
@@ -1320,35 +1396,33 @@ public class IHLMod implements IFuelHandler {
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
 							new RecipeInputItemStack(new ItemStack(Items.string)),
 							new RecipeInputOreDict("dustGunpowder", 1),
-							new RecipeInputOreDictionaryList(new String[] {"dustPentaerythritolTetranitrate", "dustMercuryFulminate"}, 1),
+							new RecipeInputOreDictionaryList(
+									new String[] { "dustPentaerythritolTetranitrate", "dustMercuryFulminate" }, 1),
 							new RecipeInputOreDict("ingotTarPitch", 1) }),
 					Arrays.asList(new ItemStack[] { detonator }), null));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
-					Arrays.asList(
-							new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
-									new RecipeInputOreDict("dustPentaerythritolTetranitrate", 4),
-									new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
-					Arrays.asList(
-							new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower", 15*config.explosionPowerBase) }),
+					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
+							new RecipeInputOreDict("dustPentaerythritolTetranitrate", 4),
+							new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
+					Arrays.asList(new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower",
+							15 * config.explosionPowerBase) }),
 					null));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
-					Arrays.asList(
-							new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
-									new RecipeInputOreDict("dustWood", 4),
-									new RecipeInputFluidContainer(FluidRegistry.getFluid("nitroglycerin"), 1),
-									new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
-					Arrays.asList(
-							new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower", 10*config.explosionPowerBase) }),
+					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
+							new RecipeInputOreDict("dustWood", 4),
+							new RecipeInputFluidContainer(FluidRegistry.getFluid("nitroglycerin"), 1),
+							new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
+					Arrays.asList(new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower",
+							10 * config.explosionPowerBase) }),
 					null));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(null,
-					Arrays.asList(
-							new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
-									new RecipeInputOreDict("dustGunpowder", 8),
-									new RecipeInputOreDict("ingotTarPitch", 1), new RecipeInputDetonator(detonator) }),
-					Arrays.asList(
-							new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower", 3*config.explosionPowerBase) }),
+					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("platePaper", 2),
+							new RecipeInputOreDict("dustGunpowder", 8), new RecipeInputOreDict("ingotTarPitch", 1),
+							new RecipeInputDetonator(detonator) }),
+					Arrays.asList(new ItemStack[] { IHLUtils.getItemStackWithTag("ihlExplosive", "explosionPower",
+							3 * config.explosionPowerBase) }),
 					null));
-			
+
 			AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustSiliconDioxide", 2),
 					new RecipeInputOreDict("dustCoal", 4), "dustCarborundum");
 			AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustQuicklime"),
@@ -1362,15 +1436,15 @@ public class IHLMod implements IFuelHandler {
 			AchesonFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateCoal"),
 					new RecipeInputOreDict("dustCoal", 1), "plateGraphite");
 			LeadOvenTileEntity.addRecipe(
-					new UniversalRecipeInput(new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 400)},
+					new UniversalRecipeInput(new FluidStack[] { IHLUtils.getFluidStackWithSize("water", 400) },
 							new IRecipeInput[] { new RecipeInputOreDict("dustSulfur"),
 									new RecipeInputOreDict("dustSaltpeter") }),
 					IHLUtils.getFluidStackWithSize("sulfuricacid", 100));
 			LeadOvenTileEntity.addRecipe(
-					new UniversalRecipeInput(new FluidStack[] {IHLUtils.getFluidStackWithSize("water", 100)},
+					new UniversalRecipeInput(new FluidStack[] { IHLUtils.getFluidStackWithSize("water", 100) },
 							new IRecipeInput[] { new RecipeInputOreDict("crushedPurifiedCinnabar") }),
 					IHLUtils.getFluidStackWithSize("mercury", 36));
-			LeadOvenTileEntity.addRecipe(new RecipeInputOreDict("dustStibnite",1),
+			LeadOvenTileEntity.addRecipe(new RecipeInputOreDict("dustStibnite", 1),
 					IHLUtils.getThisModItemStack("dustAntimonyOxide"));
 			LeadOvenTileEntity.addRecipe(new RecipeInputOreDict("dustSodiumHydrogenSulfate", 2),
 					IHLUtils.getFluidStackWithSize("sulfuricacid", 20),
@@ -1414,36 +1488,45 @@ public class IHLMod implements IFuelHandler {
 			ItemStack drill = Ic2Items.miningDrill.copy();
 			drill.setItemDamage(OreDictionary.WILDCARD_VALUE);
 			DetonationSprayingMachineTileEntity.addRecipe(drill, Ic2Items.diamondDrill.copy());
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateSteel",1),
+			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateSteel", 1),
 					IHLUtils.getThisModItemStack("plateHotSteel"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("ingotSteel",1),
+			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("ingotSteel", 1),
 					IHLUtils.getOreDictItemStack("ingotHotSteel"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateTungsten",1),
+			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("plateTungsten", 1),
 					IHLUtils.getThisModItemStack("plateHotTungsten"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("gaedesPumpBarrelRawPorcelain"),1),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("gaedesPumpBarrelRawPorcelain"), 1),
 					IHLUtils.getThisModItemStack("gaedesPumpBarrelPorcelain"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(new ItemStack(IHLMod.crucible, 1, OreDictionary.WILDCARD_VALUE),1),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(new ItemStack(IHLMod.crucible, 1, OreDictionary.WILDCARD_VALUE), 1),
 					new ItemStack(IHLMod.crucible, 1, 1));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("injectionMold", 1),1),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("injectionMold", 1), 1),
 					IHLUtils.getThisModItemStackWithSize("injectionMold", 1));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("sawBladeSteel"),1),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("sawBladeSteel"), 1),
 					IHLUtils.getThisModItemStack("sawBladeSteelHot"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("barD10Steel"),1),
+			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("barD10Steel"), 1),
 					IHLUtils.getThisModItemStack("barD10SteelHot"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("linerIronGraphite"),1),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("linerIronGraphite"), 1),
 					IHLUtils.getThisModItemStack("linerIronGraphiteHot"));
 			MuffleFurnanceTileEntity.addRecipe(
 					new UniversalRecipeInput(null,
-							new IRecipeInput[] { new RecipeInputOreDict("dustIronOxide",1),
-									new RecipeInputOreDict("dustLithiumOxide",1) }),
+							new IRecipeInput[] { new RecipeInputOreDict("dustIronOxide", 1),
+									new RecipeInputOreDict("dustLithiumOxide", 1) }),
 					new UniversalRecipeOutput(null,
-							new RecipeOutputItemStack[] { new RecipeOutputItemStack(IHLUtils.getOreDictItemStackWithSize("dustFerrite", 2)) }, 200));
+							new RecipeOutputItemStack[] {
+									new RecipeOutputItemStack(IHLUtils.getOreDictItemStackWithSize("dustFerrite", 2)) },
+							200));
 			MuffleFurnanceTileEntity.addRecipe(
 					new UniversalRecipeInput(null,
 							new IRecipeInput[] { new RecipeInputOreDict("dustBauxite"),
 									new RecipeInputOreDict("dustSodiumHydroxide") }),
 					new UniversalRecipeOutput(null,
-							new RecipeOutputItemStack[] { new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumAluminate")) }, 200));
+							new RecipeOutputItemStack[] {
+									new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustSodiumAluminate")) },
+							200));
 			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("drillSteel")),
 					IHLUtils.getThisModItemStack("drillSteelHot"));
 			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("tapM10x1Steel")),
@@ -1482,7 +1565,8 @@ public class IHLMod implements IFuelHandler {
 							(new ItemStack[] { IHLUtils.getThisModItemStack("linerIronGraphiteHot") })),
 					new UniversalRecipeOutput(null,
 							(new ItemStack[] { IHLUtils.getThisModItemStack("linerIronGraphiteGreased") }), 2));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("foilRubberWithSulfur")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("foilRubberWithSulfur")),
 					IHLUtils.getThisModItemStack("foilRubber"));
 			MuffleFurnanceTileEntity
 					.addRecipe(
@@ -1646,17 +1730,22 @@ public class IHLMod implements IFuelHandler {
 								200));
 			MuffleFurnanceTileEntity.addRecipe(new RecipeInputOreDict("dustTungsticAcid", 2),
 					IHLUtils.getOreDictItemStack("dustTungstenOxide"), 1.14f);
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("electrolysisBathRawPorcelain")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("electrolysisBathRawPorcelain")),
 					IHLUtils.getThisModItemStack("electrolysisBathPorcelain"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("ovenRawPorcelain")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("ovenRawPorcelain")),
 					IHLUtils.getThisModItemStack("leadOven"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("ringRawPorcelain")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("ringRawPorcelain")),
 					IHLUtils.getThisModItemStack("ringPorcelain"));
 			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("ringRawFerrite")),
 					IHLUtils.getThisModItemStack("ringFerrite"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("insulatorRawPorcelain")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("insulatorRawPorcelain")),
 					IHLUtils.getThisModItemStack("insulatorPorcelain"));
-			MuffleFurnanceTileEntity.addRecipe(new RecipeInputItemStack(IHLUtils.getThisModItemStack("lampHolderRawPorcelain")),
+			MuffleFurnanceTileEntity.addRecipe(
+					new RecipeInputItemStack(IHLUtils.getThisModItemStack("lampHolderRawPorcelain")),
 					IHLUtils.getThisModItemStack("lampHolderPorcelain"));
 			LabElectrolyzerTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("water", 300),
 					IHLUtils.getFluidStackWithSize("hydrogen", 200), IHLUtils.getFluidStackWithSize("oxygen", 100),
@@ -1786,7 +1875,7 @@ public class IHLMod implements IFuelHandler {
 							new UniversalRecipeInput(
 									new FluidStack[] { IHLUtils.getFluidStackWithSize("hydrogen", 90) },
 									new IRecipeInput[] { new RecipeInputItemStack(
-											IHLUtils.getThisModItemStack("dustIronOxideCatalystMix")) }),
+											IHLUtils.getThisModItemStack("catalystIronOxide")) }),
 							new UniversalRecipeOutput(null, new RecipeOutputItemStack[] {
 									new RecipeOutputItemStack(IHLUtils.getThisModItemStack("catalystIron"), 1f) },
 									200));
@@ -1802,7 +1891,7 @@ public class IHLMod implements IFuelHandler {
 					new UniversalRecipeInput(
 							new FluidStack[] { IHLUtils.getFluidStackWithSize("ammonia", 100),
 									IHLUtils.getFluidStackWithSize("oxygen", 150) },
-							new IRecipeInput[] { new RecipeInputOreDictionaryList(new String[] {"dustIridium", "dustPlatinum"}, 0) }),
+							new IRecipeInput[] { new RecipeInputOreDict("dustIridium", 0) }),
 					new UniversalRecipeOutput(new FluidStack[] { IHLUtils.getFluidStackWithSize("nitricacid", 250) },
 							null, 200));
 			ChemicalReactorTileEntity.addRecipe(
@@ -1815,28 +1904,22 @@ public class IHLMod implements IFuelHandler {
 							new RecipeOutputItemStack[] { new RecipeOutputItemStack(
 									IHLUtils.getOreDictItemStack("dustPentaerythritolTetranitrate"), 1f) },
 							200, false));
-			if(FluidRegistry.isFluidRegistered("bioethanol")){
+			if (FluidRegistry.isFluidRegistered("bioethanol")) {
 				ChemicalReactorTileEntity.addRecipe(
-						new UniversalRecipeInput(
-								new FluidStack[] { IHLUtils.getFluidStackWithSize("bioethanol", 450),
-										IHLUtils.getFluidStackWithSize("mercury", 144),
-										IHLUtils.getFluidStackWithSize("nitricacid", 300)},
-								null),
+						new UniversalRecipeInput(new FluidStack[] { IHLUtils.getFluidStackWithSize("bioethanol", 450),
+								IHLUtils.getFluidStackWithSize("mercury", 144),
+								IHLUtils.getFluidStackWithSize("nitricacid", 300) }, null),
 						new UniversalRecipeOutput(
-								new FluidStack[] { IHLUtils.getFluidStackWithSize("acetaldehyde", 300) }, 
-								new RecipeOutputItemStack[] {
-										new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustMercuryFulminate"),1f) },
+								new FluidStack[] { IHLUtils.getFluidStackWithSize("acetaldehyde", 300) },
+								new RecipeOutputItemStack[] { new RecipeOutputItemStack(
+										IHLUtils.getOreDictItemStack("dustMercuryFulminate"), 1f) },
 								200));
 			}
 			ChemicalReactorTileEntity.addRecipe(
-					new UniversalRecipeInput(
-							new FluidStack[] { IHLUtils.getFluidStackWithSize("glycerol", 100),
-									IHLUtils.getFluidStackWithSize("nitricacid", 300)},
-							null),
-					new UniversalRecipeOutput(
-							new FluidStack[] { IHLUtils.getFluidStackWithSize("nitroglycerin", 400) }, 
-							null,
-							200));
+					new UniversalRecipeInput(new FluidStack[] { IHLUtils.getFluidStackWithSize("glycerol", 100),
+							IHLUtils.getFluidStackWithSize("nitricacid", 300) }, null),
+					new UniversalRecipeOutput(new FluidStack[] { IHLUtils.getFluidStackWithSize("nitroglycerin", 400) },
+							null, 200));
 
 			Crucible.addRecipe("ingotSteel", IHLUtils.getFluidStackWithSize("molten.steel", 144));
 			Crucible.addRecipe("ingotBronze", IHLUtils.getFluidStackWithSize("molten.bronze", 144));
@@ -2114,27 +2197,30 @@ public class IHLMod implements IFuelHandler {
 		OreDictionary.registerOre("toolLighter", IL.Tool_MatchBox_Used.get(1));
 		OreDictionary.registerOre("toolLighter", IL.Tool_Matches.get(1));
 		OreDictionary.registerOre("toolLighter", IL.Tool_Fire_Starter.get(1));
-		
-		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.ChemicalReactor.unlocalizedName), 
-				new Object[] { " R ", "PVP", " Mw",
-						Character.valueOf('R'), gregapi.data.OP.stick.dat(gregapi.data.MT.StainlessSteel),
-						Character.valueOf('V'), gregapi.data.OP.rotor.dat(gregapi.data.MT.StainlessSteel), 
-						Character.valueOf('P'), gregapi.data.OP.plateCurved.dat(gregapi.data.MT.StainlessSteel), 
-						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
 
-		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.CryogenicDistiller.unlocalizedName), 
-				new Object[] { " R ", "P P", " Mw",
-						Character.valueOf('R'), gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Copper),
-						Character.valueOf('P'), gregapi.data.OP.plateCurved.dat(gregapi.data.MT.Copper), 
-						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
-		
-		gregapi.util.UT.Crafting.shaped(IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.FluidizedBedReactor.unlocalizedName), 
-				new Object[] { "   ", "RPR", "VMw",
-						Character.valueOf('R'), gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Titanium),
-						Character.valueOf('P'), gregapi.data.OP.pipeHuge.dat(gregapi.data.MT.Titanium), 
-						Character.valueOf('V'), gregapi.data.OP.rotor.dat(gregapi.data.MT.Titanium), 
-						Character.valueOf('M'), gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel)});
-		
+		gregapi.util.UT.Crafting.shaped(
+				IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.ChemicalReactor.unlocalizedName),
+				new Object[] { " R ", "PVP", " Mw", Character.valueOf('R'),
+						gregapi.data.OP.stick.dat(gregapi.data.MT.StainlessSteel), Character.valueOf('V'),
+						gregapi.data.OP.rotor.dat(gregapi.data.MT.StainlessSteel), Character.valueOf('P'),
+						gregapi.data.OP.plateCurved.dat(gregapi.data.MT.StainlessSteel), Character.valueOf('M'),
+						gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel) });
+
+		gregapi.util.UT.Crafting.shaped(
+				IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.CryogenicDistiller.unlocalizedName),
+				new Object[] { " R ", "P P", " Mw", Character.valueOf('R'),
+						gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Copper), Character.valueOf('P'),
+						gregapi.data.OP.plateCurved.dat(gregapi.data.MT.Copper), Character.valueOf('M'),
+						gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel) });
+
+		gregapi.util.UT.Crafting.shaped(
+				IHLUtils.getThisModItemStack(MachineBaseBlock.MachineType.FluidizedBedReactor.unlocalizedName),
+				new Object[] { "   ", "RPR", "VMw", Character.valueOf('R'),
+						gregapi.data.OP.pipeTiny.dat(gregapi.data.MT.Titanium), Character.valueOf('P'),
+						gregapi.data.OP.pipeHuge.dat(gregapi.data.MT.Titanium), Character.valueOf('V'),
+						gregapi.data.OP.rotor.dat(gregapi.data.MT.Titanium), Character.valueOf('M'),
+						gregapi.data.OP.casingMachine.dat(gregapi.data.MT.Steel) });
+
 		IRecipeInput[] dsmInputs1 = new IRecipeInput[3];
 		ItemStack gregtechfile = IHLUtils.getOtherModItemStackWithDamage("gregtech", "gt.metatool.01", 18, 1);
 		dsmInputs1[0] = new RecipeInputItemStack(gregtechfile);
@@ -2259,7 +2345,7 @@ public class IHLMod implements IFuelHandler {
 						new FluidStack(FluidRegistry.getFluid("glue"), 240),
 						new FluidStack(FluidRegistry.getFluid("water"), 100) },
 				64, 32, 0);
-		
+
 		ExtruderTileEntity.addRecipe(IHLUtils.getOreDictItemStackWithSize("dustRubber", 5),
 				IHLUtils.getOreDictItemStackWithSize("dustTinySulfur", 1),
 				IHLUtils.getFluidStackWithSize("molten.rubber", 144 * 5));
@@ -2291,7 +2377,7 @@ public class IHLMod implements IFuelHandler {
 						Character.valueOf('F'), IC2Items.getItem("electroFurnace") });
 		Recipes.advRecipes.addRecipe(new ItemStack(electricEvaporatorBlock, 1),
 				new Object[] { "   ", " C ", " F ", Character.valueOf('C'), Ic2Items.electronicCircuit.copy(),
-						Character.valueOf('F'), new ItemStack(evaporatorBlock, 1)});
+						Character.valueOf('F'), new ItemStack(evaporatorBlock, 1) });
 		if (IHLMod.config.enableFlexibleCablesCrafting) {
 			ItemStack cutter = Ic2Items.cutter.copy();
 			cutter.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -2302,9 +2388,8 @@ public class IHLMod implements IFuelHandler {
 			Recipes.advRecipes.addRecipe(IHLUtils.getItemStackWithTag("setOfDies1_5sqmm", "transverseSection", 240),
 					new Object[] { " C ", " P ", "   ", Character.valueOf('P'), Ic2Items.plateadviron,
 							Character.valueOf('C'), cutter });
-			Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStack("ironWorkbench"),
-					new Object[] { "P  ", "P  ", "P H", Character.valueOf('P'), Ic2Items.plateadviron,
-							Character.valueOf('H'), forgeHammer});
+			Recipes.advRecipes.addRecipe(IHLUtils.getThisModItemStack("ironWorkbench"), new Object[] { "P  ", "P  ",
+					"P H", Character.valueOf('P'), Ic2Items.plateadviron, Character.valueOf('H'), forgeHammer });
 		}
 		ExtruderTileEntity.addRecipe(IHLUtils.getOreDictItemStackWithSize("itemRubber", 5),
 				IHLUtils.getOreDictItemStackWithSize("dustTinySulfur", 1),

@@ -6,12 +6,12 @@ public class IHLMathUtils {
 
 	public static float sqrt(float value) {
 		float value1 = value;
-		int multiplier = 2;
+		int multiplier = 1;
 		while (value1 >= 1.0f) {
-			multiplier *= multiplier;
-			value1 /= multiplier * multiplier;
+			multiplier=multiplier<<2;
+			value1 = value / (multiplier * multiplier);
 		}
-		return ((multiplier > 2) ? multiplier : 1) * sqrt_table[(int) (value1 * accuracy_level)];
+		return multiplier * sqrt_table[(int) (value1 * accuracy_level)];
 	}
 
 	public static float[] vector_vector_multiply(float[] v1, float[] v2) {

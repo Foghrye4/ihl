@@ -1,7 +1,9 @@
 package ihl.nei_integration;
 
+import java.awt.Rectangle;
 import java.util.Map;
 
+import codechicken.nei.recipe.TemplateRecipeHandler.RecipeTransferRect;
 import ihl.processing.chemistry.PaperMachineGui;
 import ihl.processing.chemistry.PaperMachineTileEntity;
 import ihl.recipes.UniversalRecipeInput;
@@ -59,6 +61,13 @@ public class PaperMachineRecipeHandler extends MachineRecipeHandler
     {
         return "ihl:textures/gui/GUIPaperMachine.png";
     }
+    
+    @Override
+    public void loadTransferRects()
+    {
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(25-5, 11-11, 52, 74), this.getRecipeId(), new Object[0]));
+    }
+
 
     @Override
 	public String getOverlayIdentifier()

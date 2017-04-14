@@ -16,6 +16,7 @@ import ihl.enviroment.LightBulbModel;
 import ihl.enviroment.LightBulbRender;
 import ihl.enviroment.LightBulbTileEntity;
 import ihl.enviroment.LightHandler;
+import ihl.enviroment.LightSource;
 import ihl.enviroment.MirrorRender;
 import ihl.enviroment.MirrorTileEntity;
 import ihl.enviroment.SpotlightModel;
@@ -103,6 +104,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -151,7 +153,7 @@ public class ClientProxy extends ServerProxy {
 		}
 		this.renderUtils = new IHLRenderUtils();
 		MinecraftForge.EVENT_BUS.register(this.renderUtils);
-
+		TileEntityRendererDispatcher.instance = new TileEntityRendererDispatcherExt();
 		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.BronzeTub);
 		registerBlockHandler(new RefluxCondenserBlockRender(), MachineType.RefluxCondenser);
 		registerBlockHandler(new RectifierTransformerUnitBlockRender(), MachineType.RectifierTransformerUnit);
@@ -430,6 +432,26 @@ public class ClientProxy extends ServerProxy {
 			float volume = byteBufInputStream.readFloat();
 			float pitch = byteBufInputStream.readFloat();
 			this.playSound(world, soundId, x, y, z, volume, pitch);
+			break;
+		case 4:
+			posX = byteBufInputStream.readInt();
+			posY = byteBufInputStream.readInt();
+			posZ = byteBufInputStream.readInt();
+			for (LightSource lightSource : ((ClientProxy) IHLMod.proxy).getLightHandler().lightSources) {
+				if (lightSource.isBlockIlluminated(posX, posY, posZ)) {
+					lightSource.provideLight(world, posX, posY, posZ);
+				}
+			}
+			break;
+		case 5:
+			posX = byteBufInputStream.readInt();
+			posY = byteBufInputStream.readInt();
+			posZ = byteBufInputStream.readInt();
+			for (LightSource lightSource : ((ClientProxy) IHLMod.proxy).getLightHandler().lightSources) {
+				if (lightSource.isBlockIlluminated(posX, posY, posZ)) {
+					lightSource.castShadow(world, posX, posY, posZ);
+				}
+			}
 			break;
 		}
 		byteBufInputStream.close();

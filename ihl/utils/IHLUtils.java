@@ -453,6 +453,12 @@ public class IHLUtils {
 	}
 
 	public static boolean isItemStacksIsEqual(ItemStack stack1, ItemStack stack2, boolean useOreDictionary) {
+		if(stack2==null && stack1==null){
+			return true;
+		}
+		else if(stack2==null || stack1==null){
+			return false;
+		}
 		if (useOreDictionary && isItemsHaveSameOreDictionaryEntry(stack1, stack2)) {
 			return true;
 		} else {

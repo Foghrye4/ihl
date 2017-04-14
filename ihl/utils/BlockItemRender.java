@@ -16,6 +16,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(value = Side.CLIENT)
 public class BlockItemRender implements IItemRenderer{
 	private ModelBase model;
 	private ResourceLocation tex;
@@ -86,6 +90,10 @@ public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 	IHLItemBlock bItem =(IHLItemBlock) item.getItem();
 	Block block = bItem.getBlockContained();
 	GL11.glScalef(1F, -1F+amendment, -1F);
+	if(item.stackTagCompound!=null && item.stackTagCompound.hasKey("colour")){
+		int colour = item.stackTagCompound.getInteger("colour");
+		GL11.glColor4f((colour>>>16)/255f,((colour>>>8)&255)/255f, (colour&255)/255f,1f);
+	}
 	switch (type) {
 		case ENTITY:
 		    GL11.glTranslatef(0,-1.5F,0);
@@ -151,6 +159,10 @@ public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 			    GL11.glTranslatef(0.0F,0.2F,0F);
 			}
 		    GL11.glTranslatef(-0.25F,-2.0F-amendment,0F);
+			if(item.stackTagCompound!=null && item.stackTagCompound.hasKey("colour")){
+				int colour = item.stackTagCompound.getInteger("colour");
+				GL11.glColor4f((colour>>>16)/255f,((colour>>>8)&255)/255f, (colour&255)/255f,1f);
+			}
 		    if(model!=null)
 		    {
 		    	for(int i = this.renderFrom;i<model.boxList.size()-this.renderTo;i++)

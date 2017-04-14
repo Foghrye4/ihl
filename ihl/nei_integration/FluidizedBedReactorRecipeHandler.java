@@ -22,7 +22,7 @@ public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler
     @Override
     protected int[] getInputPosX()
     {
-        return new int[]{8-5};
+        return new int[]{41-5};
     }
     
     @Override
@@ -46,7 +46,7 @@ public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler
     @Override
     protected int[] getOutputPosX()
     {
-        return new int[]{43-5};
+        return new int[]{76-5};
     }
 
     @Override
@@ -95,7 +95,7 @@ public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler
     @Override
     public void loadTransferRects()
     {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(25-5,34-10, 17, 13), this.getRecipeId(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(58-5,34-10, 17, 13), this.getRecipeId(), new Object[0]));
     }
 
     @Override

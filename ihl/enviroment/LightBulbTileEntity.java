@@ -26,7 +26,8 @@ import ihl.IHLModInfo;
 import ihl.model.RenderBlocksExt;
 import ihl.utils.IHLUtils;
 
-public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWrenchable, INetworkDataProvider, INetworkTileEntityEventListener {
+public class LightBulbTileEntity extends TileEntity
+		implements IEnergySink, IWrenchable, INetworkDataProvider {
 	private boolean active = false;
 	private short facing = 0;
 	public boolean prevActive = false;
@@ -35,6 +36,8 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 	public boolean addedToEnergyNet = false;
 	private boolean loaded = false;
 	private int ticker;
+	public int colour = 0xffffff;
+
 	@SideOnly(value = Side.CLIENT)
 	LightSource lightSource;
 
@@ -43,6 +46,7 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		super.readFromNBT(nbttagcompound);
 		this.energy = nbttagcompound.getDouble("energy");
 		this.facing = nbttagcompound.getShort("facing");
+		this.colour = nbttagcompound.getInteger("colour");
 	}
 
 	@Override
@@ -50,28 +54,7 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setDouble("energy", this.energy);
 		nbttagcompound.setShort("facing", this.facing);
-	}
-
-	/**
-	 * validates a tile entity
-	 */
-	@Override
-	public void validate() {
-		super.validate();
-		IC2.tickHandler.addSingleTickCallback(this.worldObj, new ITickCallback() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public void tickCallback(World world) {
-				if (!LightBulbTileEntity.this.isInvalid() && world.blockExists(LightBulbTileEntity.this.xCoord,
-						LightBulbTileEntity.this.yCoord, LightBulbTileEntity.this.zCoord)) {
-					LightBulbTileEntity.this.onLoaded();
-
-					if (LightBulbTileEntity.this.enableUpdateEntity()) {
-						world.loadedTileEntityList.add(LightBulbTileEntity.this);
-					}
-				}
-			}
-		});
+		nbttagcompound.setInteger("colour", this.colour);
 	}
 
 	/**
@@ -94,6 +77,9 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 	}
 
 	public void onLoaded() {
+		if (!this.worldObj.isRemote) {
+			IC2.network.get().updateTileEntityField(this, "colour");
+		}
 		if (IC2.platform.isSimulating() && !this.addedToEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			this.addedToEnergyNet = true;
@@ -107,19 +93,28 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 				this.addedToEnergyNet = false;
 			}
-			this.active = false;
-			this.updateLightState();
 		}
+		this.active = false;
+		this.updateLightState();
 	}
 
 	@Override
 	public final boolean canUpdate() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void updateEntity() {
-		if (++this.ticker % 4 == 0) {
+		if (this.worldObj.isRemote) {
+			if(this.prevActive != active){
+				updateLightState();
+				this.prevActive = active;
+			}
+		}
+		if(!this.loaded){
+			this.onLoaded();
+		}
+		if (!this.worldObj.isRemote && ++this.ticker % 4 == 0) {
 			if (this.prevFacing != facing) {
 				this.setFacing(facing);
 			}
@@ -136,9 +131,22 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		if (IC2.platform.isSimulating()) {
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		} else if (IC2.platform.isRendering()) {
-			if (lightSource == null && this.getActive()) {
-				lightSource = ((ClientProxy) IHLMod.proxy).getLightHandler().calculateOmniLightSource(worldObj, xCoord,
-						yCoord, zCoord, 8096, 255, 255, 0);
+			if (this.getActive()) {
+				if(lightSource != null)
+					((ClientProxy) IHLMod.proxy).getLightHandler().removeLightSource(lightSource);
+				int red = colour >>> 16;
+				int green = (colour >>> 8) & 255;
+				int blue = colour & 255;
+				int max = red;
+				if (max < green)
+					max = green;
+				if (max < blue)
+					max = blue;
+				max -= 255;
+				red -= max;// Normalize colours
+				blue -= max;
+				green -= max;
+				lightSource = this.createLightSource(red, green, blue);
 				((ClientProxy) IHLMod.proxy).getLightHandler().addLightSource(lightSource);
 			} else if (lightSource != null) {
 				((ClientProxy) IHLMod.proxy).getLightHandler().removeLightSource(lightSource);
@@ -147,8 +155,10 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		}
 	}
 
-	public boolean enableUpdateEntity() {
-		return IC2.platform.isSimulating();
+	@SideOnly(value = Side.CLIENT)
+	protected LightSource createLightSource(int red, int green, int blue) {
+		return ((ClientProxy) IHLMod.proxy).getLightHandler().calculateLightSource(worldObj, xCoord, yCoord, zCoord,
+				64, red, green, blue, null);
 	}
 
 	@Override
@@ -205,6 +215,7 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		Vector<String> ret = new Vector<String>(2);
 		ret.add("active");
 		ret.add("facing");
+		ret.add("colour");
 		return ret;
 	}
 
@@ -250,7 +261,6 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		this.active = active1;
 		if (this.prevActive != active1) {
 			IC2.network.get().updateTileEntityField(this, "active");
-	        IC2.network.get().initiateTileEntityEvent(this, active1?1:0, true);
 			updateLightState();
 		}
 		this.prevActive = active1;
@@ -260,16 +270,4 @@ public class LightBulbTileEntity extends TileEntity implements IEnergySink, IWre
 		this.active = active1;
 		this.prevActive = active1;
 	}
-	
-	@Override
-	public void onNetworkEvent(int event) 
-	{
-		boolean active1 = event==1;
-		this.active = active1;
-		if (this.prevActive != active1) {
-			updateLightState();
-		}
-		this.prevActive = active1;
-	}
-
 }

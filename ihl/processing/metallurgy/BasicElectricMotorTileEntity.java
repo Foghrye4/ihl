@@ -14,6 +14,7 @@ import ic2.core.block.invslot.InvSlot.Access;
 import ihl.IHLMod;
 import ihl.flexible_cable.FlexibleCableHolderBaseTileEntity;
 import ihl.flexible_cable.NodeEntity;
+import ihl.processing.invslots.InvSlotUpgradeIHL;
 import ihl.utils.IHLInvSlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,8 +27,9 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		implements IHasGui, INetworkClientTileEntityEventListener, IEnergySink {
 
 	public final IHLInvSlotDischarge dischargeSlot;
+	public final InvSlotUpgradeIHL upgradeSlot;
 	public short progress;
-	protected short operationLength = 600;
+	protected short operationLength = 6000;
 	protected double energyConsume = 1d;
 	public double energy;
 	public int maxStorage = 128;
@@ -37,6 +39,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 		super();
 		energyConsume = IHLMod.config.machineryEnergyConsume/100d;
 		dischargeSlot = new IHLInvSlotDischarge(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
+		upgradeSlot = new  InvSlotUpgradeIHL(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
 	}
 
 	@Override
@@ -127,11 +130,11 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	@Override
 	public double getDemandedEnergy() {
-		if(this.maxStorage - this.energy <= 1d)
+		if(this.getMaxStorage() - this.energy <= 1d)
 		{
 			return 0d;
 		}
-		return this.maxStorage - this.energy;
+		return this.getMaxStorage() - this.energy;
 	}
 
 	@Override
@@ -141,7 +144,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	@Override
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
-		if (this.energy < this.maxStorage) {
+		if (this.energy < this.getMaxStorage()) {
 			this.energy += amount;
 			return 0.0D;
 		} else {
@@ -184,16 +187,16 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 			double amount = this.dischargeSlot.discharge(this.getDemandedEnergy(), false);
 			this.energy += amount;
 		}
-		if (this.gridID != -1 && this.getGrid().energy > 0D && this.energy < this.maxStorage) {
+		if (this.gridID != -1 && this.getGrid().energy > 0D && this.energy < this.getMaxStorage()) {
 			this.energy += energyConsume * 10D;
 			this.getGrid().drawEnergy(energyConsume * 10D, this);
 		}
 		if (this.canOperate() && this.energy >= this.energyConsume) {
-			this.energy -= this.energyConsume;
+			this.energy -= this.energyConsume * this.upgradeSlot.getPowerConsumtionMultiplier();
 			if (this.progress == 0) {
 				IC2.network.get().initiateTileEntityEvent(this, 0, true);
 			}
-			++this.progress;
+			this.progress+=(short)(10*this.upgradeSlot.getProgressMultiplier());
 			if (this.progress >= this.operationLength) {
 				this.operate();
 				this.progress = 0;
@@ -210,6 +213,10 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	}
 
+	private double getMaxStorage() {
+		return maxStorage+this.upgradeSlot.getAdditionalEnergyStorage();
+	}
+
 	public abstract List<?>[] getInput();
 
 	public abstract boolean canOperate();
@@ -224,9 +231,9 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	public int getGUIEnergy(int i) {
 		if (this.energy < Float.MAX_VALUE) {
-			return Math.round((float) this.energy / this.maxStorage * i);
+			return Math.round((float) (this.energy / this.getMaxStorage() * i));
 		} else {
-			return Math.round((float) (this.energy / this.maxStorage) * i);
+			return Math.round((float) (this.energy / this.getMaxStorage()) * i);
 		}
 	}
 
@@ -250,7 +257,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	@Override
 	public double getEnergyAmountThisNodeWant() {
-		return this.energy - this.maxStorage;
+		return this.energy - this.getMaxStorage();
 	}
 
 	public double drawEnergyToGrid(double amount) {

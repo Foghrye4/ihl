@@ -24,7 +24,7 @@ public class CryogenicDistillerGui extends GuiContainer {
 		super.initGui();
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
-		this.buttonList.add(new GuiButton(0, x + 7, y + 49, 49, 20, "Empty"));
+		this.buttonList.add(new GuiButton(0, x + 7, y + 50, 49, 20, "Empty"));
 	}
 
 	@Override

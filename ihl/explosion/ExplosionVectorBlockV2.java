@@ -1,6 +1,7 @@
 package ihl.explosion;
 
 import ihl.IHLMod;
+import ihl.utils.IHLMathUtils;
 import ihl.utils.IHLUtils;
 
 import java.util.ArrayList;
@@ -37,7 +38,8 @@ public class ExplosionVectorBlockV2 {
 	private final int maxValue = (1 << bits) - 1;
 	public final int halfValue = (1 << bits - 1) - 1;
 	private final int maxArraySize = 1 << bits * 3;
-	public final int[][] vectors = new int[maxArraySize][2];
+//	public final int[][] vectors = new int[maxArraySize][2];
+	public final int[][] vectors = new int[maxArraySize][0];
 	private final Set<Chunk> chunksToUpdate = new HashSet<Chunk>(64);
 	private final Map<Integer, ItemStack> cachedDrops = new HashMap<Integer, ItemStack>(128);
 	final Map<Integer, WorldSavedDataBlastWave> blastWaveByDimensionId = new HashMap<Integer, WorldSavedDataBlastWave>();
@@ -64,41 +66,45 @@ public class ExplosionVectorBlockV2 {
 	public int[] decodeXYZ(int l) {
 		return new int[] { l >> bits * 2, l >> bits & maxValue, l & maxValue };
 	}
-
+	
 	public void precalculateExplosion() {
 		for (int levelRadius = 1; levelRadius <= this.maxValue; levelRadius++)
 			for (int ix = 0; ix <= levelRadius; ix++)
-				for (int iy = 0; iy <= levelRadius; iy++)
+				for (int iy = 0; iy <= levelRadius; iy++) {
 					for (int iz = (ix == levelRadius || iy == levelRadius) ? 0 : levelRadius; iz <= levelRadius; iz++) {
 						int vxyz = encodeXYZ(ix, iy, iz);
 						int[] prevXYZ = new int[] { ix, iy, iz };
-						reduceCoordinate(prevXYZ);
+						reduceCoordinate(prevXYZ, levelRadius);
 						int pvxyz = encodeXYZ(prevXYZ[0], prevXYZ[1], prevXYZ[2]);
 						findFreeSpace(pvxyz, vxyz);
 					}
+				}
 	}
 
 	private void findFreeSpace(int pvxyz, int vxyz) {
-		if (vectors[pvxyz][0] == 0) {
-			vectors[pvxyz][0] = vxyz;
-		} else if (vectors[pvxyz][1] == 0) {
-			vectors[pvxyz][1] = vxyz;
-		} else {
-			findFreeSpace(vectors[pvxyz][0], vxyz);
+		int[] nV = new int[vectors[pvxyz].length+1];
+		for(int i=0;i<vectors[pvxyz].length;i++){
+			nV[i]=vectors[pvxyz][i];
 		}
+		nV[vectors[pvxyz].length] = vxyz;
+		vectors[pvxyz] = nV;
 	}
 
-	private void reduceCoordinate(int[] pxyz) {
-
-		if (pxyz[0] >= pxyz[1] && pxyz[0] >= pxyz[2] && pxyz[0] > 0) {
-			pxyz[0]--;
+	private void reduceCoordinate(int[] pxyz, int levelRadius) {
+		float x = pxyz[0]+0.5f;
+		float y = pxyz[1]+0.5f;
+		float z = pxyz[2]+0.5f;
+		float rx = x/levelRadius;
+		float ry = y/levelRadius;
+		float rz = z/levelRadius;
+		while(x>=pxyz[0] && y>=pxyz[1] && z>=pxyz[2]){
+			x-=rx;
+			y-=ry;
+			z-=rz;
 		}
-		if (pxyz[1] >= pxyz[0] && pxyz[1] >= pxyz[2] && pxyz[1] > 0) {
-			pxyz[1]--;
-		}
-		if (pxyz[2] >= pxyz[1] && pxyz[2] >= pxyz[0] && pxyz[2] > 0) {
-			pxyz[2]--;
-		}
+		pxyz[0]=x<0?0:(int)x;
+		pxyz[1]=y<0?0:(int)y;
+		pxyz[2]=z<0?0:(int)z;
 	}
 
 	public void breakBlocksAndGetDescendants(World world, int sourceX, int sourceY, int sourceZ, Explosion explosion,
@@ -106,7 +112,7 @@ public class ExplosionVectorBlockV2 {
 		power = this.getNewPowerAndProcessBlocks(world, ev, sourceX, sourceY, sourceZ, explosion, power, directionMask);
 		power = (int) (power * 0.94) - 1;
 		if (power > 1) {
-			if (this.vectors[ev][0] == 0) {
+			if (this.vectors[ev].length==0) {
 				int[] xyz = decodeXYZ(ev);
 				int xb = xyz[0] >> bits - 1;
 				int yb = xyz[1] >> bits - 1;
@@ -124,10 +130,8 @@ public class ExplosionVectorBlockV2 {
 						explosion, ev2, power, directionMask);
 			} else {
 				for (int d1 : this.vectors[ev]) {
-					if (d1 != 0) {
 						breakBlocksAndGetDescendants(world, sourceX, sourceY, sourceZ, explosion, d1, power,
 								directionMask);
-					}
 				}
 			}
 		}

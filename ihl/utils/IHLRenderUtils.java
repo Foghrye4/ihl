@@ -9,6 +9,8 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.util.DrawUtil;
 import ihl.IHLMod;
 import net.minecraft.block.Block;
@@ -30,6 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+@SideOnly(value = Side.CLIENT)
 public class IHLRenderUtils 
 {
    private FloatBuffer colorBuffer;

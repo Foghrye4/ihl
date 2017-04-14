@@ -15,7 +15,7 @@ public class WorldRendererRenderBlocksInitMethodVisitor extends MethodVisitor {
 	@Override
 	public void visitTypeInsn(int opcode, String type) {
 		if (opcode == Opcodes.NEW && type.equals(RENDER_BLOCK_TYPE)) {
-			IHLCoremod.log.info("Sucessfully intercept new RenderBlocks instruction.");
+			IHLCoremod.log.info("'new RenderBlocks' instruction successfully intercepted.");
 			super.visitTypeInsn(opcode, RENDER_BLOCK_EXT_TYPE);
 		} else {
 			super.visitTypeInsn(opcode, type);
@@ -25,7 +25,7 @@ public class WorldRendererRenderBlocksInitMethodVisitor extends MethodVisitor {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 		if (owner.equals(RENDER_BLOCK_TYPE) && name.equals("<init>")) {
-			IHLCoremod.log.info("Sucessfully intercept RenderBlocks.<init> method.");
+			IHLCoremod.log.info("'RenderBlocks.<init>' method successfully intercepted.");
 			super.visitMethodInsn(opcode, RENDER_BLOCK_EXT_TYPE, name, desc, itf);
 		} else {
 			super.visitMethodInsn(opcode, owner, name, desc, itf);

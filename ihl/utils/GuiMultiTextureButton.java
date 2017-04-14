@@ -2,10 +2,13 @@ package ihl.utils;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
+@SideOnly(value = Side.CLIENT)
 public class GuiMultiTextureButton extends GuiButton {
 
     private ResourceLocation texture;

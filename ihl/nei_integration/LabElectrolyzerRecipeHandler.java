@@ -3,6 +3,9 @@ package ihl.nei_integration;
 import java.awt.Rectangle;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL11;
+
+import codechicken.lib.gui.GuiDraw;
 import ihl.processing.chemistry.LabElectrolyzerGui;
 import ihl.processing.chemistry.LabElectrolyzerTileEntity;
 import ihl.recipes.UniversalRecipeInput;
@@ -17,22 +20,22 @@ public class LabElectrolyzerRecipeHandler extends MachineRecipeHandler {
 
 	@Override
 	protected int[] getInputPosX() {
-		return new int[] { 42 - 5, 60 - 5, 78 - 5 };
+		return new int[] { 63 - 5, 46 - 5, 29 - 5 };
 	}
 
 	@Override
 	protected int[] getInputPosY() {
-		return new int[] { 15 - 11 };
+		return new int[] { 11 - 10 };
 	}
 
 	@Override
 	protected int[] getOutputPosX() {
-		return new int[] { 8 - 5, 87 - 5, 106 - 5 };
+		return new int[] { 29 - 5, 63 - 5, 109 - 5 };
 	}
 
 	@Override
 	protected int[] getOutputPosY() {
-		return new int[] { 15 - 11, 51 - 11, 15 - 11 };
+		return new int[] { 47 - 10 };
 	}
 
 	@Override
@@ -53,15 +56,24 @@ public class LabElectrolyzerRecipeHandler extends MachineRecipeHandler {
 	@Override
 	public void loadTransferRects() {
 		this.transferRects
-				.add(new RecipeTransferRect(new Rectangle(7 - 5, 32 - 10, 18, 18), this.getRecipeId(), new Object[0]));
+				.add(new RecipeTransferRect(new Rectangle(28 - 5, 28 - 10, 18, 18), this.getRecipeId(), new Object[0]));
 		this.transferRects
-				.add(new RecipeTransferRect(new Rectangle(86 - 5, 32 - 10, 37, 18), this.getRecipeId(), new Object[0]));
+				.add(new RecipeTransferRect(new Rectangle(108 - 5, 32 - 10, 18, 18), this.getRecipeId(), new Object[0]));
 	}
 
 	@Override
 	public String getOverlayIdentifier() {
 		return "labElectrolyzer";
 	}
+	
+    @Override
+	public void drawBackground(int recipeNumber)
+    {
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GuiDraw.changeTexture(this.getGuiTexture());
+        GuiDraw.drawTexturedModalRect(0, 0, 5, 10, 140, 54);
+        GuiDraw.drawTexturedModalRect(46-5, 10-10, 62, 10, 18, 18);
+    }
 
 	@Override
 	public Map<UniversalRecipeInput, UniversalRecipeOutput> getRecipeList() {

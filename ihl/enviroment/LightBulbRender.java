@@ -60,7 +60,7 @@ private final float scale=1F/16F;
 		bindTexture(tex);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
+		GL11.glColor4f((cte.colour>>>16)/255f,((cte.colour>>>8)&255)/255f, (cte.colour&255)/255f,1f);
 		if(cte.getActive())
 		{
 			GL11.glDisable(GL11.GL_LIGHTING);

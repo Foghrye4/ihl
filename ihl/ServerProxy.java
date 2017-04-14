@@ -38,6 +38,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 
 public class ServerProxy {
 
@@ -273,6 +275,50 @@ public class ServerProxy {
     		}
     	}
 	}
+	@SubscribeEvent
+	public void onBlockBreak(BreakEvent event) {
+		int x = event.x;
+		int y = event.y;
+		int z = event.z;
+		ByteBuf bb = Unpooled.buffer(20); 
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(4);
+			byteBufOutputStream.writeInt(x);
+			byteBufOutputStream.writeInt(y);
+			byteBufOutputStream.writeInt(z);
+			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(event.world.provider.dimensionId, x, y, z, 256d));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockPlace(PlaceEvent event) {
+		int x = event.x;
+		int y = event.y;
+		int z = event.z;
+		ByteBuf bb = Unpooled.buffer(20); 
+		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+		try 
+		{
+			byteBufOutputStream.write(5);
+			byteBufOutputStream.writeInt(x);
+			byteBufOutputStream.writeInt(y);
+			byteBufOutputStream.writeInt(z);
+			channel.sendToAllAround(new FMLProxyPacket(byteBufOutputStream.buffer(),IHLModInfo.MODID), new TargetPoint(event.world.provider.dimensionId, x, y, z, 256d));
+			byteBufOutputStream.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
 	
 	public void addEntityToServerList(INetworkListener entity) 
 	{

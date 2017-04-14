@@ -16,8 +16,8 @@ public class WorldRendererClassVisitor extends ClassVisitor {
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 		if (name.equals("a") && desc.equals("(Lsv;)V")) {
-			IHLCoremod.log.info("Sucessfully founded updateRenderer(Lnet/minecraft/entity/EntityLivingBase;)V");
-			IHLCoremod.log.info("Trying intercept: "+Type.getInternalName(RenderBlocks.class)+".<init>");
+			IHLCoremod.log.info("'updateRenderer(Lnet/minecraft/entity/EntityLivingBase;)V' successfully founded.");
+			IHLCoremod.log.info("Trying to intercept: '"+Type.getInternalName(RenderBlocks.class)+".<init>'");
 			return new WorldRendererRenderBlocksInitMethodVisitor(this.api, mv);
 		}
 		return mv;
