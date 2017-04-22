@@ -9,6 +9,7 @@ import ihl.processing.chemistry.FluidizedBedReactorTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler
@@ -72,12 +73,6 @@ public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler
     	super.drawBackground(i);
         GuiDraw.drawTexturedModalRect(83-5, 14-11, 101, 14, 18, 18);
         GuiDraw.drawTexturedModalRect(83-5, 50-11, 101, 14, 18, 18);
-    }
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Fluidized bed reactor";
     }
 
     @Override

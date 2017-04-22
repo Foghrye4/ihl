@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
 
 import ihl.flexible_cable.IronWorkbenchGui;
@@ -37,10 +39,10 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
 	        return IronWorkbenchGui.class;
 	    }
 
-	   	@Override
+	    @Override
 		public String getRecipeName()
 	    {
-	        return "Iron workbench";
+	        return StatCollector.translateToLocal(getRecipeId());
 	    }
 	   	
 		@Override
@@ -78,17 +80,6 @@ public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuiDraw.changeTexture(this.getGuiTexture());
         GuiDraw.drawTexturedModalRect(0, 0, 7, 7, 162, 108);
-    }
-
-    @Override
-	public void drawExtras(int i)
-    {
-    	/*
-        float f = this.ticks >= 20 ? (float)((this.ticks - 20) % 20) / 20.0F : 0.0F;
-        this.drawProgressBar(74, 23, 176, 14, 25, 16, f, 0);
-        f = this.ticks <= 20 ? (float)this.ticks / 20.0F : 1.0F;
-        this.drawProgressBar(51, 25, 176, 0, 14, 14, f, 3);
-        */
     }
 
     @Override

@@ -55,13 +55,6 @@ public class CryogenicDistillerRecipeHandler extends MachineRecipeHandler
         return new int[]{33-11,51-11};
     }
 
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Cryogenic distiller";
-    }
-
     @Override
 	public String getRecipeId()
     {

@@ -8,6 +8,7 @@ import ihl.processing.chemistry.LeadOvenTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 public class LeadOvenRecipeHandler extends MachineRecipeHandler {
 	@Override
@@ -53,11 +54,6 @@ public class LeadOvenRecipeHandler extends MachineRecipeHandler {
 	@Override
 	protected int[] getFluidInputPosY() {
 		return new int[] { 17 - 11 };
-	}
-
-	@Override
-	public String getRecipeName() {
-		return "Chemical oven";
 	}
 
 	@Override

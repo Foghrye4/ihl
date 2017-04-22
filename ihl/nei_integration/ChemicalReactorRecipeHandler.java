@@ -71,12 +71,6 @@ public class ChemicalReactorRecipeHandler extends MachineRecipeHandler
     }
 
     @Override
-	public String getRecipeName()
-    {
-        return "Chemical reactor";
-    }
-
-    @Override
 	public String getRecipeId()
     {
         return "ihl.chemicalReactor";

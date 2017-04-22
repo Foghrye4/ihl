@@ -44,12 +44,6 @@ public class MuffleFurnaceRecipeHandler extends MachineRecipeHandler
     }
 
     @Override
-	public String getRecipeName()
-    {
-        return "Muffle furnace";
-    }
-
-    @Override
 	public String getRecipeId()
     {
         return "ihl.muffleFurnace";

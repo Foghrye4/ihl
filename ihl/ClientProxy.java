@@ -12,16 +12,8 @@ import ihl.crop_harvestors.BlobEntityFX.FluidType;
 import ihl.crop_harvestors.BlobRenderFX;
 import ihl.crop_harvestors.SackRender;
 import ihl.crop_harvestors.SackTileEntity;
-import ihl.enviroment.LightBulbModel;
-import ihl.enviroment.LightBulbRender;
-import ihl.enviroment.LightBulbTileEntity;
-import ihl.enviroment.LightHandler;
-import ihl.enviroment.LightSource;
 import ihl.enviroment.MirrorRender;
 import ihl.enviroment.MirrorTileEntity;
-import ihl.enviroment.SpotlightModel;
-import ihl.enviroment.SpotlightRender;
-import ihl.enviroment.SpotlightTileEntity;
 import ihl.explosion.ExplosionEntityFX;
 import ihl.explosion.ExplosionRenderFX;
 import ihl.explosion.IHLEntityFallingPile;
@@ -132,28 +124,18 @@ public class ClientProxy extends ServerProxy {
 	public IHLRenderUtils renderUtils;
 	public Map<MachineType, Integer> sharedBlockRenders = new HashMap<MachineType, Integer>();
 	public Map<Class<? extends TileEntity>, ISelectionBoxSpecialRenderer> selectionBoxSpecialRendererRegistry = new HashMap<Class<? extends TileEntity>, ISelectionBoxSpecialRenderer>();
-	public LightHandler lightHandler;
 
 	public ClientProxy() {
 	}
 
-	public LightHandler getLightHandler() {
-
-		return this.lightHandler;
-	}
-
 	@Override
 	public void load() throws ParserConfigurationException {
-		if (lightHandler == null) {
-			lightHandler = new LightHandler();
-		}
 		if (channel == null) {
 			channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(IHLModInfo.MODID);
 			channel.register(this);
 		}
 		this.renderUtils = new IHLRenderUtils();
 		MinecraftForge.EVENT_BUS.register(this.renderUtils);
-		TileEntityRendererDispatcher.instance = new TileEntityRendererDispatcherExt();
 		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.BronzeTub);
 		registerBlockHandler(new RefluxCondenserBlockRender(), MachineType.RefluxCondenser);
 		registerBlockHandler(new RectifierTransformerUnitBlockRender(), MachineType.RectifierTransformerUnit);
@@ -217,8 +199,6 @@ public class ClientProxy extends ServerProxy {
 		if (loadMirrorRender && IHLMod.config.mirrorReflectionRange > 0) {
 			ClientRegistry.bindTileEntitySpecialRenderer(MirrorTileEntity.class, new MirrorRender());
 		}
-		ClientRegistry.bindTileEntitySpecialRenderer(LightBulbTileEntity.class, new LightBulbRender());
-		ClientRegistry.bindTileEntitySpecialRenderer(SpotlightTileEntity.class, new SpotlightRender());
 		selectionBoxSpecialRendererRegistry.put(AnchorTileEntity.class, new CableHolderSelectionBoxSpecialRenderer());
 		selectionBoxSpecialRendererRegistry.put(RectifierTransformerUnitTileEntity.class,
 				new RectifierTransformerUnitSelectionBoxSpecialRenderer());
@@ -291,13 +271,6 @@ public class ClientProxy extends ServerProxy {
 				new BlockItemRender(new ElectrolysisBathModel(),
 						new ResourceLocation(IHLModInfo.MODID + ":textures/blocks/electrolysisBath.png"), 0, 0, 0.0F,
 						0.0F));
-		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("lightBulb"),
-				new BlockItemRender(new LightBulbModel(),
-						new ResourceLocation(IHLModInfo.MODID + ":textures/blocks/lightBulb.png"), 0, 1, 0.0F, 0.0F,
-						true));
-		MinecraftForgeClient.registerItemRenderer(IHLUtils.getThisModItem("spotlight"),
-				new BlockItemRender(new SpotlightModel(),
-						new ResourceLocation(IHLModInfo.MODID + ":textures/blocks/spotlight.png"), 0, 1, 0.0F, 0.0F));
 		MinecraftForgeClient.registerItemRenderer(IHLTool.instance, new IHLToolRenderer());
 		MinecraftForgeClient.registerItemRenderer(FlexibleCableItem.instance, new FlexibleCableItemRender());
 		RenderingRegistry.registerEntityRenderingHandler(LostHeadEntity.class, new LostHeadRender());
@@ -432,26 +405,6 @@ public class ClientProxy extends ServerProxy {
 			float volume = byteBufInputStream.readFloat();
 			float pitch = byteBufInputStream.readFloat();
 			this.playSound(world, soundId, x, y, z, volume, pitch);
-			break;
-		case 4:
-			posX = byteBufInputStream.readInt();
-			posY = byteBufInputStream.readInt();
-			posZ = byteBufInputStream.readInt();
-			for (LightSource lightSource : ((ClientProxy) IHLMod.proxy).getLightHandler().lightSources) {
-				if (lightSource.isBlockIlluminated(posX, posY, posZ)) {
-					lightSource.provideLight(world, posX, posY, posZ);
-				}
-			}
-			break;
-		case 5:
-			posX = byteBufInputStream.readInt();
-			posY = byteBufInputStream.readInt();
-			posZ = byteBufInputStream.readInt();
-			for (LightSource lightSource : ((ClientProxy) IHLMod.proxy).getLightHandler().lightSources) {
-				if (lightSource.isBlockIlluminated(posX, posY, posZ)) {
-					lightSource.castShadow(world, posX, posY, posZ);
-				}
-			}
 			break;
 		}
 		byteBufInputStream.close();

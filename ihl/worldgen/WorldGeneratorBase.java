@@ -14,7 +14,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 public abstract class WorldGeneratorBase {
 	private final Random random = new Random();
 	protected final Block ore;
-	private final Set<Block> replaceableBlocks = new HashSet<Block>(2);
+	protected final Set<Block> replaceableBlocks = new HashSet<Block>(2);
 
 	public WorldGeneratorBase(Block oreIn, Block... replaceableBlocksIn) {
 		ore = oreIn;

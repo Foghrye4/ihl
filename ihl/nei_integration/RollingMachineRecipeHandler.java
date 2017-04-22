@@ -42,12 +42,6 @@ public class RollingMachineRecipeHandler extends MachineRecipeHandler
     }
 
     @Override
-	public String getRecipeName()
-    {
-        return "Rolling machine";
-    }
-
-    @Override
 	public String getRecipeId()
     {
         return "ihl.rollingMachine";

@@ -1,8 +1,11 @@
 package ihl.worldgen;
 
 import ihl.utils.IHLMathUtils;
+import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class WorldGeneratorUndergroundLake extends WorldGeneratorBase {
 
@@ -25,17 +28,23 @@ public class WorldGeneratorUndergroundLake extends WorldGeneratorBase {
 				int d = dx * dx + dz * dz;
 				if (y2 > 1 && d < 64) {
 					for (int iy = y2; iy > 0; iy--) {
-						int[] xyz = new int[] { 0, 0, -1, 0, 0, 1, 0, 0 };
-						for (int i = 2; i < xyz.length; i++) {
-							int absX = ix + startX + xyz[i - 2];
-							int absZ = iz + startZ + xyz[i];
-							if(!world.getChunkProvider().chunkExists(absX >> 4, absZ >> 4))	{
-								continue nextZ;
+						int absX = ix + startX;
+						int absZ = iz + startZ;
+						int absY = iy;
+						Chunk chunk = world.getChunkFromBlockCoords(absX, absZ);
+						ExtendedBlockStorage ebs = chunk.getBlockStorageArray()[absY >> 4];
+						if (ebs != null	&& replaceableBlocks.contains(ebs.getBlockByExtId(absX & 15, absY & 15, absZ & 15))) {
+							int[] xyz = new int[] { 0, 0, -1, 0, 0, 1, 0, 0 };
+							for (int i = 2; i < xyz.length; i++) {
+								int absX2 = absX + xyz[i - 2];
+								int absZ2 = absZ + xyz[i];
+								if (!world.getChunkProvider().chunkExists(absX2 >> 4, absZ2 >> 4)) {
+									continue nextZ;
+								}
+								this.replaceAllExceptOre(world, absX2, iy + xyz[i - 1], absZ2, clayBlock);
 							}
-							this.replaceAllExceptOre(world, absX, iy + xyz[i - 1],absZ,
-									clayBlock);
+							IHLUtils.setBlockRaw(ebs, absX & 15, absY & 15, absZ & 15, ore);
 						}
-						this.replace(world, ix + startX, iy, iz + startZ, ore);
 					}
 				}
 				if (surroundPOI[2] == z) {

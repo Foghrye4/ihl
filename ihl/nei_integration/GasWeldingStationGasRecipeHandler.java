@@ -8,6 +8,7 @@ import ihl.processing.metallurgy.GasWeldingStationTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class GasWeldingStationGasRecipeHandler extends MachineRecipeHandler
@@ -47,14 +48,7 @@ public class GasWeldingStationGasRecipeHandler extends MachineRecipeHandler
     {
         this.transferRects.add(new RecipeTransferRect(new Rectangle(80-5, 15-11, 50, 50), this.getRecipeId(), new Object[0]));
     }
-
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Gas welding station";
-    }
-
+    
     @Override
 	public String getRecipeId()
     {

@@ -8,6 +8,7 @@ import ihl.processing.chemistry.EvaporatorTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class EvaporatorRecipeHandler extends MachineRecipeHandler
@@ -40,12 +41,6 @@ public class EvaporatorRecipeHandler extends MachineRecipeHandler
     protected int[] getOutputPosY()
     {
         return new int[]{21};
-    }
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Evaporator";
     }
 
     @Override

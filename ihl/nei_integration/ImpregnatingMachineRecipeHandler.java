@@ -9,6 +9,7 @@ import ihl.processing.metallurgy.ImpregnatingMachineTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class ImpregnatingMachineRecipeHandler extends MachineRecipeHandler
@@ -65,12 +66,6 @@ public class ImpregnatingMachineRecipeHandler extends MachineRecipeHandler
     protected int[] getFluidOutputPosY()
     {
         return new int[]{52-11};
-    }
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Bronze tub";
     }
 
     @Override

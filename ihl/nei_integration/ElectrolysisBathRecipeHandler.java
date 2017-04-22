@@ -8,6 +8,7 @@ import ihl.processing.chemistry.ElectrolysisBathTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class ElectrolysisBathRecipeHandler extends MachineRecipeHandler
@@ -40,13 +41,6 @@ public class ElectrolysisBathRecipeHandler extends MachineRecipeHandler
     protected int[] getOutputPosY()
     {
         return new int[]{52-11,51-11,15-11};
-    }
-
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Electrolysis bath";
     }
 
     @Override

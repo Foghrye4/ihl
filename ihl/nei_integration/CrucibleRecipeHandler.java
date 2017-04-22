@@ -10,6 +10,7 @@ import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class CrucibleRecipeHandler extends MachineRecipeHandler
@@ -42,13 +43,6 @@ public class CrucibleRecipeHandler extends MachineRecipeHandler
     protected int[] getOutputPosY()
     {
         return new int[]{51-11};
-    }
-
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Crucible";
     }
 
     @Override

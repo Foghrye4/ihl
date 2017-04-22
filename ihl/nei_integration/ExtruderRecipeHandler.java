@@ -9,6 +9,7 @@ import ihl.processing.metallurgy.ExtruderTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 public class ExtruderRecipeHandler extends MachineRecipeHandler {
 	@Override
@@ -34,11 +35,6 @@ public class ExtruderRecipeHandler extends MachineRecipeHandler {
 	@Override
 	protected int[] getOutputPosY() {
 		return new int[] { 32 - 11 };
-	}
-
-	@Override
-	public String getRecipeName() {
-		return "Extruder";
 	}
 
 	@Override

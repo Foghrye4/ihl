@@ -48,13 +48,6 @@ public class LoomRecipeHandler extends MachineRecipeHandler
         return new int[]{44-11};
     }
 
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Loom";
-    }
-
     @Override
 	public String getRecipeId()
     {

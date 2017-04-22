@@ -43,12 +43,6 @@ public class WoodenRollingMachineRecipeHandler extends MachineRecipeHandler
     }
 
     @Override
-	public String getRecipeName()
-    {
-        return "Wooden rolling machine";
-    }
-
-    @Override
 	public String getRecipeId()
     {
         return "ihl.woodenRollingMachine";

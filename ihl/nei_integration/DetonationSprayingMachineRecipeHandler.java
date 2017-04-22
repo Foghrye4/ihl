@@ -9,6 +9,7 @@ import ihl.processing.metallurgy.DetonationSprayingMachineTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class DetonationSprayingMachineRecipeHandler extends MachineRecipeHandler
@@ -41,12 +42,6 @@ public class DetonationSprayingMachineRecipeHandler extends MachineRecipeHandler
     protected int[] getOutputPosY()
     {
         return new int[]{53-11};
-    }
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Detonation Spraying Machine";
     }
 
     @Override

@@ -6,6 +6,7 @@ import ihl.processing.chemistry.FractionatorBottomTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 
 public class FractionationColumnRecipeHandler extends MachineRecipeHandler
@@ -38,13 +39,6 @@ public class FractionationColumnRecipeHandler extends MachineRecipeHandler
     protected int[] getOutputPosY()
     {
         return new int[]{51-11,31-11};
-    }
-
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Fractionation column";
     }
 
     @Override

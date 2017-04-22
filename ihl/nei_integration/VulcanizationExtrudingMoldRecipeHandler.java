@@ -40,17 +40,10 @@ public class VulcanizationExtrudingMoldRecipeHandler extends MachineRecipeHandle
         return new int[]{46-11};
     }
 
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Vulcanization extruding mold";
-    }
-
     @Override
 	public String getRecipeId()
     {
-        return "ihl.culcanizationExtrudingMold";
+        return "ihl.vulcanizationExtrudingMold";
     }
 
     @Override

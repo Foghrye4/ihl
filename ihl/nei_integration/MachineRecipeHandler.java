@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -36,7 +37,10 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
     protected int ticks;
 
     @Override
-	public abstract String getRecipeName();
+	public String getRecipeName()
+    {
+        return StatCollector.translateToLocal(getRecipeId());
+    }
 
     public abstract String getRecipeId();
 

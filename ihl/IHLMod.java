@@ -33,7 +33,6 @@ import ic2.api.recipe.Recipes;
 import ic2.core.Ic2Items;
 import ic2.core.util.StackUtil;
 import ihl.enviroment.LaserHitMirrorEventHandler;
-import ihl.enviroment.LightBulbBlock;
 import ihl.enviroment.MirrorBlock;
 import ihl.explosion.ChunkAndWorldLoadEventHandler;
 import ihl.explosion.ExplosionVectorBlockV2;
@@ -198,7 +197,6 @@ public class IHLMod implements IFuelHandler {
 		BatteryItem.init();
 		IHLTool.init();
 		MirrorBlock.init();
-		LightBulbBlock.init();
 		MachineBaseBlock.init();// must be first
 		IHLMod.enet = new IHLENet();
 		MinecraftForge.EVENT_BUS.register(new EntityDropEventHandler());
@@ -1171,100 +1169,6 @@ public class IHLMod implements IFuelHandler {
 								new RecipeInputItemStack(new ItemStack(Blocks.wool)) }),
 						Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("mirror", 16) })));
 			}
-			Map<String, Integer> dyeMap = new HashMap<String, Integer>();
-			dyeMap.put("dyePurple", 0xff00ff);
-			dyeMap.put("dyeCyan", 0x00ffff);
-			dyeMap.put("dyeLightGray", 0xaaaaaa);
-			dyeMap.put("dyeGray", 0x888888);
-			dyeMap.put("dyePink", 0xff8888);
-			dyeMap.put("dyeLime", 0x88ff88);
-			dyeMap.put("dyeLightBlue", 0x8888ff);
-			dyeMap.put("dyeBlue", 0x0000ff);
-			dyeMap.put("dyeGreen", 0x00ff00);
-			dyeMap.put("dyeRed", 0xff0000);
-			dyeMap.put("dyeBlack", 0x000000);
-			dyeMap.put("dyeMagenta", 0xff88ff);
-			dyeMap.put("dyeOrange", 0xff8800);
-			dyeMap.put("dyeWhite", 0xffffff);
-			dyeMap.put("dyeBrown", 0x804000);
-			dyeMap.put("dyeYellow", 0xffff00);
-			Map<String, Integer> paneGlassMap = new HashMap<String, Integer>();
-			paneGlassMap.put("paneGlassPurple", 0xff00ff);
-			paneGlassMap.put("paneGlassCyan", 0x00ffff);
-			paneGlassMap.put("paneGlassLightGray", 0xaaaaaa);
-			paneGlassMap.put("paneGlassGray", 0x888888);
-			paneGlassMap.put("paneGlassPink", 0xff8888);
-			paneGlassMap.put("paneGlassLime", 0x88ff88);
-			paneGlassMap.put("paneGlassLightBlue", 0x8888ff);
-			paneGlassMap.put("paneGlassBlue", 0x0000ff);
-			paneGlassMap.put("paneGlassGreen", 0x00ff00);
-			paneGlassMap.put("paneGlassRed", 0xff0000);
-			paneGlassMap.put("paneGlassBlack", 0x000000);
-			paneGlassMap.put("paneGlassMagenta", 0xff88ff);
-			paneGlassMap.put("paneGlassOrange", 0xff8800);
-			paneGlassMap.put("paneGlassWhite", 0xffffff);
-			paneGlassMap.put("paneGlassBrown", 0x804000);
-			paneGlassMap.put("paneGlassYellow", 0xffff00);
-			IronWorkbenchTileEntity.addRecipe(
-					new IronWorkbenchRecipe(
-							Arrays.asList(
-									new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel"),
-											IHLUtils.getThisModItemStack("glassBlowingTubeSteel"),
-											IHLUtils.getThisModItemStack("hackSawSteel") }),
-							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("foilTungsten"),
-									IHLUtils.getThisModItemStack("foilCopper"),
-									IHLUtils.getThisModItemStackWithSize("lampHolderPorcelain", 16),
-									IHLUtils.getOreDictItemStack("dustGlass") }),
-							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("lightBulb", 16) }),
-							Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation"),
-									IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump") })));
-			for (Map.Entry<String, Integer> dyeEntry : dyeMap.entrySet()) {
-				ItemStack lightBulb = IHLUtils.getThisModItemStackWithSize("lightBulb", 16);
-				lightBulb.stackTagCompound = new NBTTagCompound();
-				lightBulb.stackTagCompound.setInteger("colour", dyeEntry.getValue());
-				IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-						Arrays.asList(
-								new ItemStack[] { IHLUtils.getThisModItemStack("tinSnipsSteel"),
-										IHLUtils.getThisModItemStack("glassBlowingTubeSteel"),
-										IHLUtils.getThisModItemStack("hackSawSteel") }),
-						Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("foilTungsten"),
-								new RecipeInputOreDict("foilCopper"),
-								new RecipeInputItemStack(
-										IHLUtils.getThisModItemStackWithSize("lampHolderPorcelain", 16)),
-								new RecipeInputOreDict("dustGlass"), new RecipeInputOreDict(dyeEntry.getKey()) }),
-						Arrays.asList(new ItemStack[] { lightBulb }),
-						Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation"),
-								IHLUtils.getThisModItemStack("gaedesMercuryRotaryPump") })));
-			}
-
-			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("hammer"),
-							IHLUtils.getThisModItemStack("tinSnipsSteel"), IHLUtils.getThisModItemStack("hackSawSteel"),
-							IHLUtils.getThisModItemStack("setOfFilesSteel"),
-							IHLUtils.getThisModItemStack("viseSteel") }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("lightBulb"),
-							IHLUtils.getThisModItemStack("foilSteel"),
-							IHLUtils.getInsulatedWire("Copper", 1, 15, "Rubber", 100),
-							IHLUtils.getOreDictItemStack("plateSteel"), new ItemStack(Blocks.glass_pane) }),
-					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("spotlight") })));
-
-			for (Map.Entry<String, Integer> paneGlassEntry : paneGlassMap.entrySet()) {
-				ItemStack spotlight = IHLUtils.getThisModItemStack("spotlight");
-				spotlight.stackTagCompound = new NBTTagCompound();
-				spotlight.stackTagCompound.setInteger("colour", paneGlassEntry.getValue());
-				IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
-						IHLUtils.getThisModItemStack("hammer"), IHLUtils.getThisModItemStack("tinSnipsSteel"),
-						IHLUtils.getThisModItemStack("hackSawSteel"), IHLUtils.getThisModItemStack("setOfFilesSteel"),
-						IHLUtils.getThisModItemStack("viseSteel") }),
-						Arrays.asList(new IRecipeInput[] {
-								new RecipeInputItemStack(IHLUtils.getThisModItemStack("lightBulb")),
-								new RecipeInputOreDict("foilSteel"),
-								new RecipeInputWire(IHLUtils.getInsulatedWire("Copper", 1, 15, "Rubber", 100)),
-								new RecipeInputOreDict("plateSteel"),
-								new RecipeInputOreDict(paneGlassEntry.getKey()) }),
-						Arrays.asList(new ItemStack[] { spotlight })));
-
-			}
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(
 					new IRecipeInput[] { RecipeInputs.cutter, RecipeInputs.saw, RecipeInputs.vise, RecipeInputs.file }),
 					Arrays.asList(new IRecipeInput[] { new RecipeInputOreDict("plateSteel", 2),
@@ -1756,28 +1660,28 @@ public class IHLMod implements IFuelHandler {
 			if (IHLUtils.hasOreDictionaryEntry("dustSilicon"))
 				FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 1333),
 						IHLUtils.getOreDictItemStackWithSize("dustSiliconDioxide", 1),
-						IHLUtils.getFluidStackWithSize("ic2distilledwater", 2000),
+						IHLUtils.getFluidStackWithSize("water", 2000),
 						IHLUtils.getOreDictItemStackWithSize("dustTinySilicon", 3));
 			if (IHLUtils.hasOreDictionaryEntry("dustManganese"))
 				FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 2000),
 						IHLUtils.getOreDictItemStackWithSize("dustManganeseOxide", 2),
-						IHLUtils.getFluidStackWithSize("ic2distilledwater", 3000),
+						IHLUtils.getFluidStackWithSize("water", 3000),
 						IHLUtils.getOreDictItemStack("dustManganese"));
 			FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 1200),
 					IHLUtils.getOreDictItemStack("dustIronOxide"),
-					IHLUtils.getFluidStackWithSize("ic2distilledwater", 1800),
+					IHLUtils.getFluidStackWithSize("water", 1800),
 					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyIron"), 3.6f));
 			FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 1500),
 					IHLUtils.getOreDictItemStack("dustTungstenOxide"),
-					IHLUtils.getFluidStackWithSize("ic2distilledwater", 2250),
+					IHLUtils.getFluidStackWithSize("water", 2250),
 					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyTungsten"), 2.25f));
 			FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 4000),
 					IHLUtils.getOreDictItemStackWithSize("dustSodiumSulfate", 3),
-					IHLUtils.getFluidStackWithSize("ic2distilledwater", 6000),
+					IHLUtils.getFluidStackWithSize("water", 6000),
 					IHLUtils.getOreDictItemStack("dustSodiumSulfide"));
 			FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("hydrogen", 1200),
 					IHLUtils.getOreDictItemStack("dustAntimonyOxide"),
-					IHLUtils.getFluidStackWithSize("ic2distilledwater", 1800),
+					IHLUtils.getFluidStackWithSize("water", 1800),
 					new RecipeOutputItemStack(IHLUtils.getOreDictItemStack("dustTinyAntimony"), 3.6f));
 			FluidizedBedReactorTileEntity.addRecipe(IHLUtils.getFluidStackWithSize("oxygen", 1500),
 					IHLUtils.getOreDictItemStack("dustIron"), null,

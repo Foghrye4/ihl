@@ -43,13 +43,6 @@ public class PaperMachineRecipeHandler extends MachineRecipeHandler
         return new int[]{51-11,51-11,51-11};
     }
 
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Paper machine";
-    }
-
     @Override
 	public String getRecipeId()
     {

@@ -59,13 +59,6 @@ public class WireMillRecipeHandler extends MachineRecipeHandler
         return new int[]{31-11};
     }
 
-
-    @Override
-	public String getRecipeName()
-    {
-        return "Wire mill";
-    }
-
     @Override
 	public String getRecipeId()
     {

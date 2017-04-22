@@ -11,6 +11,7 @@ import ihl.processing.chemistry.LabElectrolyzerTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.StatCollector;
 
 public class LabElectrolyzerRecipeHandler extends MachineRecipeHandler {
 	@Override
@@ -36,11 +37,6 @@ public class LabElectrolyzerRecipeHandler extends MachineRecipeHandler {
 	@Override
 	protected int[] getOutputPosY() {
 		return new int[] { 47 - 10 };
-	}
-
-	@Override
-	public String getRecipeName() {
-		return "Lab electrolyzer";
 	}
 
 	@Override
