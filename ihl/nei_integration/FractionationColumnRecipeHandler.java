@@ -6,7 +6,6 @@ import ihl.processing.chemistry.FractionatorBottomTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.StatCollector;
 
 
 public class FractionationColumnRecipeHandler extends MachineRecipeHandler

@@ -1,13 +1,12 @@
 package ihl.flexible_cable;
 
-import ihl.IHLMod;
-import ihl.interfaces.IEnergyNetNode;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import ihl.IHLMod;
+import ihl.interfaces.IEnergyNetNode;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLENet {

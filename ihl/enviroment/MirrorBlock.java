@@ -1,10 +1,10 @@
 package ihl.enviroment;
-import ihl.IHLCreativeTab;
-import ihl.IHLModInfo;
-import ihl.utils.IHLUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ihl.IHLCreativeTab;
+import ihl.IHLModInfo;
+import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

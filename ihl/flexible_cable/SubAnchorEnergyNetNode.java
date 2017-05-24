@@ -3,12 +3,6 @@ package ihl.flexible_cable;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -17,6 +11,12 @@ import ic2.core.IC2;
 import ihl.IHLMod;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.utils.IHLUtils;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 

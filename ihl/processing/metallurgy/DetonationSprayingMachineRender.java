@@ -1,13 +1,13 @@
 package ihl.processing.metallurgy;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import ic2.api.tile.IWrenchable;
 import ihl.IHLModInfo;
 import ihl.utils.IHLItemRenderer;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class DetonationSprayingMachineRender extends TileEntitySpecialRenderer{
 private DetonationSprayingMachineModel model = new DetonationSprayingMachineModel();

@@ -10,7 +10,6 @@ import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.StatCollector;
 
 
 public class CrucibleRecipeHandler extends MachineRecipeHandler

@@ -1,5 +1,9 @@
 package ihl.utils;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.block.RenderBlockDefault;
 import ihl.items_blocks.IHLItemBlock;
 import ihl.model.IHLModelRenderer;
@@ -14,10 +18,6 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(value = Side.CLIENT)
 public class BlockItemRender implements IItemRenderer{

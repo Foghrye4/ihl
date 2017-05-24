@@ -1,12 +1,12 @@
 package ihl.processing.metallurgy;
 
-import cpw.mods.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ihl.utils.IHLRenderUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-import ihl.utils.IHLRenderUtils;
 
 @SideOnly(Side.CLIENT)
 public class ImpregnatingMachineGui extends GuiContainer {

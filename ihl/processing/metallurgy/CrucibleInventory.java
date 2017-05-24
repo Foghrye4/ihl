@@ -2,6 +2,10 @@ package ihl.processing.metallurgy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ic2.core.ContainerBase;
+import ic2.core.IC2;
+import ic2.core.item.tool.HandHeldInventory;
+import ic2.core.util.StackUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,10 +13,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import ic2.core.ContainerBase;
-import ic2.core.IC2;
-import ic2.core.item.tool.HandHeldInventory;
-import ic2.core.util.StackUtil;
 
 public class CrucibleInventory extends HandHeldInventory {
 

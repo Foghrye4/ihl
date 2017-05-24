@@ -3,9 +3,23 @@ package ihl.processing.chemistry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import ic2.core.ContainerBase;
+import ic2.core.IC2;
+import ic2.core.block.invslot.InvSlot;
+import ic2.core.block.invslot.InvSlot.Access;
+import ic2.core.block.invslot.InvSlotConsumableLiquid;
+import ic2.core.block.invslot.InvSlotOutput;
+import ihl.processing.invslots.IHLInvSlotOutput;
+import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
+import ihl.processing.metallurgy.BasicElectricMotorTileEntity;
+import ihl.recipes.UniversalRecipeInput;
+import ihl.recipes.UniversalRecipeManager;
+import ihl.recipes.UniversalRecipeOutput;
+import ihl.utils.IHLFluidTank;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,21 +30,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import ic2.core.ContainerBase;
-import ic2.core.IC2;
-import ic2.core.block.invslot.InvSlot;
-import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.block.invslot.InvSlotConsumableLiquid;
-import ic2.core.block.invslot.InvSlotOutput;
-import ihl.processing.chemistry.ApparatusProcessableInvSlot;
-import ihl.processing.invslots.IHLInvSlotOutput;
-import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
-import ihl.processing.metallurgy.BasicElectricMotorTileEntity;
-import ihl.recipes.UniversalRecipeInput;
-import ihl.recipes.UniversalRecipeManager;
-import ihl.recipes.UniversalRecipeOutput;
-import ihl.utils.IHLFluidTank;
-import ihl.utils.IHLUtils;
 
 public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity implements IFluidHandler
 {
@@ -49,7 +48,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
         this.drainInputSlot = new InvSlotConsumableLiquidIHL(this, "drainInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.TOP, InvSlotConsumableLiquid.OpType.Drain);
         this.fillInputSlot = new InvSlotConsumableLiquidIHL(this, "fillInput", -1, InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill);
 		this.emptyFluidItemsSlot = new InvSlotOutput(this, "fluidCellsOutput", 2, 1);
-		this.input = new ApparatusProcessableInvSlot(this, "input", 3, Access.IO, 2, 64);
+		this.input = new ApparatusProcessableInvSlot(this, "input", 3, Access.I, 2, 64);
 	}
 	
     @Override

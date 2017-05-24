@@ -1,29 +1,27 @@
 package ihl.processing.chemistry;
 
-import cpw.mods.fml.relauncher.Side;
+import java.awt.event.KeyEvent;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ic2.core.IC2;
+import ihl.ClientProxy;
+import ihl.IHLMod;
+import ihl.utils.IHLRenderUtils;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
-import java.awt.event.KeyEvent;
-
-import org.lwjgl.opengl.GL11;
-
-import ihl.ClientProxy;
-import ihl.IHLMod;
-import ihl.utils.IHLRenderUtils;
-import ihl.utils.IHLUtils;
-
 @SideOnly(Side.CLIENT)
 public class DosingPumpGui extends GuiContainer {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIDosingPump.png");
 	private DosingPumpContainer container;
 	private GuiTextField setpointTextField;
+	private int lastFluidAmountSetpoint = -1;
 	private final static int TANK_HEIGHT = 58;
 
 	public DosingPumpGui(DosingPumpContainer container1) {
@@ -38,6 +36,10 @@ public class DosingPumpGui extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+		if(lastFluidAmountSetpoint!= this.container.tileEntity.fluidAmountSetpoint){
+			setpointTextField.setText(Integer.toString(this.container.tileEntity.fluidAmountSetpoint));
+			lastFluidAmountSetpoint= this.container.tileEntity.fluidAmountSetpoint;
+		}
 		int xOffset = (this.width - xSize) / 2;
 		int yOffset = (this.height - ySize) / 2;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

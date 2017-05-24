@@ -8,7 +8,14 @@ import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IC2Items;
+import ic2.core.Ic2Items;
+import ic2.core.util.LiquidUtil;
+import ihl.IHLMod;
+import ihl.IHLModInfo;
+import ihl.utils.IHLUtils;
+import ihl.worldgen.ores.IHLFluid;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,15 +28,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IC2Items;
-import ic2.core.Ic2Items;
-import ic2.core.util.LiquidUtil;
-import ihl.IHLModInfo;
-import ihl.IHLMod;
-import ihl.utils.IHLUtils;
-import ihl.worldgen.ores.IHLFluid;
 
 public class AdvancedHandPump extends IHLHandPump {
 	

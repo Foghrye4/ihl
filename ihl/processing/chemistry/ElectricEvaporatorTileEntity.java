@@ -6,15 +6,6 @@ import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -25,14 +16,22 @@ import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.audio.AudioSource;
 import ic2.core.block.invslot.InvSlot;
-import ic2.core.block.invslot.InvSlotUpgrade;
 import ic2.core.block.invslot.InvSlot.Access;
+import ic2.core.block.invslot.InvSlotUpgrade;
 import ic2.core.upgrade.IUpgradableBlock;
 import ic2.core.upgrade.IUpgradeItem;
 import ic2.core.upgrade.UpgradableProperty;
 import ihl.IHLMod;
 import ihl.utils.IHLInvSlotDischarge;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class ElectricEvaporatorTileEntity extends EvaporatorTileEntity implements IEnergySink, IUpgradableBlock, INetworkTileEntityEventListener
 {

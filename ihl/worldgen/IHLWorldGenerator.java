@@ -1,17 +1,17 @@
 package ihl.worldgen;
 
-import ihl.IHLMod;
-import ihl.utils.IHLUtils;
-import ihl.worldgen.ores.IHLFluid;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+
+import cpw.mods.fml.common.IWorldGenerator;
+import ihl.IHLMod;
+import ihl.utils.IHLUtils;
+import ihl.worldgen.ores.IHLFluid;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import cpw.mods.fml.common.IWorldGenerator;
 
 public class IHLWorldGenerator implements IWorldGenerator {
 

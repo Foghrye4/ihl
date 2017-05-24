@@ -6,6 +6,11 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ic2.core.ContainerBase;
+import ic2.core.IC2;
+import ic2.core.IHasGui;
+import ic2.core.block.TileEntityInventory;
+import ic2.core.block.invslot.InvSlot;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -15,11 +20,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
-import ic2.core.ContainerBase;
-import ic2.core.IC2;
-import ic2.core.IHasGui;
-import ic2.core.block.TileEntityInventory;
-import ic2.core.block.invslot.InvSlot;
 
 public class DebugScannerTileEntity extends TileEntityInventory implements IHasGui {
 	public final InvSlot itemsSlot;

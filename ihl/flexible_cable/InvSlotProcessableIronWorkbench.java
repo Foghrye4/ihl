@@ -5,14 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputFluidContainer;
 import ic2.core.IC2;
 import ic2.core.item.ItemUpgradeModule;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class InvSlotProcessableIronWorkbench extends IronWorkbenchInvSlot {
 	

@@ -1,5 +1,11 @@
 package ihl.items_blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.tile.IWrenchable;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
@@ -26,6 +32,7 @@ import ihl.processing.chemistry.LeadOvenTileEntity;
 import ihl.processing.chemistry.LoomTileEntity;
 import ihl.processing.chemistry.PaperMachineTileEntity;
 import ihl.processing.chemistry.RefluxCondenserTileEntity;
+import ihl.processing.chemistry.SolarEvaporatorTileEntity;
 import ihl.processing.metallurgy.AchesonFurnanceTileEntity;
 import ihl.processing.metallurgy.CoilerTileEntity;
 import ihl.processing.metallurgy.DetonationSprayingMachineTileEntity;
@@ -42,10 +49,6 @@ import ihl.processing.metallurgy.WireMillTileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart1TileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart2TileEntity;
 import ihl.utils.IHLUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -64,13 +67,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class MachineBaseBlock extends Block implements ITileEntityProvider {
 
-	MachineType type;
+	public MachineType type;
 	private static List<MachineBaseBlock> instances = new ArrayList<MachineBaseBlock>();
 
 	@SideOnly(Side.CLIENT)
@@ -80,7 +80,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			textureLeftMachineCasing, textureTopMachineCasing, textureRightMachineCasing, textureFrontMachineCasing,
 			textureFrontPaperMachine, textureBackMachineCasing, bronzeTubTop, bronzeTubSide, steel, redPaint,
 			greenPaint, rubberInsulatedCase, powerPort, dosingPumpBack, dosingPumpLeftSide, dosingPumpRightSide,
-			dosingPumpTop, dosingPumpFront;
+			dosingPumpTop, dosingPumpFront, solarEvaporatorSide;
 
 	public MachineBaseBlock(MachineType type1) {
 		super(Material.iron);
@@ -143,17 +143,20 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 	@Override
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list,
 			Entity entity) {
+		float height = 1f;
 		switch (this.type) {
+		case SolarEvaporator:
+			height = 0.5f;
 		case BronzeTub:
 			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1F, 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 0.1F, 1.0F, 1.0F);
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 0.1F, height, 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1F);
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, height, 0.1F);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.9F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+			this.setBlockBounds(0.9F, 0.0F, 0.0F, 1.0F, height, 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-			this.setBlockBounds(0.0F, 0.0F, 0.9F, 1.0F, 1.0F, 1.0F);
+			this.setBlockBounds(0.0F, 0.0F, 0.9F, 1.0F, height, 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 			this.setBlockBoundsForItemRender();
 			break;
@@ -165,7 +168,12 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 
 	@Override
 	public void setBlockBoundsForItemRender() {
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		if(this.type.equals(MachineType.SolarEvaporator)){
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5f, 1.0F);
+		}
+		else {
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		}
 	}
 
 	public static void init() {
@@ -239,6 +247,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 		this.dosingPumpRightSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":dosingPumpRight");
 		this.dosingPumpTop = par1IconRegister.registerIcon(IHLModInfo.MODID + ":dosingPumpTop");
 		this.dosingPumpFront = par1IconRegister.registerIcon(IHLModInfo.MODID + ":dosingPumpFront");
+		this.solarEvaporatorSide = par1IconRegister.registerIcon(IHLModInfo.MODID + ":solarEvaporatorSide");
 	}
 
 	@Override
@@ -364,6 +373,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			switch (this.type) {
 			case BronzeTub:
 				return this.bronzeTubSide;
+			case SolarEvaporator:
+				return this.solarEvaporatorSide;
 			case AchesonFurnace:
 				return this.blockIcon;
 			case MuffleFurnace:
@@ -391,6 +402,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			switch (this.type) {
 			case BronzeTub:
 				return this.bronzeTubSide;
+			case SolarEvaporator:
+				return this.solarEvaporatorSide;
 			case LeadOven:
 				return this.textureSideGoldFurnace;
 			case WireMill:
@@ -415,6 +428,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			switch (this.type) {
 			case BronzeTub:
 				return this.bronzeTubSide;
+			case SolarEvaporator:
+				return this.solarEvaporatorSide;
 			case LeadOven:
 				return this.textureSideGoldFurnace;
 			case WireMill:
@@ -437,6 +452,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 		case 3:
 			switch (this.type) {
 			case BronzeTub:
+			case SolarEvaporator:
 				return this.bronzeTubTop;
 			case AchesonFurnace:
 				return this.textureTopAchesonFurnance;
@@ -465,6 +481,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			switch (this.type) {
 			case BronzeTub:
 				return this.bronzeTubSide;
+			case SolarEvaporator:
+				return this.solarEvaporatorSide;
 			case LeadOven:
 				return this.textureSideGoldFurnace;
 			case WireMill:
@@ -488,6 +506,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 			switch (this.type) {
 			case BronzeTub:
 				return this.bronzeTubSide;
+			case SolarEvaporator:
+				return this.solarEvaporatorSide;
 			case LeadOven:
 				return this.textureSideGoldFurnace;
 			case CryogenicDistiller:
@@ -528,6 +548,7 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 	}
 
 	public enum MachineType {
+		SolarEvaporator("solarEvaporator", SolarEvaporatorTileEntity.class, false, true, null),
 		DosingPump("dosingPump", DosingPumpTileEntity.class, true, null),
 		IronWorkbench("ironWorkbench", IronWorkbenchTileEntity.class, false, true, null),
 		ElectrolysisBath("electrolysisBath", ElectrolysisBathTileEntity.class, false, IHLUtils
@@ -630,6 +651,8 @@ public class MachineBaseBlock extends Block implements ITileEntityProvider {
 	@SideOnly(Side.CLIENT)
 	public IIcon getAdditionalIconsForBlockRenderer(int flag) {
 		switch (this.type) {
+		case SolarEvaporator:
+			return this.solarEvaporatorSide;
 		case BronzeTub:
 			return this.bronzeTubSide;
 		default:

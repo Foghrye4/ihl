@@ -3,9 +3,9 @@ package ihl.recipes;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
 import ic2.api.recipe.IRecipeInput;
 import ihl.utils.IHLUtils;
+import net.minecraft.item.ItemStack;
 
 public class RecipeInputObjectInstance implements IRecipeInput
 {

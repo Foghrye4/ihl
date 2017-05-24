@@ -1,20 +1,5 @@
 package ihl.utils;
 
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputItemStack;
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.Recipes;
-import ic2.core.BasicMachineRecipeManager;
-import ic2.core.IC2;
-import ic2.core.block.invslot.InvSlotOutput;
-import ihl.IHLMod;
-import ihl.interfaces.IEnergyNetNode;
-import ihl.interfaces.IMultiPowerCableHolder;
-import ihl.interfaces.IWire;
-import ihl.metallurgy.constants.*;
-import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
-import ihl.recipes.IRecipeInputFluid;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +11,21 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
+import ic2.api.recipe.Recipes;
+import ic2.core.BasicMachineRecipeManager;
+import ic2.core.IC2;
+import ic2.core.block.invslot.InvSlotOutput;
+import ihl.IHLMod;
+import ihl.interfaces.IEnergyNetNode;
+import ihl.interfaces.IMultiPowerCableHolder;
+import ihl.interfaces.IWire;
+import ihl.metallurgy.constants.ElectricConductor;
+import ihl.metallurgy.constants.Insulation;
+import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
+import ihl.recipes.IRecipeInputFluid;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;

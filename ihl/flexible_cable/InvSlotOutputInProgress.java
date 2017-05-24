@@ -82,7 +82,7 @@ public class InvSlotOutputInProgress extends IronWorkbenchInvSlot{
 		List<ItemStack> list = new ArrayList<ItemStack>();
 		for(int i=0;i<this.size;i++)
 		{
-			if(this.slotRecipe[i]==slotRecipeIndex)
+			if(this.slotRecipe[i]==slotRecipeIndex && get(i)!=null)
 			{
 				list.add(get(i));
 			}

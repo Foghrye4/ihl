@@ -1,11 +1,11 @@
 package ihl.enviroment;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ic2.api.event.LaserEvent;
 import ic2.core.item.tool.EntityMiningLaser;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class LaserHitMirrorEventHandler 
 {

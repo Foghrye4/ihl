@@ -1,9 +1,5 @@
 package ihl.explosion;
 
-import ihl.IHLMod;
-import ihl.utils.IHLMathUtils;
-import ihl.utils.IHLUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,11 +7,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
+import ihl.IHLMod;
+import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;

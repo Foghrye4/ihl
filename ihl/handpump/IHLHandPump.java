@@ -2,9 +2,21 @@ package ihl.handpump;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IBoxable;
+import ic2.api.item.IC2Items;
+import ic2.api.item.IElectricItem;
+import ic2.api.item.IItemHudInfo;
+import ic2.core.item.resources.ItemCell;
+import ic2.core.util.LiquidUtil;
+import ihl.IHLCreativeTab;
+import ihl.IHLMod;
+import ihl.IHLModInfo;
+import ihl.utils.IHLUtils;
+import ihl.worldgen.ores.IHLFluid;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,19 +29,6 @@ import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IC2Items;
-import ic2.api.item.IElectricItem;
-import ic2.api.item.IBoxable;
-import ic2.api.item.IItemHudInfo;
-import ic2.core.item.resources.ItemCell;
-import ic2.core.util.LiquidUtil;
-import ihl.IHLCreativeTab;
-import ihl.IHLModInfo;
-import ihl.IHLMod;
-import ihl.utils.IHLUtils;
-import ihl.worldgen.ores.IHLFluid;
 
 public class IHLHandPump extends Item implements IElectricItem, IBoxable, IItemHudInfo {
 

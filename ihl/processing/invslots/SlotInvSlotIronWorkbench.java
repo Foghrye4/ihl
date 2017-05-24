@@ -1,8 +1,9 @@
 package ihl.processing.invslots;
 
-import net.minecraft.entity.player.EntityPlayer;
 import ic2.core.slot.SlotInvSlot;
-import ihl.flexible_cable.*;
+import ihl.flexible_cable.IronWorkbenchInvSlot;
+import ihl.flexible_cable.IronWorkbenchTileEntity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class SlotInvSlotIronWorkbench extends SlotInvSlot {
 

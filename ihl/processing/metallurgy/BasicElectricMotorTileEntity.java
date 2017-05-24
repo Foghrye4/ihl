@@ -38,8 +38,8 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 	public BasicElectricMotorTileEntity() {
 		super();
 		energyConsume = IHLMod.config.machineryEnergyConsume/100d;
-		dischargeSlot = new IHLInvSlotDischarge(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
-		upgradeSlot = new  InvSlotUpgradeIHL(this, 1, Access.IO, 4, InvSlot.InvSide.BOTTOM);
+		dischargeSlot = new IHLInvSlotDischarge(this, 1, Access.I, 4, InvSlot.InvSide.BOTTOM);
+		upgradeSlot = new  InvSlotUpgradeIHL(this, 1, Access.I, 4, InvSlot.InvSide.BOTTOM);
 	}
 
 	@Override

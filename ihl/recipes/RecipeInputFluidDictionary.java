@@ -2,8 +2,8 @@ package ihl.recipes;
 
 import java.util.List;
 
-import net.minecraftforge.fluids.FluidStack;
 import ihl.IHLMod;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RecipeInputFluidDictionary implements IRecipeInputFluid 
 {

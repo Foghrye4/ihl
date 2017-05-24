@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ihl.interfaces.IWorkspaceElement;
+import ihl.utils.IHLUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import ihl.interfaces.IWorkspaceElement;
-import ihl.utils.IHLUtils;
 
 public class InvSlotWorkspaceElement extends IronWorkbenchInvSlot {
 

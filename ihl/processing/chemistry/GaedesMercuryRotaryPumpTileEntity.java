@@ -2,15 +2,15 @@ package ihl.processing.chemistry;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.ContainerBase;
 import ihl.interfaces.IWorkspaceElement;
 import ihl.processing.metallurgy.BasicElectricMotorTileEntity;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 public class GaedesMercuryRotaryPumpTileEntity extends	BasicElectricMotorTileEntity implements IWorkspaceElement{
 

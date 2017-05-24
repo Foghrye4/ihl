@@ -3,19 +3,9 @@ package ihl.processing.metallurgy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import ic2.api.network.INetworkTileEntityEventListener;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
@@ -25,6 +15,7 @@ import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlot.Access;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
+import ihl.interfaces.IFluidTankVisual;
 import ihl.interfaces.IHasTemperature;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.chemistry.ChemicalReactorTileEntity;
@@ -35,8 +26,18 @@ import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLFluidTank;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
-public class ImpregnatingMachineTileEntity extends TileEntityInventory implements IHasGui,INetworkTileEntityEventListener, IFluidHandler, IHasTemperature
+public class ImpregnatingMachineTileEntity extends TileEntityInventory implements IHasGui,IFluidTankVisual,INetworkTileEntityEventListener, IFluidHandler, IHasTemperature
 {
 	private final static UniversalRecipeManager recipeManager = new UniversalRecipeManager("tub");
     public final ApparatusProcessableInvSlot input;
@@ -336,5 +337,15 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 	public int getTemperature() 
 	{
 		return this.fluidTank.getTemperature();
+	}
+
+	@Override
+	public int getVisibleFluidId() {
+		return this.visibleFluidId;
+	}
+
+	@Override
+	public int getVisibleFluidAmount() {
+		return this.visibleFluidAmount;
 	}
 }

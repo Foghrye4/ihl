@@ -1,8 +1,11 @@
 package ihl.processing.chemistry;
 
-import cpw.mods.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ic2.core.util.DrawUtil;
+import ic2.core.util.GuiTooltipHelper;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
@@ -10,10 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-
-import org.lwjgl.opengl.GL11;
-import ic2.core.util.DrawUtil;
-import ic2.core.util.GuiTooltipHelper;
 
 @SideOnly(Side.CLIENT)
 public class EvaporatorGui extends GuiContainer {

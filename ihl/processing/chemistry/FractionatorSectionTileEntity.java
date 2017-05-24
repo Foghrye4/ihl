@@ -139,7 +139,10 @@ public class FractionatorSectionTileEntity extends TileEntity implements IWrench
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection arg0) 
 	{
-		return columnBottom.getTankInfo(arg0);
+		if(columnBottom!=null)
+			return columnBottom.getTankInfo(arg0);
+		else
+			return new FluidTankInfo[] {new FluidTankInfo(null, 8000)};
 	}
 
 }

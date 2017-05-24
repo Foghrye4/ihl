@@ -2,6 +2,8 @@ package ihl.processing.metallurgy;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlotOutput;
@@ -10,8 +12,6 @@ import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CoilerTileEntity extends BasicElectricMotorTileEntity implements IProductionLine{
 

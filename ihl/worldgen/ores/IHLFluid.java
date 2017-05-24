@@ -7,11 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.core.Ic2Items;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
 import ihl.items_blocks.IHLFluidBlock;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -47,7 +47,7 @@ public class IHLFluid extends Fluid {
 		if (!FluidRegistry.registerFluid(instance)) {
 			instance = FluidRegistry.getFluid(type.fluidRegistryName);
 		}
-		if (instance.getBlock() == null && !type.noBlock) {
+		if (instance.getBlock() == null) {
 			instance.setBlock(new IHLFluidBlock(instance, type.blockMaterial, type.textureName,
 					"fluid" + type.fluidName.replaceFirst("fluid", "")).setFlammable(type.flammable)
 							.setBlockName("block" + type.fluidName).setCreativeTab(IHLCreativeTab.tab));
@@ -136,7 +136,7 @@ public class IHLFluid extends Fluid {
 		// "methane", Material.water, false, false, false, false),
 		NitroGlyceryl("NitroGlycerin", 10052, 293, 291, 583, 1595, "nitroglycerin", Material.water, true, false, true),
 		Ammonia("Ammonia", 10051, 273, 273 - 78, 273
-				- 33, 0.772F, "ammonia", new MaterialLiquid(MapColor.airColor), false, false, true),
+				- 33, 0.772F, "ammonia", new MaterialLiquid(MapColor.airColor), true, false, true),
 		Acetaldehyde("Acetaldehyde", 10050, 273, 273
 				- 123, 294, 784, "acetaldehyde", Material.water, false, false, false),
 		Formaldehyde("Formaldehyde", 10049, 254, 273
@@ -160,13 +160,13 @@ public class IHLFluid extends Fluid {
 		Fuel("Fuel", 10035, 293, 268, 633, 840, "fuel", Material.water, true, false, true),
 		MineralOil("MineralOil", 10034, 293, 238, 704, 845, "mineraloil", Material.water, true, false, true),
 		FuelOil("FuelOil", 10033, 293, 293, 693, 991, "fueloil", Material.water, true, false, true),
-		Oil("Oil", "fluidOil", 10032, 293, 284, 773, 850f, "oil", Material.water, true, false, true, false),
+		Oil("Oil", "fluidOil", 10032, 293, 284, 773, 850f, "oil", Material.water, true, false, true),
 		Mercury("Mercury", 10031, 293, 234, 630, 13546),
 		VapourMercury("VapourMercury", 10030, 630, 234, 630, 9.229F, "vapour.mercury", new MaterialLiquid(
 				MapColor.cyanColor), false, false, false),
 		Hydrogen("Hydrogen", 10029, 293, 14, 20, 0.046F, "hydrogen", new MaterialLiquid(
 				MapColor.blueColor), true, false, true),
-		SaltWater("SaltWater", "fluidSaltWater", 10028, 293, 253, 373, 1360f, "saltwater", Material.water, true, false, false, false),
+		SaltWater("SaltWater", "fluidSaltWater", 10028, 293, 253, 373, 1360f, "saltwater", Material.water, true, false, false),
 		HydrogenChloride("HydrogenChloride", 10027, 293, 159, 188, 1.477F, "hydrogenchloride", new MaterialLiquid(
 				MapColor.yellowColor), true, false, true),
 		NatriumTungstate("NatriumTungstateDissolvedInWater", 10026, 293, 249, 373, 1730, "solution.natriumtungstate", Material.water, true, false, false),
@@ -178,8 +178,8 @@ public class IHLFluid extends Fluid {
 		Oxygen("Oxygen", 10022, 93, 55, 93, 1.429F, "oxygen", new MaterialLiquid(MapColor.airColor), true, false, true),
 		NatriumHydroxide("NatriumHydroxideDissolvedInWater", 10021, 293, 249, 373, 1525, "solution.natriumhydroxide", Material.water, true, false, false),
 		LiquidGlass("LiquidGlass", 10020, 293, 253, 373, 2400),
-		fluidRubberTreeSap("fluidRubberTreeSap", "fluidRubberTreeSap", 10019, 293, 273, 393, 1200f, "fluidrubbertreesap", Material.water, true, true, false, false),
-		SpruceResin("SpruceResin","fluidSpruceResin", 10018, 293, 273, 533, 1080, "spruceresin", Material.water, true, true, true, false),
+		fluidRubberTreeSap("fluidRubberTreeSap", "fluidRubberTreeSap", 10019, 293, 273, 393, 1200f, "fluidrubbertreesap", Material.water, true, true, false),
+		SpruceResin("SpruceResin","fluidSpruceResin", 10018, 293, 273, 533, 1080, "spruceresin", Material.water, true, true, true),
 		CablingColophony("CablingColophony", 10017, 363, 363, 533, 1070, "cablingcolophony", Material.water, true, false, true),
 		Glycerol("Glycerol", 10016, 293, 291, 583, 1261, "glycerol", Material.water, true, false, true),
 		SeedOil("SeedOil", 10015, 293, 256, 583, 920, "seedoil", Material.water, true, false, true),
@@ -191,12 +191,12 @@ public class IHLFluid extends Fluid {
 		NickelSulfateDissolvedInWater("NickelSulfateDissolvedInWater", 10009, 293, 253, 373, 1220, "solution.nickelsulfate", Material.water, true, false, false),
 		BlueVitriolDissolvedInWater("BlueVitriolDissolvedInWater", 10008, 293, 253, 373, 1180, "solution.bluevitriol", Material.water, true, false, false),
 		MoltenRubberWithSulfur("MoltenRubberWithSulfur", 10007, 600, 600, 1000, 1200, "molten.rubber", Material.lava, false, false, true),
-		MoltenPotassium("MoltenPotassium", "fluidMolten", 10042, 336, 336, 1047, 856, "molten.potassium", Material.lava, false, false, false, true),
+		MoltenPotassium("MoltenPotassium", "fluidMolten", 10042, 336, 336, 1047, 856, "molten.potassium", Material.lava, false, false, false),
 		MoltenLithium("MoltenLithium", "fluidMolten", 10042, 454, 454, 1613, 512, "molten.lithium", Material.lava, false, false, false),
 		MoltenPotassiumChloride("MoltenPotassiumChloride", "fluidMolten", 10006, 776 + 273, 776 + 273, 1407
-				+ 273, 1556, "molten.potassiumchloride", Material.lava, false, false, false, true),
+				+ 273, 1556, "molten.potassiumchloride", Material.lava, false, false, false),
 		MoltenSodiumChloride("MoltenSodiumChloride", "fluidMolten", 10006, 1273, 1273, 1740, 1556, "molten.sodiumchloride", Material.lava, false, false, false),
-		MoltenGlass("MoltenGlass", "fluidMolten", 10048, 600, 600, 1950, 2270, "molten.glass", Material.lava, false, false, false, true),
+		MoltenGlass("MoltenGlass", "fluidMolten", 10048, 600, 600, 1950, 2270, "molten.glass", Material.lava, false, false, false),
 		MoltenMagnesium("MoltenMagnesium", "fluidMolten", 10006, 923, 923, 1623, 1584, "molten.magnesium", Material.lava, false, false, false),
 		MoltenSteel("MoltenSteel", "fluidMolten", 10006, 1800, 1800, 3134, 6980, "molten.steel", Material.lava, false, false, false),
 		MoltenCopper("MoltenCopper", "fluidMolten", 10048, 1356, 1356, 2840, 8920, "molten.copper", Material.lava, false, false, false),
@@ -275,26 +275,6 @@ public class IHLFluid extends Fluid {
 			damage = celldamage;
 		}
 
-		IHLFluidType(String fluidName1, String textureName1, int celldamage, int temperature1, int meltingPoint1,
-				int boilingPoint1, float density1, String fluidRegistryName1, Material blockMaterial1, boolean hasCell1,
-				boolean haveBucket1, boolean flammable1, boolean noBlock1) {
-			noBlock = noBlock1;
-			fluidName = fluidName1;
-			fluidRegistryName = fluidRegistryName1;
-			textureName = textureName1;
-			temperature = temperature1;
-			density = density1;
-			cellName = "itemCell" + fluidName;
-			haveBucket = haveBucket1;
-			flammable = flammable1;
-			isGaseous = density1 < maxGaseousStateVapoursDensity;
-			blockMaterial = blockMaterial1;
-			boilingPoint = boilingPoint1;
-			meltingPoint = meltingPoint1;
-			hasCell = hasCell1;
-			damage = celldamage;
-		}
-
 		public String fluidName;
 		public String fluidRegistryName;
 		public String cellName;
@@ -303,7 +283,6 @@ public class IHLFluid extends Fluid {
 		float density;
 		boolean isGaseous;
 		boolean flammable = false;
-		boolean noBlock = true;
 		boolean haveBucket;
 		Material blockMaterial = Material.water;
 		int meltingPoint;

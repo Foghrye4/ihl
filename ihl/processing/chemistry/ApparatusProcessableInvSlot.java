@@ -1,11 +1,11 @@
 package ihl.processing.chemistry;
 
-import ic2.api.recipe.IRecipeInput;
-import ic2.core.block.TileEntityInventory;
-import ic2.core.block.invslot.InvSlot;
 import java.util.ArrayList;
 import java.util.List;
 
+import ic2.api.recipe.IRecipeInput;
+import ic2.core.block.TileEntityInventory;
+import ic2.core.block.invslot.InvSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -13,7 +13,7 @@ public class ApparatusProcessableInvSlot extends InvSlot {
 
 	public ApparatusProcessableInvSlot(TileEntityInventory base1, String name1, int oldStartIndex1, Access access1,
 			int count, int stackSizeLimit1) {
-		super(base1, name1, oldStartIndex1, access1, count);
+		super(base1, name1, oldStartIndex1, Access.I, count);
 		this.setStackSizeLimit(stackSizeLimit1);
 	}
 

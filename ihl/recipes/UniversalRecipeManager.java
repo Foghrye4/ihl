@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ic2.api.recipe.IRecipeInput;
+import ihl.utils.IHLUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import ihl.utils.IHLUtils;
 
 public class UniversalRecipeManager {
 

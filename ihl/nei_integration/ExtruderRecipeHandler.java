@@ -3,13 +3,11 @@ package ihl.nei_integration;
 import java.awt.Rectangle;
 import java.util.Map;
 
-import codechicken.nei.recipe.TemplateRecipeHandler.RecipeTransferRect;
 import ihl.processing.metallurgy.ExtruderGui;
 import ihl.processing.metallurgy.ExtruderTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.StatCollector;
 
 public class ExtruderRecipeHandler extends MachineRecipeHandler {
 	@Override

@@ -3,16 +3,16 @@ package ihl.flexible_cable;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.MinecraftForge;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.core.IC2;
 import ihl.IHLMod;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.utils.IHLUtils;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
 
 public class SubRTUEnergyNetNode implements IEnergyNetNode{
 

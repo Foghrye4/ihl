@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.ContainerBase;
@@ -11,7 +13,6 @@ import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
-import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.invslots.IHLInvSlotOutput;
 import ihl.recipes.RecipeInputWire;
 import ihl.recipes.UniversalRecipeInput;
@@ -21,8 +22,6 @@ import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class LoomTileEntity extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener
 {     

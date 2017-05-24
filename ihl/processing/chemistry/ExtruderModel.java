@@ -1,8 +1,8 @@
 package ihl.processing.chemistry;
 
+import ihl.model.IHLModelRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraftforge.common.util.ForgeDirection;
-import ihl.model.IHLModelRenderer;
 
 public class ExtruderModel extends ModelBase
 {

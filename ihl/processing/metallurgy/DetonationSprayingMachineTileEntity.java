@@ -2,13 +2,9 @@ package ihl.processing.metallurgy;
 
 import java.util.List;
 import java.util.Map;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import ic2.api.network.INetworkTileEntityEventListener;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
@@ -27,6 +23,10 @@ import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class DetonationSprayingMachineTileEntity extends TileEntityInventory implements IHasGui, INetworkTileEntityEventListener
 {

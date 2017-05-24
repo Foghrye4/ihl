@@ -3,8 +3,8 @@ package ihl.flexible_cable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
 import ic2.core.block.invslot.InvSlot;
+import net.minecraft.item.ItemStack;
 
 public class IronWorkbenchInvSlot extends InvSlot {
 

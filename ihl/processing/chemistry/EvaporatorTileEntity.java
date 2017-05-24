@@ -5,16 +5,6 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import ic2.api.item.IC2Items;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;
@@ -31,6 +21,15 @@ import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeManager;
 import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implements IHasGui
 {
@@ -142,7 +141,7 @@ public class EvaporatorTileEntity extends TileEntityLiquidTankInventory implemen
         {
        		IHLUtils.handleFluidSlotsBehaviour(fillItemsSlot, fluidItemsSlot, emptyFluidItemsSlot, fluidTank);
         }
-        if (this.fuel <= 0 && this.canOperate())
+        if (this.fuel <= 0 && this.canOperate() && this.fuelSlot instanceof InvSlotConsumableFuel)
         {
             this.fuel = this.maxFuel = ((InvSlotConsumableFuel) this.fuelSlot).consumeFuel();
         }

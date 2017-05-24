@@ -1,17 +1,18 @@
 package ihl.model;
 
-import ihl.items_blocks.MachineBaseBlock;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ihl.items_blocks.MachineBaseBlock;
+import ihl.items_blocks.MachineBaseBlock.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(value=Side.CLIENT)
 public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHandler
@@ -32,6 +33,7 @@ public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHand
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderblocks) 
 	{
+		MachineBaseBlock blockmb = (MachineBaseBlock) block;
         Tessellator tessellator = Tessellator.instance;
         block.setBlockBoundsForItemRender();
         renderblocks.setRenderBoundsFromBlock(block);
@@ -62,11 +64,7 @@ public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHand
         renderblocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderblocks.getBlockIconFromSideAndMetadata(block, 5, metadata));
         tessellator.draw();
         float var11 = 0.0625F;
-        IIcon innerSideIcon = block.getBlockTextureFromSide(0);
-        if(block instanceof MachineBaseBlock)
-        {
-        	innerSideIcon = ((MachineBaseBlock)block).getAdditionalIconsForBlockRenderer(0);
-        }
+        IIcon innerSideIcon = blockmb.getAdditionalIconsForBlockRenderer(0);
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
         renderblocks.renderFaceZNeg(block, 0.0D, 0.0D, 1.0F - var11, innerSideIcon);
@@ -83,13 +81,11 @@ public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHand
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
         renderblocks.renderFaceXPos(block, var11-1.0F, 0.0D, 0.0D, innerSideIcon);
         tessellator.draw();
-        IIcon innerBottomIcon = block.getBlockTextureFromSide(0);
-        if(block instanceof MachineBaseBlock)
-        {
-        	innerBottomIcon = ((MachineBaseBlock)block).getAdditionalIconsForBlockRenderer(1);
-        }
+        IIcon innerBottomIcon = blockmb.getAdditionalIconsForBlockRenderer(1);
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
+        if(blockmb.type.equals(MachineType.SolarEvaporator))
+        	var11 = 0.5625f;
         renderblocks.renderFaceYPos(block, 0.0D, var11-1.0F, 0.0D, innerBottomIcon);
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
@@ -98,6 +94,7 @@ public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHand
 	@Override
 	public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int meta, RenderBlocks blockRenderer) 
 	{
+		MachineBaseBlock blockmb = (MachineBaseBlock) block;
 		blockRenderer.renderStandardBlock(block, x, y, z);
         Tessellator var5 = Tessellator.instance;
         var5.setBrightness(block.getMixedBrightnessForBlock(blockAccess, x, y, z));
@@ -107,21 +104,16 @@ public class ImpregnatingMachineBlockRender implements ISimpleBlockRenderingHand
         float var9 = (var6 & 255) / 255.0F;
         float var11;
         var5.setColorOpaque_F(var7, var8, var9);
-        IIcon innerSideIcon = block.getBlockTextureFromSide(0);
-        if(block instanceof MachineBaseBlock)
-        {
-        	innerSideIcon = ((MachineBaseBlock)block).getAdditionalIconsForBlockRenderer(0);
-        }
+        IIcon innerSideIcon = blockmb.getAdditionalIconsForBlockRenderer(0);
         var11 = 0.0625F;
+        
         blockRenderer.renderFaceXPos(block, x - 1.0F + var11, y, z, innerSideIcon);
         blockRenderer.renderFaceXNeg(block, x + 1.0F - var11, y, z, innerSideIcon);
         blockRenderer.renderFaceZPos(block, x, y, z - 1.0F + var11, innerSideIcon);
         blockRenderer.renderFaceZNeg(block, x, y, z + 1.0F - var11, innerSideIcon);
-        IIcon innerBottomIcon = block.getBlockTextureFromSide(0);
-        if(block instanceof MachineBaseBlock)
-        {
-        	innerBottomIcon = ((MachineBaseBlock)block).getAdditionalIconsForBlockRenderer(1);
-        }
+        IIcon innerBottomIcon = blockmb.getAdditionalIconsForBlockRenderer(1);
+        if(blockmb.type.equals(MachineType.SolarEvaporator))
+        	var11 = 0.5625f;
         blockRenderer.renderFaceYPos(block, x, y - 1.0F + var11, z, innerBottomIcon);
         return true;
 	}

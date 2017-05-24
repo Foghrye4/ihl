@@ -3,6 +3,8 @@ package ihl.processing.metallurgy;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.ContainerBase;
 import ihl.IHLMod;
@@ -15,8 +17,6 @@ import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class AchesonFurnanceTileEntity extends MachineBaseTileEntity {
 

@@ -1,11 +1,11 @@
 package ihl.processing.metallurgy;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import ic2.api.tile.IWrenchable;
 import ihl.IHLModInfo;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class CoilerRender extends TileEntitySpecialRenderer{
 private CoilerModel model = new CoilerModel();

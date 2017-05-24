@@ -2,8 +2,8 @@ package ihl.interfaces;
 
 import java.util.Set;
 
-import net.minecraft.nbt.NBTTagCompound;
 import ihl.flexible_cable.IHLGrid;
+import net.minecraft.nbt.NBTTagCompound;
 
 public interface IEnergyNetNode extends ICableHolder{
 	IHLGrid getGrid();

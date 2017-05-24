@@ -1,8 +1,8 @@
 package ihl.processing.metallurgy;
 
 
-import net.minecraft.client.model.ModelBase;
 import ihl.model.IHLModelRenderer;
+import net.minecraft.client.model.ModelBase;
 
 public class RollingMachinePart2Model extends ModelBase
 {

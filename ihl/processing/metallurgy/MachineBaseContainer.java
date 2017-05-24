@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class MachineBaseContainer extends ContainerBase {
+public class MachineBaseContainer extends ContainerBase<MachineBaseTileEntity> {
 
     protected MachineBaseTileEntity tileEntity;
     public int lastProgress = -1;

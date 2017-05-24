@@ -1,11 +1,10 @@
 package ihl.servitor;
 
+import java.util.List;
+
 import ic2.api.item.IC2Items;
 import ihl.IHLMod;
 import ihl.IHLModInfo;
-
-import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;

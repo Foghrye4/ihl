@@ -6,14 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import ic2.api.energy.tile.IHeatSource;
 import ic2.core.IC2;
 import ic2.core.block.TileEntityInventory;
@@ -24,8 +16,17 @@ import ihl.recipes.UniversalRecipeOutput;
 import ihl.utils.IHLFluidTank;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
-public class FractionatorBottomTileEntity extends TileEntityInventory
+public class FractionatorBottomTileEntity extends TileEntityInventory implements IFluidHandler
 {
 	private final static UniversalRecipeManager recipeManager = new UniversalRecipeManager("fractionator");
     private static float kF = 24000F;
@@ -385,4 +386,24 @@ public class FractionatorBottomTileEntity extends TileEntityInventory
     {
         return pass==0;
     }
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+		return this.fluidTank.drain(resource, doDrain);
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		return this.fluidTank.drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) {
+		return true;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+		return true;
+	}
 }

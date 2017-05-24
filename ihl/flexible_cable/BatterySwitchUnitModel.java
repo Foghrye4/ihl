@@ -1,8 +1,8 @@
 package ihl.flexible_cable;
 
+import ihl.model.IHLModelRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraftforge.common.util.ForgeDirection;
-import ihl.model.IHLModelRenderer;
 
 // Date: 07.04.2015 18:24:15
 // Template version 1.1

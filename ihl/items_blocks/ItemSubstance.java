@@ -1,5 +1,12 @@
 package ihl.items_blocks;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
@@ -10,11 +17,6 @@ import ihl.interfaces.IItemHasMiniGUI;
 import ihl.interfaces.ItemMiniGUI;
 import ihl.utils.IHLUtils;
 import ihl.worldgen.ores.IHLFluid.IHLFluidType;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -27,12 +29,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSubstance extends Item implements IItemHasMiniGUI {
 

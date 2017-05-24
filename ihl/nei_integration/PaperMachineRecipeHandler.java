@@ -3,7 +3,6 @@ package ihl.nei_integration;
 import java.awt.Rectangle;
 import java.util.Map;
 
-import codechicken.nei.recipe.TemplateRecipeHandler.RecipeTransferRect;
 import ihl.processing.chemistry.PaperMachineGui;
 import ihl.processing.chemistry.PaperMachineTileEntity;
 import ihl.recipes.UniversalRecipeInput;

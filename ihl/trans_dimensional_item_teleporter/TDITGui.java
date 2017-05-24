@@ -1,13 +1,12 @@
 package ihl.trans_dimensional_item_teleporter;
 
-import cpw.mods.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class TDITGui extends GuiContainer {

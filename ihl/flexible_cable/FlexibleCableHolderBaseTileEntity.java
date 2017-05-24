@@ -7,8 +7,6 @@ import java.util.Set;
 
 import ic2.core.block.TileEntityInventory;
 import ihl.IHLMod;
-import ihl.flexible_cable.IHLGrid;
-import ihl.flexible_cable.NodeEntity;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.utils.IHLUtils;
 import net.minecraft.entity.EntityLivingBase;

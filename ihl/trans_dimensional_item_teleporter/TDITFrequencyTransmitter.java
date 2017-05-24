@@ -5,7 +5,6 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import ic2.api.item.IItemHudInfo;
 import ic2.core.IC2;
 import ic2.core.util.StackUtil;

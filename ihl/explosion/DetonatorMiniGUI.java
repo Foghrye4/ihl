@@ -1,16 +1,17 @@
 package ihl.explosion;
 
 import java.awt.event.KeyEvent;
+
 import org.lwjgl.opengl.GL11;
 
+import ihl.IHLMod;
+import ihl.interfaces.ItemMiniGUI;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import ihl.IHLMod;
-import ihl.interfaces.ItemMiniGUI;
-import ihl.utils.IHLUtils;
 
 public class DetonatorMiniGUI extends ItemMiniGUI {
 	private static final ResourceLocation background = new ResourceLocation("ihl", "textures/gui/GUIIronWorkbench.png");

@@ -8,18 +8,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import ic2.api.energy.tile.IEnergyTile;
 import ihl.IHLCreativeTab;
 import ihl.IHLMod;
@@ -32,6 +20,18 @@ import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class FlexibleCableItem extends Item implements IWire {
 
@@ -368,13 +368,13 @@ public class FlexibleCableItem extends Item implements IWire {
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean flag) {
 		if (itemStack.stackTagCompound != null) {
 			info.add(StatCollector.translateToLocal("ihl.lenght")+": " + itemStack.stackTagCompound.getInteger("length") + " m");
-			info.add(StatCollector.translateToLocal("ihl.wire_material")+"Wire material: " + this.getMaterial(itemStack));
-			info.add(StatCollector.translateToLocal("ihl.resistivity")+"Resistivity: " + this.getResistance(itemStack) / 1000F + " V^2/(EU*m)");
-			info.add(StatCollector.translateToLocal("ihl.transverse_section")+"Transverse section: " + this.getTransverseSection(itemStack) / 10F + " sq. mm.");
+			info.add(StatCollector.translateToLocal("ihl.wire_material")+": " + this.getMaterial(itemStack));
+			info.add(StatCollector.translateToLocal("ihl.resistivity")+": " + this.getResistance(itemStack) / 1000F + " V^2/(EU*m)");
+			info.add(StatCollector.translateToLocal("ihl.transverse_section")+": " + this.getTransverseSection(itemStack) / 10F + " sq. mm.");
 			if (itemStack.stackTagCompound.hasKey("insulationMaterial")) {
-				info.add(StatCollector.translateToLocal("ihl.insulation_material")+"Insulation material: " + this.getInsulationMaterial(itemStack));
-				info.add(StatCollector.translateToLocal("ihl.insulation_thickness")+"Insulation thickness: " + this.getInsulationThickness(itemStack) / 10f + " mm");
-				info.add(StatCollector.translateToLocal("ihl.insulation_beakdown_voltage")+"Insulation breakdown voltage: " + this.getVoltageLimit(itemStack) / 1000 + " kV");
+				info.add(StatCollector.translateToLocal("ihl.insulation_material")+": " + this.getInsulationMaterial(itemStack));
+				info.add(StatCollector.translateToLocal("ihl.insulation_thickness")+": " + this.getInsulationThickness(itemStack) / 10f + " mm");
+				info.add(StatCollector.translateToLocal("ihl.insulation_beakdown_voltage")+": " + this.getVoltageLimit(itemStack) / 1000 + " kV");
 			}
 			info.add(StatCollector.translateToLocal("ihl.powerCableTooltip"));
 		}

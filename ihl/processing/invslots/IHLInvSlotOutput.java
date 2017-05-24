@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlotOutput;
 import ihl.recipes.RecipeOutputItemStack;
 import ihl.utils.IHLUtils;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public class IHLInvSlotOutput extends InvSlotOutput {
 

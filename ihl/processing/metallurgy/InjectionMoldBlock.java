@@ -1,14 +1,17 @@
 package ihl.processing.metallurgy;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
 import ihl.items_blocks.IHLItemBlock;
 import ihl.metallurgy.constants.Details;
 import ihl.utils.IHLUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -24,9 +27,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class InjectionMoldBlock extends Block implements ITileEntityProvider{
 	

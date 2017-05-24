@@ -7,6 +7,15 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ihl.crop_harvestors.BlobEntityFX;
 import ihl.crop_harvestors.BlobEntityFX.FluidType;
 import ihl.crop_harvestors.BlobRenderFX;
@@ -24,8 +33,8 @@ import ihl.flexible_cable.AnchorTileEntity;
 import ihl.flexible_cable.BatterySwitchUnitModel;
 import ihl.flexible_cable.BatterySwitchUnitTileEntity;
 import ihl.flexible_cable.BlastEntityFX;
-import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.flexible_cable.IronWorkbenchRender;
+import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.flexible_cable.NodeEntity;
 import ihl.flexible_cable.NodeRender;
 import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
@@ -34,8 +43,16 @@ import ihl.interfaces.ISelectionBoxSpecialRenderer;
 import ihl.items_blocks.FlexibleCableItem;
 import ihl.items_blocks.IHLTool;
 import ihl.items_blocks.MachineBaseBlock.MachineType;
-import ihl.model.*;
-import ihl.processing.chemistry.DosingPumpTileEntity;
+import ihl.model.CableHolderSelectionBoxSpecialRenderer;
+import ihl.model.FlexibleCableItemRender;
+import ihl.model.IHLBlockRenderer;
+import ihl.model.IHLToolRenderer;
+import ihl.model.ImpregnatingMachineBlockRender;
+import ihl.model.IronWorkbenchBlockRender;
+import ihl.model.RectifierTransformerUnitBlockRender;
+import ihl.model.RectifierTransformerUnitSelectionBoxSpecialRenderer;
+import ihl.model.RefluxCondenserBlockRender;
+import ihl.model.UniversalTileRender;
 import ihl.processing.chemistry.ElectrolysisBathModel;
 import ihl.processing.chemistry.ElectrolysisBathTileEntity;
 import ihl.processing.chemistry.FractionatorBottomModel;
@@ -50,6 +67,7 @@ import ihl.processing.chemistry.LoomModel;
 import ihl.processing.chemistry.LoomTileEntity;
 import ihl.processing.chemistry.RefluxCondenserModel;
 import ihl.processing.chemistry.RefluxCondenserTileEntity;
+import ihl.processing.chemistry.SolarEvaporatorTileEntity;
 import ihl.processing.metallurgy.CoilerModel;
 import ihl.processing.metallurgy.CoilerRender;
 import ihl.processing.metallurgy.CoilerTileEntity;
@@ -96,7 +114,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -107,15 +124,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(value = Side.CLIENT)
 public class ClientProxy extends ServerProxy {
@@ -137,6 +145,7 @@ public class ClientProxy extends ServerProxy {
 		this.renderUtils = new IHLRenderUtils();
 		MinecraftForge.EVENT_BUS.register(this.renderUtils);
 		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.BronzeTub);
+		registerBlockHandler(new ImpregnatingMachineBlockRender(), MachineType.SolarEvaporator);
 		registerBlockHandler(new RefluxCondenserBlockRender(), MachineType.RefluxCondenser);
 		registerBlockHandler(new RectifierTransformerUnitBlockRender(), MachineType.RectifierTransformerUnit);
 		registerBlockHandler(new IronWorkbenchBlockRender(), MachineType.IronWorkbench);
@@ -153,7 +162,9 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(LoomTileEntity.class, new UniversalTileRender(new LoomModel(),
 				new ResourceLocation(IHLModInfo.MODID + ":textures/blocks/detonationSprayingMachine.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(ImpregnatingMachineTileEntity.class,
-				new ImpregnatingMachineRender());
+				new ImpregnatingMachineRender(900f));
+		ClientRegistry.bindTileEntitySpecialRenderer(SolarEvaporatorTileEntity.class,
+				new ImpregnatingMachineRender(900f));
 		ClientRegistry.bindTileEntitySpecialRenderer(DetonationSprayingMachineTileEntity.class,
 				new DetonationSprayingMachineRender());
 		ClientRegistry.bindTileEntitySpecialRenderer(CoilerTileEntity.class, new CoilerRender());

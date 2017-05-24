@@ -1,5 +1,9 @@
 package ihl.model;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ihl.flexible_cable.AnchorTileEntity;
 import ihl.interfaces.ISelectionBoxSpecialRenderer;
 import ihl.utils.IHLUtils;
@@ -10,11 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
-
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(value=Side.CLIENT)
 public class CableHolderSelectionBoxSpecialRenderer implements ISelectionBoxSpecialRenderer

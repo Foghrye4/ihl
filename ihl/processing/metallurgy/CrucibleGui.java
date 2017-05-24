@@ -2,6 +2,8 @@ package ihl.processing.metallurgy;
 
 import org.lwjgl.opengl.GL11;
 
+import ic2.core.util.DrawUtil;
+import ic2.core.util.GuiTooltipHelper;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
@@ -10,8 +12,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import ic2.core.util.DrawUtil;
-import ic2.core.util.GuiTooltipHelper;
 
 public class CrucibleGui extends GuiContainer
 {

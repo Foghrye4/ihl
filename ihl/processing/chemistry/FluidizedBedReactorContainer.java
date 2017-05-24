@@ -2,12 +2,9 @@ package ihl.processing.chemistry;
 
 import java.util.List;
 
-import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.slot.SlotInvSlot;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ICrafting;
-import net.minecraft.inventory.Slot;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidizedBedReactorContainer extends BasicElectricMotorContainer<FluidizedBedReactorTileEntity> {

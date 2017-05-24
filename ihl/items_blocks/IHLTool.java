@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ic2.api.reactor.IReactor;
+import ihl.IHLCreativeTab;
+import ihl.IHLModInfo;
+import ihl.flexible_cable.SetOfDiesMiniGUI;
+import ihl.interfaces.IHasTemperature;
+import ihl.interfaces.IItemHasMiniGUI;
+import ihl.interfaces.ItemMiniGUI;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,17 +40,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import ic2.api.reactor.IReactor;
-import ihl.IHLCreativeTab;
-import ihl.IHLModInfo;
-import ihl.flexible_cable.SetOfDiesMiniGUI;
-import ihl.interfaces.IHasTemperature;
-import ihl.interfaces.IItemHasMiniGUI;
-import ihl.interfaces.ItemMiniGUI;
-import ihl.utils.IHLUtils;
 public class IHLTool extends Item implements IItemHasMiniGUI{
 
 	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();

@@ -3,14 +3,11 @@ package ihl.flexible_cable;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.IC2;
-import ic2.core.Ic2Items;
-import ic2.core.item.ItemUpgradeModule;
-import ihl.interfaces.IWire;
 import ihl.recipes.IronWorkbenchRecipe;
 import ihl.utils.IHLUtils;
+import net.minecraft.item.ItemStack;
 
 public class InvSlotTool extends IronWorkbenchInvSlot {
 

@@ -4,16 +4,16 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import ic2.core.block.TileEntityInventory;
+import ic2.core.block.invslot.InvSlotConsumableLiquid;
+import ic2.core.util.StackUtil;
+import ihl.utils.IHLUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import ic2.core.block.TileEntityInventory;
-import ic2.core.block.invslot.InvSlotConsumableLiquid;
-import ic2.core.util.StackUtil;
-import ihl.utils.IHLUtils;
 
 public class InvSlotConsumableLiquidIHL extends InvSlotConsumableLiquid{
 

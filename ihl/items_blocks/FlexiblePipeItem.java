@@ -7,6 +7,9 @@ import java.util.Map;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ihl.IHLCreativeTab;
+import ihl.IHLModInfo;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,12 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
-import ihl.IHLCreativeTab;
-import ihl.IHLModInfo;
-import ihl.interfaces.IWire;
-import ihl.utils.IHLUtils;
 
-public class FlexiblePipeItem extends Item implements IWire {
+public class FlexiblePipeItem extends Item {
     
 	private static Map<Integer, IIcon> iconMap = new HashMap<Integer, IIcon>();
 	private static Map<Integer, String> nameMap = new HashMap<Integer, String>();
@@ -69,19 +68,6 @@ public class FlexiblePipeItem extends Item implements IWire {
         	info.add("Length " + itemStack.stackTagCompound.getInteger("length") +"m");
         }
     }
-
-	@Override
-	public String getTag() 
-	{
-		return "length";
-	}
-
-	@Override
-	public String getTagSecondary() 
-	{
-		return "fullLength";
-	}
-	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) 
@@ -117,12 +103,5 @@ public class FlexiblePipeItem extends Item implements IWire {
 		}
 		public int damage;
 		public String unLocalizedName;
-	}
-	
-
-	@Override
-	public boolean isSameWire(ItemStack stack1,ItemStack stack2) 
-	{
-		return stack1.getItem()==stack2.getItem();
 	}
 }

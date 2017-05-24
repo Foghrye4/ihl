@@ -8,7 +8,19 @@ import java.util.Map;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import ic2.api.item.IItemHudInfo;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputOreDict;
+import ic2.core.IC2;
+import ic2.core.IHasGui;
+import ic2.core.item.IHandHeldInventory;
+import ic2.core.util.LiquidUtil;
+import ic2.core.util.StackUtil;
+import ihl.IHLCreativeTab;
+import ihl.IHLModInfo;
+import ihl.recipes.UniversalRecipeInput;
+import ihl.recipes.UniversalRecipeManager;
+import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -25,19 +37,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
-import ic2.api.item.IItemHudInfo;
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.core.IC2;
-import ic2.core.IHasGui;
-import ic2.core.item.IHandHeldInventory;
-import ic2.core.util.LiquidUtil;
-import ic2.core.util.StackUtil;
-import ihl.IHLCreativeTab;
-import ihl.IHLModInfo;
-import ihl.recipes.UniversalRecipeInput;
-import ihl.recipes.UniversalRecipeManager;
-import ihl.recipes.UniversalRecipeOutput;
 
 public class Crucible extends Item implements IHandHeldInventory, IFluidContainerItem, IItemHudInfo{
 

@@ -1,15 +1,14 @@
 package ihl.recipes;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -106,7 +105,7 @@ public class UniversalRecipeInput {
 				ItemStack is1 = getMatchedItemStack(is, itemInputs1);
 				if (is1 == null || !is.matches(is1)) {
 					return false;
-				} else if (doCheckAmounts && is1.stackSize < is.getAmount()) {
+				} else if (doCheckAmounts && IHLUtils.getAmountOf(is1) < is.getAmount()) {
 					return false;
 				}
 			}

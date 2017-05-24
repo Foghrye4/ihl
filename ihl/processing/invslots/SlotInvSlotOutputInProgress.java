@@ -1,8 +1,8 @@
 package ihl.processing.invslots;
 
-import net.minecraft.entity.player.EntityPlayer;
 import ic2.core.slot.SlotInvSlot;
 import ihl.flexible_cable.IronWorkbenchInvSlot;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class SlotInvSlotOutputInProgress extends SlotInvSlot {
 

@@ -3,9 +3,23 @@ package ihl.processing.chemistry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import ic2.core.ContainerBase;
+import ic2.core.block.invslot.InvSlot;
+import ic2.core.block.invslot.InvSlot.Access;
+import ic2.core.block.invslot.InvSlotConsumableLiquid;
+import ic2.core.block.invslot.InvSlotOutput;
+import ihl.processing.invslots.IHLInvSlotOutput;
+import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
+import ihl.processing.metallurgy.BasicElectricMotorTileEntity;
+import ihl.recipes.RecipeOutputItemStack;
+import ihl.recipes.UniversalRecipeInput;
+import ihl.recipes.UniversalRecipeManager;
+import ihl.recipes.UniversalRecipeOutput;
+import ihl.utils.IHLFluidTank;
+import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,21 +30,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import ic2.core.ContainerBase;
-import ic2.core.block.invslot.InvSlot;
-import ic2.core.block.invslot.InvSlot.Access;
-import ic2.core.block.invslot.InvSlotConsumableLiquid;
-import ic2.core.block.invslot.InvSlotOutput;
-import ihl.processing.chemistry.ApparatusProcessableInvSlot;
-import ihl.processing.invslots.IHLInvSlotOutput;
-import ihl.processing.invslots.InvSlotConsumableLiquidIHL;
-import ihl.processing.metallurgy.BasicElectricMotorTileEntity;
-import ihl.recipes.RecipeOutputItemStack;
-import ihl.recipes.UniversalRecipeInput;
-import ihl.recipes.UniversalRecipeManager;
-import ihl.recipes.UniversalRecipeOutput;
-import ihl.utils.IHLFluidTank;
-import ihl.utils.IHLUtils;
 
 public class FluidizedBedReactorTileEntity extends BasicElectricMotorTileEntity implements IFluidHandler
 {

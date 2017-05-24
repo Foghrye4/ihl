@@ -1,13 +1,12 @@
 package ihl.explosion;
 
-import ihl.IHLMod;
-
 import java.util.Iterator;
 import java.util.Set;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import ihl.IHLMod;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.Explosion;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ChunkAndWorldLoadEventHandler {
 	public static ChunkAndWorldLoadEventHandler instance;

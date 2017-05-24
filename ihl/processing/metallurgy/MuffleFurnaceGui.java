@@ -1,9 +1,10 @@
 package ihl.processing.metallurgy;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
 
 public class MuffleFurnaceGui extends GuiContainer {
 	protected static final ResourceLocation muffleFurnaceBackground = new ResourceLocation("ihl", "textures/gui/GUIAchesonFurnace.png");

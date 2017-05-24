@@ -1,26 +1,25 @@
 package ihl.nei_integration;
 
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import ic2.api.recipe.IRecipeInput;
-import ihl.recipes.IronWorkbenchRecipe;
-import ihl.utils.IHLUtils;
-
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
-
 import ihl.flexible_cable.IronWorkbenchGui;
 import ihl.flexible_cable.IronWorkbenchTileEntity;
 import ihl.interfaces.IWire;
+import ihl.recipes.IronWorkbenchRecipe;
+import ihl.utils.IHLUtils;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class IronWorkbenchRecipeHandler extends TemplateRecipeHandler
 {

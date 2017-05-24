@@ -2,6 +2,11 @@ package ihl.enviroment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ic2.core.block.TileEntityBlock;
+import ihl.IHLMod;
+import ihl.handpump.BlockWithCoordinates;
+import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
@@ -15,10 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.util.ForgeDirection;
-import ic2.core.block.TileEntityBlock;
-import ihl.IHLMod;
-import ihl.handpump.BlockWithCoordinates;
-import ihl.utils.IHLUtils;
 
 public class MirrorTileEntity extends TileEntityBlock
 {

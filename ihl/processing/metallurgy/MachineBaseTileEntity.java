@@ -1,5 +1,9 @@
 package ihl.processing.metallurgy;
 
+import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -10,15 +14,12 @@ import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot.Access;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.recipes.UniversalRecipeOutput;
-import java.util.List;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class MachineBaseTileEntity extends TileEntityInventory implements IHasGui, IEnergySink
 {     

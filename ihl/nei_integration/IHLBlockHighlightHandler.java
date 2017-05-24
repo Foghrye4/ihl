@@ -1,16 +1,16 @@
 package ihl.nei_integration;
 
+import java.util.List;
+
 import codechicken.nei.api.IHighlightHandler;
 import codechicken.nei.api.ItemInfo;
+import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import ihl.flexible_cable.RectifierTransformerUnitTileEntity;
-
-import java.util.List;
 
 public class IHLBlockHighlightHandler implements IHighlightHandler
 {

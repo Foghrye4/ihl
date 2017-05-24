@@ -1,5 +1,10 @@
 package ihl.flexible_cable;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -11,12 +16,6 @@ import ic2.core.block.TileEntityBlock;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.utils.IHLUtils;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,5 +1,8 @@
 package ihl.nei_integration;
 
+import codechicken.nei.api.API;
+import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.api.ItemInfo;
 import ihl.IHLModInfo;
 import ihl.processing.chemistry.ChemicalReactorGui;
 import ihl.processing.chemistry.CryogenicDistillerGui;
@@ -19,9 +22,6 @@ import ihl.processing.metallurgy.MuffleFurnaceGui;
 import ihl.processing.metallurgy.RollingMachineGui;
 import ihl.processing.metallurgy.WireMillGui;
 import ihl.processing.metallurgy.WoodenRollingMachineGui;
-import codechicken.nei.api.API;
-import codechicken.nei.api.IConfigureNEI;
-import codechicken.nei.api.ItemInfo;
 
 public class NEIIHLConfig implements IConfigureNEI
 {

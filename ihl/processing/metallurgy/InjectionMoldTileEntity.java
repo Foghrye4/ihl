@@ -5,6 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import ic2.core.IC2;
+import ihl.metallurgy.constants.Details;
+import ihl.recipes.UniversalRecipeInput;
+import ihl.recipes.UniversalRecipeManager;
+import ihl.recipes.UniversalRecipeOutput;
+import ihl.utils.IHLUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,12 +22,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import ic2.core.IC2;
-import ihl.metallurgy.constants.Details;
-import ihl.recipes.UniversalRecipeInput;
-import ihl.recipes.UniversalRecipeManager;
-import ihl.recipes.UniversalRecipeOutput;
-import ihl.utils.IHLUtils;
 
 
 public class InjectionMoldTileEntity extends TileEntity implements IFluidHandler

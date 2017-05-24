@@ -1,8 +1,8 @@
 package ihl.flexible_cable;
 
 import ic2.core.ContainerBase;
-import ihl.processing.invslots.SlotInvSlotOutputInProgress;
 import ihl.processing.invslots.SlotInvSlotIronWorkbench;
+import ihl.processing.invslots.SlotInvSlotOutputInProgress;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;

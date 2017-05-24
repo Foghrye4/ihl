@@ -1,12 +1,12 @@
 package ihl.processing.metallurgy;
 
+import ic2.core.ContainerBase;
+import ic2.core.IC2;
+import ic2.core.util.StackUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import ic2.core.ContainerBase;
-import ic2.core.IC2;
-import ic2.core.util.StackUtil;
 
 public class CrucibleContainer extends ContainerBase<CrucibleInventory>
 {

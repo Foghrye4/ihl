@@ -1,7 +1,7 @@
 package ihl.utils;
 
-import net.minecraft.entity.passive.EntitySheep;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.passive.EntitySheep;
 
 public class EntityDropEventHandler 
 {

@@ -2,9 +2,9 @@ package ihl.servitor;
 
 import java.util.List;
 
-import ihl.IHLModInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ihl.IHLModInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

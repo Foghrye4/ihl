@@ -1,5 +1,7 @@
 package ihl.flexible_cable;
 
+import org.lwjgl.opengl.GL11;
+
 import ihl.IHLModInfo;
 import ihl.model.ModelTube;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,8 +10,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
 
 public class NodeRender extends Render
 {

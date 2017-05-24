@@ -1,6 +1,9 @@
 package ihl.processing.metallurgy;
 
 import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.ContainerBase;
 import ihl.interfaces.IWorkspaceElement;
 import ihl.utils.IHLUtils;
@@ -9,8 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class LathePart1TileEntity extends BasicElectricMotorTileEntity implements IWorkspaceElement{
 

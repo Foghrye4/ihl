@@ -1,6 +1,5 @@
 package ihl.model;
 
-import ihl.items_blocks.IHLTool;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;

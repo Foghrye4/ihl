@@ -4,13 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.core.ContainerBase;
 import ic2.core.block.invslot.InvSlot;
+import ic2.core.block.invslot.InvSlot.Access;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
-import ic2.core.block.invslot.InvSlot.Access;
 import ihl.IHLMod;
 import ihl.items_blocks.IHLTool;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
@@ -34,8 +36,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class WireMillTileEntity extends BasicElectricMotorTileEntity implements IFluidHandler{
 

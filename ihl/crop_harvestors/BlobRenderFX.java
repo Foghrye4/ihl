@@ -1,5 +1,7 @@
 package ihl.crop_harvestors;
 
+import org.lwjgl.opengl.GL11;
+
 import ihl.IHLModInfo;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -7,7 +9,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class BlobRenderFX extends Render{
 	private ResourceLocation tex, tex2;

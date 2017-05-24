@@ -6,7 +6,6 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.gui.GuiDraw;
-
 import ihl.processing.metallurgy.WireMillGui;
 import ihl.processing.metallurgy.WireMillTileEntity;
 import ihl.recipes.UniversalRecipeInput;

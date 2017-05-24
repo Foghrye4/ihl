@@ -2,12 +2,12 @@ package ihl.worldgen.ores;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class DebugScannerGui extends GuiContainer {

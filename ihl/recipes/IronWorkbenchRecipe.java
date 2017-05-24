@@ -3,12 +3,13 @@ package ihl.recipes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.item.ItemStack;
+
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
+import net.minecraft.item.ItemStack;
 
 public class IronWorkbenchRecipe {
 	public List<ItemStack> workspaceElements=new ArrayList<ItemStack>();
@@ -70,7 +71,14 @@ public class IronWorkbenchRecipe {
 			}
 
 		}
-		this.outputs.addAll(output1_1);
+		Iterator<ItemStack> iOutput = output1_1.iterator();
+		while(iOutput.hasNext())
+		{
+			ItemStack outputStack = iOutput.next();
+			if(outputStack==null)
+				throw new NullPointerException("Output shall not contain null.");
+			this.outputs.add(outputStack);
+		}
 		if(tools.size()>8 || materials.size()>12)
 		{
 			throw new IllegalArgumentException("Iron workbench recipe cannot contain more than 8 tools or more than 12 materials!");

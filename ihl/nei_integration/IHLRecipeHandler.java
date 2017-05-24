@@ -1,5 +1,14 @@
 package ihl.nei_integration;
 
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -7,14 +16,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeOutput;
 import ic2.core.util.StackUtil;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 public abstract class IHLRecipeHandler extends TemplateRecipeHandler
 {

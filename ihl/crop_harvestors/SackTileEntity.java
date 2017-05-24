@@ -3,6 +3,11 @@ package ihl.crop_harvestors;
 import java.util.List;
 import java.util.Random;
 
+import ic2.core.IC2;
+import ic2.core.block.TileEntityInventory;
+import ihl.IHLMod;
+import ihl.utils.IHLFluidTank;
+import ihl.utils.IHLUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -15,11 +20,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import ic2.core.IC2;
-import ic2.core.block.TileEntityInventory;
-import ihl.IHLMod;
-import ihl.utils.IHLFluidTank;
-import ihl.utils.IHLUtils;
 
 public class SackTileEntity extends TileEntityInventory implements IFluidHandler
 {

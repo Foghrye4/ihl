@@ -1,7 +1,7 @@
 package ihl.nei_integration;
 
-import ihl.recipes.RecipeOutputItemStack;
 import codechicken.nei.PositionedStack;
+import ihl.recipes.RecipeOutputItemStack;
 
 public class IHLPositionedStack extends PositionedStack {
 

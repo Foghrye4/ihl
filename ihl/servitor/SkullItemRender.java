@@ -1,11 +1,12 @@
 package ihl.servitor;
 
+import org.lwjgl.opengl.GL11;
+
 import ihl.IHLModInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 public class SkullItemRender implements IItemRenderer{
 	private SkullModel model = new SkullModel();

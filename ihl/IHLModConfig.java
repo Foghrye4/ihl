@@ -1,19 +1,5 @@
 package ihl;
 
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputFluidContainer;
-import ic2.api.recipe.RecipeInputItemStack;
-import ic2.api.recipe.RecipeInputOreDict;
-import ihl.flexible_cable.IronWorkbenchTileEntity;
-import ihl.recipes.IronWorkbenchRecipe;
-import ihl.recipes.RecipeInputDie;
-import ihl.recipes.RecipeInputWire;
-import ihl.recipes.RecipeOutputItemStack;
-import ihl.recipes.UniversalRecipeInput;
-import ihl.recipes.UniversalRecipeManager;
-import ihl.recipes.UniversalRecipeOutput;
-import ihl.utils.IHLUtils;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,12 +14,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputFluidContainer;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
+import ihl.flexible_cable.IronWorkbenchTileEntity;
+import ihl.recipes.IronWorkbenchRecipe;
+import ihl.recipes.RecipeInputDie;
+import ihl.recipes.RecipeInputWire;
+import ihl.recipes.RecipeOutputItemStack;
+import ihl.recipes.UniversalRecipeInput;
+import ihl.recipes.UniversalRecipeManager;
+import ihl.recipes.UniversalRecipeOutput;
+import ihl.utils.IHLUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class IHLModConfig 
 {

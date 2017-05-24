@@ -1,11 +1,11 @@
 package ihl.utils;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
 import ic2.core.block.TileEntityInventory;
 import ic2.core.block.invslot.InvSlot;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 public class IHLInvSlotDischarge  extends InvSlot
 {

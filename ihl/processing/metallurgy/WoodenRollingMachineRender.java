@@ -1,11 +1,11 @@
 package ihl.processing.metallurgy;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import ic2.api.tile.IWrenchable;
 import ihl.IHLModInfo;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class WoodenRollingMachineRender extends TileEntitySpecialRenderer{
 private WoodenRollingMachinePart1Model model = new WoodenRollingMachinePart1Model();

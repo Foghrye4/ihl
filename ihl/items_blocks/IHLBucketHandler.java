@@ -1,8 +1,8 @@
 package ihl.items_blocks;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class IHLBucketHandler 
 {

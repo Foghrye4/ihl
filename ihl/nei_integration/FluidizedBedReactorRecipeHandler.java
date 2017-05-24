@@ -9,7 +9,6 @@ import ihl.processing.chemistry.FluidizedBedReactorTileEntity;
 import ihl.recipes.UniversalRecipeInput;
 import ihl.recipes.UniversalRecipeOutput;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.StatCollector;
 
 
 public class FluidizedBedReactorRecipeHandler extends MachineRecipeHandler

@@ -1,9 +1,5 @@
 package ihl.flexible_cable;
 
-import ihl.IHLMod;
-import ihl.interfaces.IEnergyNetNode;
-import ihl.utils.IHLUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ihl.IHLMod;
+import ihl.interfaces.IEnergyNetNode;
+import ihl.utils.IHLUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 

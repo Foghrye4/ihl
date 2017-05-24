@@ -13,6 +13,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.Logger;
 
 import codechicken.nei.NEIModContainer;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.IFuelHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregapi.data.IL;
 import gregapi.data.MT;
 import gregapi.data.OP;
@@ -32,6 +42,9 @@ import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 import ic2.core.Ic2Items;
 import ic2.core.util.StackUtil;
+import ihl.crop_harvestors.RubberTreeBlock;
+import ihl.crop_harvestors.SackBlock;
+import ihl.crop_harvestors.SackTileEntity;
 import ihl.enviroment.LaserHitMirrorEventHandler;
 import ihl.enviroment.MirrorBlock;
 import ihl.explosion.ChunkAndWorldLoadEventHandler;
@@ -85,9 +98,6 @@ import ihl.processing.metallurgy.RollingMachinePart1TileEntity;
 import ihl.processing.metallurgy.VulcanizationExtrudingMoldTileEntity;
 import ihl.processing.metallurgy.WireMillTileEntity;
 import ihl.processing.metallurgy.WoodenRollingMachinePart1TileEntity;
-import ihl.crop_harvestors.RubberTreeBlock;
-import ihl.crop_harvestors.SackBlock;
-import ihl.crop_harvestors.SackTileEntity;
 import ihl.recipes.IronWorkbenchRecipe;
 import ihl.recipes.RecipeInputDetonator;
 import ihl.recipes.RecipeInputDie;
@@ -118,7 +128,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -126,16 +135,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.IFuelHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = IHLModInfo.MODID, name = IHLModInfo.MODNAME, version = IHLModInfo.MODVERSION, dependencies = "required-after:IC2@[2.2.767-experimental,)")
 public class IHLMod implements IFuelHandler {
@@ -478,7 +477,6 @@ public class IHLMod implements IFuelHandler {
 								Character.valueOf('R'), IC2Items.getItem("energyCrystal"), Character.valueOf('P'),
 								IC2Items.getItem("powerunitsmall") });
 			}
-
 			ItemStack forestryWaxCapsule = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCapsule", 0, 1);
 			ItemStack forestryWaxCast = IHLUtils.getOtherModItemStackWithDamage("Forestry", "waxCast", 0, 1);
 			ItemStack forestryCandle = IHLUtils.getOtherModItemStackWithDamage("Forestry", "candle", 0, 1);
@@ -645,6 +643,10 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getThisModItemStack("hackSawSteel") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("barD10Steel") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStackWithSize("tapM10x1Steel", 2) })));
+			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
+					Arrays.asList(new IRecipeInput[] {new RecipeInputOreDict("craftingToolSaw") }),
+					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("tubBronze") }),
+					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("solarEvaporator") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(Arrays.asList(new ItemStack[] {
 					IHLUtils.getThisModItemStack("handDrillBronze"), IHLUtils.getThisModItemStack("hackSawSteel"),
 					IHLUtils.getThisModItemStack("drillSteelHardened"),
@@ -804,7 +806,7 @@ public class IHLMod implements IFuelHandler {
 							IHLUtils.getThisModItemStackWithSize("highPressureVesselSteel", 2),
 							IHLUtils.getThisModItemStackWithSize("nutM10x1Steel", 32),
 							IHLUtils.getThisModItemStackWithSize("boltM10x1Steel", 32),
-							IHLUtils.getThisModWireItemStackWithLength("pipeVulcanizedRubber", 16) }),
+							IHLUtils.getThisModItemStack("pipeVulcanizedRubber") }),
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("gasWeldingStation") })));
 			IronWorkbenchTileEntity.addRecipe(new IronWorkbenchRecipe(
 					Arrays.asList(new ItemStack[] { IHLUtils.getThisModItemStack("setOfFilesSteel"),
@@ -2079,7 +2081,7 @@ public class IHLMod implements IFuelHandler {
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("foilRubberWithSulfur", 16)),
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("fabric", 8)),
 				new RecipeInputOreDict("dustGraphite"),
-				IHLUtils.getThisModWireItemStackWithLength("pipeRubberWithSulfur", 16));
+				IHLUtils.getThisModItemStack("pipeRubberWithSulfur"));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -2199,6 +2201,9 @@ public class IHLMod implements IFuelHandler {
 		Recipe.RecipeMap.sMaceratorRecipes.addRecipe(true, new ItemStack[] { new ItemStack(Items.brick) },
 				new ItemStack[] { IHLUtils.getOreDictItemStack("dustBrick") }, null, new long[] { 10000 },
 				new FluidStack[] {}, new FluidStack[] {}, 600, 30, 0);
+		Recipe.RecipeMap.sShredderRecipes.addRecipe(true, new ItemStack[] { new ItemStack(Items.brick) },
+				new ItemStack[] { IHLUtils.getOreDictItemStack("dustBrick") }, null, new long[] { 10000 },
+				new FluidStack[] {}, new FluidStack[] {}, 600, 30, 0);
 		Recipe.RecipeMap.sMaceratorRecipes.addRecipe(true,
 				new ItemStack[] { IHLUtils.getOreDictItemStack("stickGraphite") },
 				new ItemStack[] { IHLUtils.getOreDictItemStack("dustSmallGraphite") }, null, new long[] { 10000 },
@@ -2266,7 +2271,7 @@ public class IHLMod implements IFuelHandler {
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("foilRubberWithSulfur", 16)),
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("fabric", 8)),
 				new RecipeInputOreDict("dustGraphite"),
-				IHLUtils.getThisModWireItemStackWithLength("pipeRubberWithSulfur", 16));
+				IHLUtils.getThisModItemStack("pipeRubberWithSulfur"));
 	}
 
 	private void loadIC2Recipes() {
@@ -2311,6 +2316,6 @@ public class IHLMod implements IFuelHandler {
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("foilRubberWithSulfur", 16)),
 				new RecipeInputItemStack(IHLUtils.getThisModItemStackWithSize("fabric", 8)),
 				new RecipeInputOreDict("dustGraphite"),
-				IHLUtils.getThisModWireItemStackWithLength("pipeRubberWithSulfur", 16));
+				IHLUtils.getThisModItemStack("pipeRubberWithSulfur"));
 	}
 }
