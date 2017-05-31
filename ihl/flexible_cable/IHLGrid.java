@@ -29,7 +29,7 @@ public class IHLGrid
 	private int tickCounterFireStart=0;
 	public final List<IEnergyNetNode> calculatedSinks = new ArrayList<IEnergyNetNode>();
 	public final List<IEnergyNetNode> calculatedSources = new ArrayList<IEnergyNetNode>();
-	public final Set<NBTTagCompound> cablesOnFire = new HashSet<NBTTagCompound> ();
+	public final Set<IHLCable> cablesOnFire = new HashSet<IHLCable> ();
 	private final Map<IEnergyNetNode, Double> energyLossSinkMap = new HashMap<IEnergyNetNode, Double>();
 	private final Map<IEnergyNetNode, Double> voltageSinkMap = new HashMap<IEnergyNetNode, Double>();
 	private double averageEUTransfered;
@@ -95,7 +95,7 @@ public class IHLGrid
 		d=tickCounter-tickCounterFireStart;
 		if(d>=200 && !this.cablesOnFire.isEmpty())
 		{
-			for(NBTTagCompound cable:this.cablesOnFire)
+			for(IHLCable cable:this.cablesOnFire)
 			{
     			this.removeCableAndSplitGrids(cable);
 			}
@@ -104,7 +104,7 @@ public class IHLGrid
 
 	}
 	
-	public void removeCableAndSplitGrids(NBTTagCompound cable)
+	public void removeCableAndSplitGrids(IHLCable cable)
 	{
 		IHLUtils.removeChain(cable,null);
 		Iterator<IEnergyNetNode> atei = this.telist.iterator();
@@ -149,7 +149,9 @@ public class IHLGrid
 		this.averageEUTransfered>this.lastAverageEUTransfered ||
 		this.voltage!=this.lastVoltage))
 		{
-			Map<IEnergyNetNode, NBTTagCompound> map = new HashMap<IEnergyNetNode, NBTTagCompound>();
+			IEnergyNetNode[] gridTEList = new IEnergyNetNode[this.telist.size()];
+			gridTEList = this.telist.toArray(gridTEList);
+			Map<IEnergyNetNode, IHLCable> map = new HashMap<IEnergyNetNode, IHLCable>();
 			Set<IEnergyNetNode> templist = new HashSet<IEnergyNetNode>();
 			Set<IEnergyNetNode> processlist = new HashSet<IEnergyNetNode>();
 			Set<IEnergyNetNode> templist2 = new HashSet<IEnergyNetNode>();
@@ -185,7 +187,7 @@ public class IHLGrid
 						IEnergyNetNode ate2 = it2.next();
 						if(ate1!=ate2)
 						{
-							NBTTagCompound cable = this.getSame(ate1.getCableList(), ate2.getCableList());
+							IHLCable cable = this.getSame(ate1.getCableList(), ate2.getCableList());
 							if(cable!=null)
 							{
 								map.put(ate2, cable);
@@ -214,12 +216,16 @@ public class IHLGrid
 				while(cursor!=sink)
 				{
 					//System.out.println("cycle 4");
-					NBTTagCompound cable = map.get(cursor);
-					voltageLossPerMeter=IHLUtils.getResistance(cable)/1000D*euTransfered/voltage1;
+					IHLCable cable = map.get(cursor);
+					if(cable==null) {
+						IHLMod.log.error("One of a cables is null during grid update. Skipping update in this tick.");
+						return;
+					}
+					voltageLossPerMeter=cable.getResistance()/1000D*euTransfered/voltage1;
 					powerLossPerMeter=voltageLossPerMeter*euTransfered/voltage1;
-					euTransfered-=powerLossPerMeter*cable.getInteger("length");
-					voltage1-=voltageLossPerMeter*cable.getInteger("length");
-					powerLossPerSquaredEU+=IHLUtils.getResistance(cable)/1000d*cable.getInteger("length")/voltage1/voltage1;
+					euTransfered-=powerLossPerMeter*cable.length;
+					voltage1-=voltageLossPerMeter*cable.length;
+					powerLossPerSquaredEU+=cable.getResistance()/1000d*cable.length/voltage1/voltage1;
 					//System.out.println("voltageLossPerMeter=" + voltageLossPerMeter);
 					//System.out.println("powerLossPerMeter=" + powerLossPerMeter);
 					//System.out.println("euTransfered=" + euTransfered);
@@ -231,7 +237,7 @@ public class IHLGrid
 						tickCounterFireStart=lastTickCounter;
 						this.cablesOnFire.add(cable);
 					}
-					cursor=this.getHasCable(cable, cursor);
+					cursor=this.getHasCable(cable, cursor, gridTEList);
 				}
 				this.energyLossSinkMap.put(sink, powerLossPerSquaredEU);
 				this.voltageSinkMap.put(sink, voltage1);
@@ -243,12 +249,12 @@ public class IHLGrid
 		}
 	}
 	
-	private NBTTagCompound getSame(Set<NBTTagCompound> set, Set<NBTTagCompound> set2)
+	private IHLCable getSame(Set<IHLCable> set, Set<IHLCable> set2)
 	{
-		Iterator<NBTTagCompound> i1 = set.iterator();
+		Iterator<IHLCable> i1 = set.iterator();
 		while(i1.hasNext())
 		{
-			NBTTagCompound cable=i1.next();
+			IHLCable cable=i1.next();
 			if(set2.contains(cable))
 			{
 				return cable;
@@ -269,12 +275,10 @@ public class IHLGrid
 		}
 	}
 	
-	private IEnergyNetNode getHasCable(NBTTagCompound cable, IEnergyNetNode exclude)
+	private IEnergyNetNode getHasCable(IHLCable cable, IEnergyNetNode exclude, IEnergyNetNode[] gridTEList)
 	{
-		Iterator<IEnergyNetNode> it1 = this.telist.iterator();
-		while(it1.hasNext())
+		for(IEnergyNetNode ate1:gridTEList)
 		{
-			IEnergyNetNode ate1 = it1.next();
 			if(ate1!=exclude && ate1.getCableList().contains(cable))
 			{
 				return ate1;
@@ -289,9 +293,9 @@ public class IHLGrid
 		this.isGridValid=true;
 		if(!e.getCableList().isEmpty())
 		{
-			for(NBTTagCompound cable:e.getCableList())
+			for(IHLCable cable:e.getCableList())
 			{
-				IHLMod.enet.cablesToGrids.put(cable.getInteger("chainUID"), this);
+				IHLMod.enet.cablesToGrids.put(cable.chainUID, this);
 			}
 		}
 	}

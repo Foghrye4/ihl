@@ -37,7 +37,7 @@ public class ChemicalReactorRecipeHandler extends MachineRecipeHandler
     @Override
     protected int[] getFluidInputPosX()
     {
-        return new int[]{42-5,60-5};
+        return new int[]{60-5,42-5,24-5};
     }
 
     @Override
@@ -112,6 +112,7 @@ public class ChemicalReactorRecipeHandler extends MachineRecipeHandler
     public void drawBackground(int i)
     {
     	super.drawBackground(i);
+        GuiDraw.drawTexturedModalRect(23-5, 14-11, 59, 14, 18, 18);
         GuiDraw.drawTexturedModalRect(41-5, 14-11, 59, 14, 18, 18);
         GuiDraw.drawTexturedModalRect(41-5, 50-11, 59, 50, 18, 18);
     }

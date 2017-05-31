@@ -19,6 +19,7 @@ import ic2.core.BasicMachineRecipeManager;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlotOutput;
 import ihl.IHLMod;
+import ihl.flexible_cable.IHLCable;
 import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.IWire;
@@ -762,14 +763,14 @@ public class IHLUtils {
 	}
 
 	public static void removeChains(IEnergyNetNode te, World world) {
-		Set<NBTTagCompound> cableList = te.getCableList();
-		Iterator<NBTTagCompound> cli = cableList.iterator();
+		Set<IHLCable> cableList = te.getCableList();
+		Iterator<IHLCable> cli = cableList.iterator();
 		while (cli.hasNext()) {
-			NBTTagCompound c = cli.next();
+			IHLCable c = cli.next();
 			cli.remove();
 			IHLMod.enet.removeCableEntities(c);
 			ItemStack is = IHLUtils.getThisModItemStack("copperWire");
-			is.stackTagCompound = c;
+			is.stackTagCompound = c.toNBT();
 			double[] pps = te.getPortPos(null);
 			EntityItem eitem = new EntityItem(world, pps[0], pps[1], pps[2], is);
 			world.spawnEntityInWorld(eitem);
@@ -781,12 +782,12 @@ public class IHLUtils {
 		cableList.clear();
 	}
 
-	public static void removeChain(NBTTagCompound c, IEnergyNetNode excludeNode) {
-		int x = c.getInteger("connectorX1");
-		int y = c.getInteger("connectorY1");
-		int z = c.getInteger("connectorZ1");
-		int t2DimensionId = c.getInteger("connectorDimensionId1");
-		short facing2 = c.getShort("connectorFacing1");
+	public static void removeChain(IHLCable cable, IEnergyNetNode excludeNode) {
+		int x = cable.connectorX1;
+		int y = cable.connectorY1;
+		int z = cable.connectorZ1;
+		int t2DimensionId = cable.connectorDimensionId1;
+		short facing2 = cable.connectorFacing1;
 		TileEntity t2 = MinecraftServer.getServer().worldServerForDimension(t2DimensionId).getTileEntity(x, y, z);
 		IEnergyNetNode te2;
 		if (t2 instanceof IMultiPowerCableHolder) {
@@ -797,13 +798,13 @@ public class IHLUtils {
 			return;
 		}
 		if (excludeNode != te2) {
-			te2.remove(c);
+			te2.remove(cable);
 		}
-		x = c.getInteger("connectorX");
-		y = c.getInteger("connectorY");
-		z = c.getInteger("connectorZ");
-		t2DimensionId = c.getInteger("connectorDimensionId");
-		facing2 = c.getShort("connectorFacing");
+		x = cable.connectorX;
+		y = cable.connectorY;
+		z = cable.connectorZ;
+		t2DimensionId = cable.connectorDimensionId;
+		facing2 = cable.connectorFacing;
 		t2 = MinecraftServer.getServer().worldServerForDimension(t2DimensionId).getTileEntity(x, y, z);
 		if (t2 instanceof IMultiPowerCableHolder) {
 			te2 = ((IMultiPowerCableHolder) t2).getEnergyNetNode(facing2);
@@ -813,7 +814,7 @@ public class IHLUtils {
 			return;
 		}
 		if (excludeNode != te2) {
-			te2.remove(c);
+			te2.remove(cable);
 		}
 	}
 

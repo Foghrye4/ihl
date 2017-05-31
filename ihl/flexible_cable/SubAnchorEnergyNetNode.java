@@ -23,7 +23,7 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 	private AnchorTileEntity base;
 	private short facing;
 	private int gridID=-1;
-	private Set<NBTTagCompound> cableList = new HashSet<NBTTagCompound>();
+	private Set<IHLCable> cableList = new HashSet<IHLCable>();
 	
 	public SubAnchorEnergyNetNode(AnchorTileEntity base1, short facing1)
 	{
@@ -129,11 +129,11 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 	public boolean addCable(NBTTagCompound cable) 
 	{
 		base.hasCableOnSide[this.facing]=true;
-		return this.cableList.add(cable);
+		return this.cableList.add(IHLCable.fromNBT(cable));
 	}
 
 	@Override
-	public Set<NBTTagCompound> getCableList() {
+	public Set<IHLCable> getCableList() {
 		return cableList;
 	}
 
@@ -156,9 +156,9 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
         NBTTagList cableNBTList = new NBTTagList();
-        for(NBTTagCompound cable:this.cableList)
+        for(IHLCable cable:this.cableList)
         {
-        	cableNBTList.appendTag(cable);
+        	cableNBTList.appendTag(cable.toNBT());
         }
         nbt.setTag("cableList", cableNBTList);
         nbt.setInteger("gridID", this.gridID);
@@ -169,7 +169,7 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
         NBTTagList cableNBTList=nbt.getTagList("cableList", 10);
         for(int i=0;i<cableNBTList.tagCount();i++)
         {
-            this.cableList.add(cableNBTList.getCompoundTagAt(i));
+            this.cableList.add(IHLCable.fromNBT(cableNBTList.getCompoundTagAt(i)));
         }
         this.gridID=nbt.getInteger("gridID");
 		if(this.gridID!=-1)
@@ -222,7 +222,7 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 	}
 
 	@Override
-	public void remove(NBTTagCompound cable) 
+	public void remove(IHLCable cable) 
 	{
 		if(this.cableList.remove(cable))
 		{
@@ -250,9 +250,9 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 
 	@Override
 	public boolean isCableRemoved(int chainUniqueID) {
-		for(NBTTagCompound cable:this.cableList)
+		for(IHLCable cable:this.cableList)
 		{
-			if(cable.getInteger("chainUID")==chainUniqueID)
+			if(cable.chainUID==chainUniqueID)
 			{
 				return false;
 			}

@@ -1,14 +1,18 @@
 package ihl.recipes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ihl.interfaces.IWire;
 import ihl.utils.IHLUtils;
+import ihl.worldgen.ores.IHLFluid;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -30,6 +34,7 @@ public class UniversalRecipeInput {
 				}
 			}
 		}
+		sortFluidsByDensity();
 		if (iRecipeInputs != null) {
 			for (Object material : iRecipeInputs) {
 				if (material == null) {
@@ -50,6 +55,37 @@ public class UniversalRecipeInput {
 				}
 			}
 		}
+	}
+	
+	public void sortFluidsByDensity()
+	{
+		Map<Integer, IRecipeInputFluid> sortMap = new HashMap<Integer, IRecipeInputFluid>();
+		int[] keysArray = new int[fluidInputs.size()];
+    	Iterator<IRecipeInputFluid> fli = fluidInputs.iterator();
+		while(fli.hasNext())
+    	{
+			IRecipeInputFluid rinput = fli.next();
+        	FluidStack fluid=rinput.getInputs().get(0);
+        	if(fluid==null)
+        	{
+        		return;
+        	}
+        		int key = Math.round(IHLFluid.getRealDensity(fluid.getFluid())*100F);
+        		while(sortMap.containsKey(key))
+        		{
+        			key++;
+        		}
+        		sortMap.put(key, rinput);
+        		keysArray[fluidInputs.indexOf(rinput)]=key;
+    	}
+		Arrays.sort(keysArray);
+		List<IRecipeInputFluid> newFluidList = new ArrayList<IRecipeInputFluid>();
+		for(int i=keysArray.length-1;i>=0;i--)
+		{
+			newFluidList.add(sortMap.get(keysArray[i]));
+		}
+		this.fluidInputs.clear();
+		this.fluidInputs.addAll(newFluidList);
 	}
 
 	public boolean matches(List<FluidStack> fluidInputs1, List<ItemStack> itemInputs1) {

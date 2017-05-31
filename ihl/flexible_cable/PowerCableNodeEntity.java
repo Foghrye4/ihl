@@ -21,8 +21,8 @@ import net.minecraft.world.World;
 
 public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	
-	private Set<NBTTagCompound> cableList;
-	private NBTTagCompound cable;
+	private Set<IHLCable> cableList;
+	private IHLCable cable;
 	private double soundRange=10d;
 	private final static float groundConductivity=0.005f;
 	private int lastCheckTimer=0;
@@ -138,7 +138,7 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 		super.writeEntityToNBT(nbt);
 		if(this.cable!=null)
 		{
-			nbt.setTag("cable",this.cable);
+			nbt.setTag("cable",this.cable.toNBT());
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	{
 		if(this.cable!=null)
 		{
-			return this.cable.getInteger("maxVoltage");
+			return this.cable.maxVoltage;
 		}
 		else
 		{
@@ -173,15 +173,15 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	@Override
 	public boolean addCable(NBTTagCompound cable1) 
 	{
-		this.cable=cable1;
+		this.cable=IHLCable.fromNBT(cable1);
 		return true;
 	}
 
 	@Override
-	public Set<NBTTagCompound> getCableList() {
+	public Set<IHLCable> getCableList() {
 		if(cableList==null)
 		{
-			cableList=new HashSet<NBTTagCompound>(1);
+			cableList=new HashSet<IHLCable>(1);
 			if(this.cable!=null)
 			{
 				cableList.add(this.cable);
@@ -212,7 +212,7 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	}
 	
 	@Override
-	public void remove(NBTTagCompound cable) 
+	public void remove(IHLCable cable) 
 	{
 		this.cableList.remove(cable);
 	}

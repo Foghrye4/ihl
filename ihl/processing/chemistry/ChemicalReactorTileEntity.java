@@ -196,20 +196,7 @@ public class ChemicalReactorTileEntity extends BasicElectricMotorTileEntity impl
 	@Override
 	public List[] getInput()
 	{
-		for(int i=0;i<fluidTank.getNumberOfFluids();i++)
-		{
-			for(int i1=0;i1<fluidTank.getNumberOfFluids();i1++)
-			{
-				if(i!=i1)
-				{
-					if(ChemicalReactorTileEntity.recipeManager.getOutputFor(Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList())!=null)
-					{
-						return new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid(i),fluidTank.getFluid(i1)}), this.input.getItemStackList()};
-					}
-				}
-			}
-		}
-		return new List[] {Arrays.asList(new FluidStack[]{fluidTank.getFluid()}), this.input.getItemStackList()};
+		return new List[] {fluidTank.getFluidList(), this.input.getItemStackList()};
 	}
 	
 	@Override

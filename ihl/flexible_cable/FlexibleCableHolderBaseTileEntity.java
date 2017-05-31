@@ -21,13 +21,13 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	protected double connectionY;
 	protected double connectionZ;
 	protected int gridID=-1;
-	protected final Set<NBTTagCompound> cableList;
+	protected final Set<IHLCable> cableList;
 	public boolean checkCables=true;
 
 	public FlexibleCableHolderBaseTileEntity()
 	{
 		super();
-		cableList=new HashSet<NBTTagCompound>();
+		cableList=new HashSet<IHLCable>();
 	}
 	
     @Override
@@ -68,11 +68,11 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	}
 	
 	protected boolean cableListContains(int chainUniqueID) {
-		Iterator<NBTTagCompound> cli = this.getCableList().iterator();
+		Iterator<IHLCable> cli = this.getCableList().iterator();
 		while(cli.hasNext())
 		{
-			NBTTagCompound c = cli.next();
-			if(c.getInteger("chainUID")==chainUniqueID)
+			IHLCable c = cli.next();
+			if(c.chainUID==chainUniqueID)
 			{
 				return true;
 			}
@@ -91,9 +91,9 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         NBTTagList cableNBTList = new NBTTagList();
-        for(NBTTagCompound cable:this.cableList)
+        for(IHLCable cable:this.cableList)
         {
-        	cableNBTList.appendTag(cable);
+        	cableNBTList.appendTag(cable.toNBT());
         }
         nbt.setTag("cableList", cableNBTList);
         nbt.setDouble("connectionX", this.connectionX);
@@ -109,7 +109,7 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
         NBTTagList cableNBTList=nbt.getTagList("cableList", 10);
         for(int i=0;i<cableNBTList.tagCount();i++)
         {
-            this.cableList.add(cableNBTList.getCompoundTagAt(i));
+            this.cableList.add(IHLCable.fromNBT(cableNBTList.getCompoundTagAt(i)));
         }
         this.setConnectionX(nbt.getDouble("connectionX"));
         this.setConnectionY(nbt.getDouble("connectionY"));
@@ -145,11 +145,11 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	@Override
 	public boolean addCable(NBTTagCompound cable) 
 	{
-		return this.cableList.add(cable);
+		return this.cableList.add(IHLCable.fromNBT(cable));
 	}
 
 	@Override
-	public Set<NBTTagCompound> getCableList() {
+	public Set<IHLCable> getCableList() {
 		return cableList;
 	}
 	
@@ -186,7 +186,7 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
     }
 	
 	@Override
-	public void remove(NBTTagCompound cable) 
+	public void remove(IHLCable cable) 
 	{
 		if(this.cableList.remove(cable))
 		{
@@ -202,9 +202,9 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 		{
 			return false;
 		}
-		for(NBTTagCompound cable:this.cableList)
+		for(IHLCable cable:this.cableList)
 		{
-			if(cable.getInteger("chainUID")==chainUniqueID)
+			if(cable.chainUID==chainUniqueID)
 			{
 				return false;
 			}

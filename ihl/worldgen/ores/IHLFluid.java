@@ -120,14 +120,7 @@ public class IHLFluid extends Fluid {
 			IHLFluidType type = localFluidRegistry.get(fluid.getName());
 			return type.boilingPoint;
 		} else {
-			if (fluid.getName() == "steam" || fluid.getName() == "ic2steam"
-					|| fluid.getName() == "ic2superheatedsteam") {
-				return 373;
-			} else if (fluid.isGaseous()) {
-				return fluid.getTemperature();
-			} else {
-				return fluid.getTemperature() + 100;
-			}
+			return 373;
 		}
 	}
 

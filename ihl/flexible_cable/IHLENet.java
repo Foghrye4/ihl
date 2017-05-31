@@ -113,17 +113,17 @@ public class IHLENet {
 		}
 	}
 	
-	public void removeCableAndSplitGrids(int gridID, NBTTagCompound cable)
+	public void removeCableAndSplitGrids(int gridID, IHLCable cable)
 	{
 		this.grids.get(gridID).removeCableAndSplitGrids(cable);
 	}
 	
-	public boolean hasSame(Set<NBTTagCompound> set, Set<NBTTagCompound> set2)
+	public boolean hasSame(Set<IHLCable> set, Set<IHLCable> set2)
 	{
-		Iterator<NBTTagCompound> i1 = set.iterator();
+		Iterator<IHLCable> i1 = set.iterator();
 		while(i1.hasNext())
 		{
-			NBTTagCompound num1=i1.next();
+			IHLCable num1=i1.next();
 			if(set2.contains(num1))
 			{
 				return true;
@@ -132,9 +132,9 @@ public class IHLENet {
 		return false;
 	}
 
-	public void setOnFire(NBTTagCompound cable) 
+	public void setOnFire(IHLCable cable) 
 	{
-		Set<NodeEntity> cs = IHLMod.proxy.nodeEntityRegistry.get(cable.getInteger("chainUID"));
+		Set<NodeEntity> cs = IHLMod.proxy.nodeEntityRegistry.get(cable.chainUID);
 		if(cs!=null)
 		{
 			for(NodeEntity ne:cs)
@@ -144,9 +144,9 @@ public class IHLENet {
 		}
 	}
 
-	public void removeCableEntities(NBTTagCompound cable) 
+	public void removeCableEntities(IHLCable cable) 
 	{
-		int uid = cable.getInteger("chainUID");
+		int uid = cable.chainUID;
 		Set<NodeEntity> cs = IHLMod.proxy.nodeEntityRegistry.get(uid);
 		if(cs!=null)
 		{

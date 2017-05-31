@@ -2,6 +2,7 @@ package ihl.interfaces;
 
 import java.util.Set;
 
+import ihl.flexible_cable.IHLCable;
 import ihl.flexible_cable.IHLGrid;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -11,9 +12,9 @@ public interface IEnergyNetNode extends ICableHolder{
 	void setGrid(int newGridID);
 	double getMaxAllowableVoltage();
 	boolean addCable(NBTTagCompound cable);
-	Set<NBTTagCompound> getCableList();
+	Set<IHLCable> getCableList();
 	void removeAttachedChains();
-	void remove(NBTTagCompound cable);
+	void remove(IHLCable cable);
 	double getEnergyAmountThisNodeWant();
 	void injectEnergyInThisNode(double amount, double voltage);
 }
