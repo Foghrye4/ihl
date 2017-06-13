@@ -67,6 +67,8 @@ public class IHLENet {
 	
 	public IHLGrid getGrid(int gridID)
 	{
+		if(gridID==-1)
+			throw new IllegalArgumentException("Node should never ask grid with ID -1");
 		if(this.grids.get(gridID)==null)
 		{
 			IHLGrid cgrid;

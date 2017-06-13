@@ -7,6 +7,7 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
 import ic2.core.IC2;
 import ihl.IHLMod;
 import ihl.interfaces.IEnergyNetNode;
@@ -152,6 +153,15 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
         }
 	}
 	
+	public void onUnloaded()
+    {
+        if(gridID!=-1)
+        {
+        	IHLGrid grid = IHLMod.enet.getGrid(gridID);
+        	grid.remove(this);
+        }
+    }
+	
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -186,10 +196,9 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 		}
 		else
 		{
-			double dEnergy = this.getGrid().energy;
-			if(dEnergy<1d)
+			if(this.getGrid().energy<=1d)
 			{
-				return Integer.MAX_VALUE;
+				return 65536d;
 			}
 			else
 			{
@@ -280,7 +289,7 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 		}
 		if(te instanceof IEnergySink)
 		{
-			return ((IEnergySink)te).getDemandedEnergy();
+			return ((IEnergySink)te).acceptsEnergyFrom(this.base, ForgeDirection.getOrientation(this.facing))?((IEnergySink)te).getDemandedEnergy():0d;
 		}
 		return 0d;
 	}
@@ -328,4 +337,10 @@ public class SubAnchorEnergyNetNode implements IEnergyNetNode{
 			amount=((IEnergySink)te1).injectEnergy(direction, amount, voltage);
 		}
 	}
+	
+	@Override
+	public boolean isTileEntityBaseInvalid() {
+		return base.isTileEntityInvalid();
+	}
+
 }

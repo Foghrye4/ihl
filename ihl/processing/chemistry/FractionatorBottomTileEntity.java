@@ -130,11 +130,7 @@ public class FractionatorBottomTileEntity extends TileEntityInventory implements
         		FluidStack coolant = this.waterTank.getFluid();
         		if(coolant!=null && coolant.amount>0)
         		{
-        			int t1 = this.waterTank.getTemperature();
-        			float densityOfCoolant = IHLFluid.getRealDensity(coolant.getFluid());
-        			float densityOfGas = 17.8f;
-        			int boilingPointOfGas = IHLFluid.getBoilingPoint(result2.getFluid());
-        			int amountOfGasToCondense = this.getAmountOfCondensedGas(coolant.amount, amountOfVapours, boilingPointOfGas, t1, densityOfGas, densityOfCoolant);
+        			int amountOfGasToCondense = Math.min(coolant.amount*50, amountOfVapours);
         			amountOfGasCondensed += amountOfGasToCondense;
         			amountOfFluidEvaporated -= amountOfGasToCondense/50;
         		}
@@ -252,59 +248,6 @@ public class FractionatorBottomTileEntity extends TileEntityInventory implements
 		}
 		return false;
 	}
-
-	private int getAmountOfCondensedGas(int amountOfCoolant, int amountOfGas, int boilingPointOfGas, int temperatureOfCoolant, float densityOfGas, float densityOfCoolant)
-    {
-    	if(amountOfCoolant<=0 || amountOfGas<=0 || boilingPointOfGas-20<temperatureOfCoolant)
-    	{
-    		return 0;
-    	}
-		int L = amountOfGas;
-		int t2 = boilingPointOfGas;
-		int t1 = temperatureOfCoolant;
-		int dt1=t2-t1;
-    	float maxQ=H*L*densityOfGas;
-    	int t1_1 = t1;
-    	for(int i=0;i<10;i++)
-    	{
-    		float Q2=H*L*densityOfGas;
-    		t1_1 = t1+(int)(Q2/fluidC/amountOfCoolant/densityOfCoolant);
-			int dt2=t2-t1_1;
-			float deltaT;
-			if(dt1>2*dt2)
-			{
-				deltaT = (float) ((dt1-dt2)/Math.log((double)dt2/(double)dt1));
-			}
-			else
-			{
-				deltaT = (dt1+dt2)*0.5F;
-			}
-    		float Q1 = kF*deltaT;
-    		if(Q1>=maxQ)
-    		{
-   				break;
-    		}
-    		else
-    		{
-    			int next_L =  (int)(Q1/H/densityOfGas);
-    			if(Math.abs(next_L-L)<4)
-    			{
-    				L=next_L;
-    				break;
-    			}
-				L=next_L;
-    		}
-    	}
-		if(t1_1>t1)
-		{
-			this.waterTank.setTemperature(t1_1);
-		}
-		else
-		{
-			this.waterTank.setTemperature(t1+1);
-		}
-    	return L;
-    }
     
     @Override
 	public String getInventoryName()

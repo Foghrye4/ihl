@@ -7,12 +7,14 @@ import java.util.Map;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ic2.api.energy.tile.IEnergySink;
 import ic2.api.reactor.IReactor;
 import ihl.IHLCreativeTab;
 import ihl.IHLModInfo;
 import ihl.flexible_cable.SetOfDiesMiniGUI;
-import ihl.interfaces.IHasTemperature;
+import ihl.interfaces.IEnergyNetNode;
 import ihl.interfaces.IItemHasMiniGUI;
+import ihl.interfaces.IMultiPowerCableHolder;
 import ihl.interfaces.ItemMiniGUI;
 import ihl.utils.IHLUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -77,13 +79,33 @@ public class IHLTool extends Item implements IItemHasMiniGUI{
     		int y=movingobjectposition.blockY;
     		int z=movingobjectposition.blockZ;
     		TileEntity te = world.getTileEntity(x, y, z);
-    		if(te instanceof IHasTemperature)
-    		{
-    			this.setThermometerTemperature(itemStack, entityPlayer, ((IHasTemperature)te).getTemperature());
-    		}
     		if(te instanceof IReactor)
     		{
     			this.setThermometerTemperature(itemStack, entityPlayer, ((IReactor)te).getHeat()+273);
+    		}
+    		if(te instanceof IEnergySink)
+    		{
+    			System.out.println("demanded="+((IEnergySink)te).getDemandedEnergy());
+    		}
+    		IEnergyNetNode node = null;
+    		if(te instanceof IMultiPowerCableHolder)
+    		{
+				node = ((IMultiPowerCableHolder)te).getEnergyNetNode((short) 0);
+    			for(short i=0;i<6;i++){
+    				if(((IMultiPowerCableHolder)te).getEnergyNetNode(i).getGridID()!=-1)
+    					node = ((IMultiPowerCableHolder)te).getEnergyNetNode(i);
+    			}
+    		}
+    		if(te instanceof IEnergyNetNode)
+    		{
+				node = ((IEnergyNetNode)te);
+    		}
+    		if(node!=null){
+        		System.out.println("gridId="+node.getGridID());
+        		if(node.getGridID()!=-1){
+            		System.out.println("grid energy="+node.getGrid().energy);
+            		System.out.println("getEnergyAmountThisNodeWant()="+node.getEnergyAmountThisNodeWant());
+        		}
     		}
     	}
 		return itemStack;

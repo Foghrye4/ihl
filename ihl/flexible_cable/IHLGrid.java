@@ -21,7 +21,7 @@ public class IHLGrid
 	public double energy=0D;
 	private IEnergyNetNode sink;
 	private IEnergyNetNode source;
-	private double voltage;
+	private double voltage=400d;
 	private double lastVoltage;
 	public boolean isGridValid=true;
 	private double total20TicksEU;
@@ -139,6 +139,18 @@ public class IHLGrid
 	
 	private void updateGrid()
 	{
+		Iterator<IEnergyNetNode> atei2 = telist.iterator();
+		while (atei2.hasNext()) {
+			IEnergyNetNode cte = atei2.next();
+			if (cte.isTileEntityBaseInvalid()) {
+				if (!cte.getCableList().isEmpty()) {
+					for (IHLCable cable : cte.getCableList()) {
+						IHLMod.enet.cablesToGrids.remove(cable.chainUID);
+					}
+				}
+				atei2.remove();
+			}
+		}
 		if(this.source!=null && 
 		this.sink!=null && 
 		this.source!=this.sink &&
@@ -240,6 +252,8 @@ public class IHLGrid
 					cursor=this.getHasCable(cable, cursor, gridTEList);
 				}
 				this.energyLossSinkMap.put(sink, powerLossPerSquaredEU);
+				if(voltage1<1d)
+					voltage1=1d;
 				this.voltageSinkMap.put(sink, voltage1);
 			}
 			this.calculatedSources.add(this.source);
@@ -296,6 +310,17 @@ public class IHLGrid
 			for(IHLCable cable:e.getCableList())
 			{
 				IHLMod.enet.cablesToGrids.put(cable.chainUID, this);
+			}
+		}
+	}
+
+	public void remove(IEnergyNetNode e) {
+		this.telist.remove(e);
+		if(!e.getCableList().isEmpty())
+		{
+			for(IHLCable cable:e.getCableList())
+			{
+				IHLMod.enet.cablesToGrids.remove(cable.chainUID);
 			}
 		}
 	}

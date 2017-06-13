@@ -41,6 +41,18 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
         }
     }
     
+    @Override
+	public void onUnloaded()
+    {
+        super.onUnloaded();
+        if(gridID!=-1)
+        {
+        	IHLGrid grid = IHLMod.enet.getGrid(gridID);
+        	grid.remove(this);
+        }
+    }
+
+    
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setFacing(short facing1)
@@ -216,5 +228,10 @@ public abstract class FlexibleCableHolderBaseTileEntity extends TileEntityInvent
 	public void setCableCheck(boolean b) 
 	{
 		this.checkCables=b;
+	}
+	
+	@Override
+	public boolean isTileEntityBaseInvalid(){
+		return this.tileEntityInvalid;
 	}
 }

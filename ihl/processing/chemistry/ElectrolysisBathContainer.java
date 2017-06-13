@@ -60,16 +60,11 @@ public class ElectrolysisBathContainer extends ContainerBase<ElectrolysisBathTil
                 icrafting.sendProgressBarUpdate(this, 0, this.tileEntity.progress);
             }
             
-            if (this.tileEntity.temperature != this.lastTemperature)
-            {
-                icrafting.sendProgressBarUpdate(this, 1, this.tileEntity.temperature);
-            }
         }
 
         this.lastNumberOfFluids = this.tileEntity.getNumberOfFluidsInTank();
         this.lastFluidAmount = this.tileEntity.getTankAmount();
         this.lastProgress = this.tileEntity.progress;
-        this.lastTemperature = this.tileEntity.temperature;
     }
     
     @Override
@@ -80,9 +75,6 @@ public class ElectrolysisBathContainer extends ContainerBase<ElectrolysisBathTil
         {
             case 0:
                 this.tileEntity.progress=(short) value;
-                break;
-            case 1:
-                this.tileEntity.temperature=(short) value;
                 break;
         }
     }

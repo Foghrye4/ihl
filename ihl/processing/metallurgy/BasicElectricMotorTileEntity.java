@@ -31,7 +31,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 	public short progress;
 	protected short operationLength = 6000;
 	protected double energyConsume = 1d;
-	public double energy;
+	public double energy = 0d;
 	public int maxStorage = 128;
 	private boolean addedToEnergyNet = false;
 
@@ -257,7 +257,7 @@ public abstract class BasicElectricMotorTileEntity extends FlexibleCableHolderBa
 
 	@Override
 	public double getEnergyAmountThisNodeWant() {
-		return this.energy - this.getMaxStorage();
+		return this.getMaxStorage()-this.energy;
 	}
 
 	public double drawEnergyToGrid(double amount) {

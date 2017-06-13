@@ -17,4 +17,5 @@ public interface IEnergyNetNode extends ICableHolder{
 	void remove(IHLCable cable);
 	double getEnergyAmountThisNodeWant();
 	void injectEnergyInThisNode(double amount, double voltage);
+	public boolean isTileEntityBaseInvalid();
 }

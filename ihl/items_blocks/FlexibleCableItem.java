@@ -204,10 +204,10 @@ public class FlexibleCableItem extends Item implements IWire {
 		cable.setInteger("connectorZ1", t1.zCoord);
 		cable.setShort("connectorFacing1", facing);
 		cable.setInteger("connectorDimensionId1", t1.getWorldObj().provider.dimensionId);
-		if (te.addCable(cable) && te1.addCable(cable)) {
-			te.setGrid(newGridID);
-			te1.setGrid(newGridID);
-		}
+		te.addCable(cable);
+		te1.addCable(cable);
+		te.setGrid(newGridID);
+		te1.setGrid(newGridID);
 	}
 
 	private int getTransverseSection(ItemStack stack) {

@@ -75,6 +75,11 @@ public class AnchorTileEntity extends TileEntityBlock implements IEnergySink, IE
         		MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
             	this.addedToEnergyNet = false;
         	}
+    		for(SubAnchorEnergyNetNode sen:energyNetNodes)
+    		{
+    			sen.onUnloaded();
+    		}
+
         }
     }
     
@@ -257,7 +262,7 @@ public class AnchorTileEntity extends TileEntityBlock implements IEnergySink, IE
 		double amount=0d;
 		for(short i=0;i<6;i++)
 		{
-			amount+=energyNetNodes[i].getDemandedEnergy();
+			amount=energyNetNodes[i].getDemandedEnergy();
 		}
 		return amount;
 	}
@@ -436,5 +441,9 @@ public class AnchorTileEntity extends TileEntityBlock implements IEnergySink, IE
 			energyNetNodes[i].removeAttachedChains();
 		}
 
+	}
+
+	public boolean isTileEntityInvalid() {
+		return this.tileEntityInvalid;
 	}
 }

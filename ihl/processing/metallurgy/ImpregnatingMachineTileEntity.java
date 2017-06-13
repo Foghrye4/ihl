@@ -16,7 +16,6 @@ import ic2.core.block.invslot.InvSlot.Access;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotOutput;
 import ihl.interfaces.IFluidTankVisual;
-import ihl.interfaces.IHasTemperature;
 import ihl.processing.chemistry.ApparatusProcessableInvSlot;
 import ihl.processing.chemistry.ChemicalReactorTileEntity;
 import ihl.processing.invslots.IHLInvSlotOutput;
@@ -37,7 +36,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class ImpregnatingMachineTileEntity extends TileEntityInventory implements IHasGui,IFluidTankVisual,INetworkTileEntityEventListener, IFluidHandler, IHasTemperature
+public class ImpregnatingMachineTileEntity extends TileEntityInventory implements IHasGui,IFluidTankVisual,INetworkTileEntityEventListener, IFluidHandler
 {
 	private final static UniversalRecipeManager recipeManager = new UniversalRecipeManager("tub");
     public final ApparatusProcessableInvSlot input;
@@ -123,7 +122,6 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
 			visibleFluidId=-1;
        		IC2.network.get().updateTileEntityField(this, "visibleFluidId");
        	}
-   		temperature=(short) (this.fluidTank.getTemperature()-273);
    		IHLUtils.handleFluidSlotsBehaviour(fillInputSlot, drainInputSlot, emptyFluidItemsSlot, fluidTank);
         if (this.canOperate())
         {
@@ -332,12 +330,6 @@ public class ImpregnatingMachineTileEntity extends TileEntityInventory implement
     {
         return pass==0;
     }
-
-	@Override
-	public int getTemperature() 
-	{
-		return this.fluidTank.getTemperature();
-	}
 
 	@Override
 	public int getVisibleFluidId() {

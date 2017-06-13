@@ -235,4 +235,9 @@ public class PowerCableNodeEntity extends NodeEntity implements IEnergyNetNode{
 	@Override
 	public void injectEnergyInThisNode(double amount, double voltage) {}
 
+	@Override
+	public boolean isTileEntityBaseInvalid() {
+		return this.isDead;
+	}
+
 }

@@ -66,6 +66,10 @@ public class RectifierTransformerUnitTileEntity extends TileEntityInventory impl
     @Override
 	public void onUnloaded()
     {
+		for(short i=0;i<2;i++)
+		{
+			energyNetNodes[i].onUnloaded();
+		}
         if (IC2.platform.isSimulating() && this.addedToEnergyNet)
         {
             MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
@@ -322,6 +326,10 @@ public class RectifierTransformerUnitTileEntity extends TileEntityInventory impl
 			energyNetNodes[i].removeAttachedChains();
 		}
 
+	}
+
+	public boolean isTileEntityInvalid() {
+		return this.tileEntityInvalid;
 	}
 	
 	

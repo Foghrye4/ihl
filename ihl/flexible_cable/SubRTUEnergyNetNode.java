@@ -176,6 +176,15 @@ public class SubRTUEnergyNetNode implements IEnergyNetNode{
         }
 	}
 	
+	public void onUnloaded()
+    {
+        if(gridID!=-1)
+        {
+        	IHLGrid grid = IHLMod.enet.getGrid(gridID);
+        	grid.remove(this);
+        }
+    }
+	
 	public NBTTagCompound writeToNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -302,4 +311,10 @@ public class SubRTUEnergyNetNode implements IEnergyNetNode{
 			}
 		}
 	}
+
+	@Override
+	public boolean isTileEntityBaseInvalid() {
+		return this.base.isTileEntityInvalid();
+	}
+
 }

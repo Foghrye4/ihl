@@ -42,7 +42,6 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
 	public short progress;
 	protected short operationLength=20000;//Short.MAX_VALUE=32767
 	private final IHLFluidTank fluidTank = new IHLFluidTank(2000);
-	public short temperature=20;
 	private final static double resistance=5D;
     
 	public ElectrolysisBathTileEntity() {
@@ -88,7 +87,6 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
 	public void updateEntityServer()
     {
         super.updateEntityServer();
-    	temperature=(short) (this.fluidTank.getTemperature()-273);
    		IHLUtils.handleFluidSlotsBehaviour(fillInputSlot, drainInputSlot, emptyFluidItemsSlot, fluidTank);
         if (this.canOperate())
         {
@@ -97,10 +95,9 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
             {
                 IC2.network.get().initiateTileEntityEvent(this, 0, true);
             }
-            if(this.getGrid().energy>0D)
+            if(gridID!=-1 && this.getGrid().energy>0D)
             {
-            	double voltage = this.getGrid().getSinkVoltage(this);
-            	double drawEnergy = voltage*voltage/resistance;
+            	double drawEnergy = getEnergyAmountThisNodeWant();
             	this.progress+=drawEnergy;
             	this.getGrid().drawEnergy(drawEnergy, this);
             }
@@ -289,7 +286,7 @@ public class ElectrolysisBathTileEntity extends FlexibleCableHolderBaseTileEntit
 	{
     	double voltage = this.getGrid().getSinkVoltage(this);
     	double energy = voltage*voltage/resistance;
-		return this.getOutput()!=null?energy:0;
+		return this.getOutput()!=null?energy>1d?energy:1d:0d;
 	}
 
 	@Override
