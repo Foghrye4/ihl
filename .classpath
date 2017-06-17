@@ -63,7 +63,6 @@
 	<classpathentry exported="true" kind="lib" path="/home/foghrye4/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl-platform/2.9.1/aa9aae879af8eb378e22cfc64db56ec2ca9a44d1/lwjgl-platform-2.9.1-natives-linux.jar"/>
 	<classpathentry exported="true" kind="lib" path="/home/foghrye4/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl-platform/2.9.1/2d12c83fdfbc04ecabf02c7bc8cc54d034f0daac/lwjgl-platform-2.9.1-natives-osx.jar"/>
 	<classpathentry exported="true" kind="lib" path="/home/foghrye4/Programs/Eclipse-forge/Forge 1.7.10/lib/industrialcraft-2-2.2.790-experimental-dev.jar"/>
-	<classpathentry exported="true" kind="lib" path="/home/foghrye4/Programs/Eclipse-forge/Forge 1.7.10/lib/API.jar"/>
 	<classpathentry kind="lib" path="/home/foghrye4/Programs/Eclipse-forge/Forge 1.7.10/lib/gregtech_1.7.10-6.04.10-dev.jar" sourcepath="lib/gregtech_1.7.10-6.04.10-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/home/foghrye4/Programs/Eclipse-forge/Forge 1.7.10/lib/CodeChickenCore-1.7.10-1.0.4.29-dev.jar"/>
 	<classpathentry exported="true" kind="lib" path="/home/foghrye4/Programs/Eclipse-forge/Forge 1.7.10/lib/NotEnoughItems-1.7.10-1.0.3.74-dev.jar"/>
