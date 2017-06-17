@@ -1,0 +1,122 @@
+---- Minecraft Crash Report ----
+// Oops.
+
+Time: 22.11.15 20:28
+Description: Exception ticking world
+
+org.apache.logging.log4j.core.appender.AppenderLoggingException: Attempted to append to non-started appender ServerGuiConsole
+	at org.apache.logging.log4j.core.config.AppenderControl.callAppender(AppenderControl.java:89)
+	at org.apache.logging.log4j.core.config.LoggerConfig.callAppenders(LoggerConfig.java:425)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:406)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:367)
+	at org.apache.logging.log4j.core.Logger.log(Logger.java:110)
+	at org.apache.logging.log4j.spi.AbstractLogger.info(AbstractLogger.java:1011)
+	at cpw.mods.fml.common.TracingPrintStream.println(TracingPrintStream.java:38)
+	at ihl.utils.WorldSavedDataBlastWave.scheduleExplosionEffectsOnChunkLoad(WorldSavedDataBlastWave.java:99)
+	at ihl.utils.ExplosionVector.getNewPowerAndProcessBlocksEBS(ExplosionVector.java:336)
+	at ihl.utils.ExplosionVector.breakBlocksAndGetDescendantsForEBS(ExplosionVector.java:240)
+	at ihl.utils.ExplosionVector.doExplosion(ExplosionVector.java:460)
+	at ihl.utils.ChunkAndWorldLoadEventHandler.onChunkLoadEvent(ChunkAndWorldLoadEventHandler.java:37)
+	at cpw.mods.fml.common.eventhandler.ASMEventHandler_69_ChunkAndWorldLoadEventHandler_onChunkLoadEvent_Load.invoke(.dynamic)
+	at cpw.mods.fml.common.eventhandler.ASMEventHandler.invoke(ASMEventHandler.java:54)
+	at cpw.mods.fml.common.eventhandler.EventBus.post(EventBus.java:140)
+	at net.minecraft.world.chunk.Chunk.onChunkLoad(Chunk.java:923)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage2(ChunkIOProvider.java:46)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage2(ChunkIOProvider.java:12)
+	at net.minecraftforge.common.util.AsynchronousExecutor.skipQueue(AsynchronousExecutor.java:344)
+	at net.minecraftforge.common.util.AsynchronousExecutor.getSkipQueue(AsynchronousExecutor.java:302)
+	at net.minecraftforge.common.chunkio.ChunkIOExecutor.syncChunkLoad(ChunkIOExecutor.java:12)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:126)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:101)
+	at net.minecraft.world.gen.ChunkProviderServer.provideChunk(ChunkProviderServer.java:199)
+	at net.minecraft.world.World.getChunkFromChunkCoords(World.java:419)
+	at net.minecraft.world.WorldServer.func_147456_g(WorldServer.java:313)
+	at net.minecraft.world.WorldServer.tick(WorldServer.java:183)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:625)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at org.apache.logging.log4j.core.config.AppenderControl.callAppender(AppenderControl.java:89)
+	at org.apache.logging.log4j.core.config.LoggerConfig.callAppenders(LoggerConfig.java:425)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:406)
+	at org.apache.logging.log4j.core.config.LoggerConfig.log(LoggerConfig.java:367)
+	at org.apache.logging.log4j.core.Logger.log(Logger.java:110)
+	at org.apache.logging.log4j.spi.AbstractLogger.info(AbstractLogger.java:1011)
+	at cpw.mods.fml.common.TracingPrintStream.println(TracingPrintStream.java:38)
+	at ihl.utils.WorldSavedDataBlastWave.scheduleExplosionEffectsOnChunkLoad(WorldSavedDataBlastWave.java:99)
+	at ihl.utils.ExplosionVector.getNewPowerAndProcessBlocksEBS(ExplosionVector.java:336)
+	at ihl.utils.ExplosionVector.breakBlocksAndGetDescendantsForEBS(ExplosionVector.java:240)
+	at ihl.utils.ExplosionVector.doExplosion(ExplosionVector.java:460)
+	at ihl.utils.ChunkAndWorldLoadEventHandler.onChunkLoadEvent(ChunkAndWorldLoadEventHandler.java:37)
+	at cpw.mods.fml.common.eventhandler.ASMEventHandler_69_ChunkAndWorldLoadEventHandler_onChunkLoadEvent_Load.invoke(.dynamic)
+	at cpw.mods.fml.common.eventhandler.ASMEventHandler.invoke(ASMEventHandler.java:54)
+	at cpw.mods.fml.common.eventhandler.EventBus.post(EventBus.java:140)
+	at net.minecraft.world.chunk.Chunk.onChunkLoad(Chunk.java:923)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage2(ChunkIOProvider.java:46)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage2(ChunkIOProvider.java:12)
+	at net.minecraftforge.common.util.AsynchronousExecutor.skipQueue(AsynchronousExecutor.java:344)
+	at net.minecraftforge.common.util.AsynchronousExecutor.getSkipQueue(AsynchronousExecutor.java:302)
+	at net.minecraftforge.common.chunkio.ChunkIOExecutor.syncChunkLoad(ChunkIOExecutor.java:12)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:126)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:101)
+	at net.minecraft.world.gen.ChunkProviderServer.provideChunk(ChunkProviderServer.java:199)
+	at net.minecraft.world.World.getChunkFromChunkCoords(World.java:419)
+	at net.minecraft.world.WorldServer.func_147456_g(WorldServer.java:313)
+	at net.minecraft.world.WorldServer.tick(WorldServer.java:183)
+
+-- Affected level --
+Details:
+	Level name: New World
+	All players: 1 total; [EntityPlayerMP['Player411'/11, l='New World', x=1832,15, y=16,00, z=-192,75]]
+	Chunk stats: ServerChunkCache: 895 Drop: 0
+	Level seed: -2012760655077185016
+	Level generator: ID 01 - flat, ver 0. Features enabled: true
+	Level generator options: 2;7,3x1,52x24,8x12;2;stronghold,biome_1,village,decoration,dungeon,mineshaft
+	Level spawn location: World: (395,4,-811), Chunk: (at 11,0,5 in 24,-51; contains blocks 384,0,-816 to 399,255,-801), Region: (0,-2; contains chunks 0,-64 to 31,-33, blocks 0,0,-1024 to 511,255,-513)
+	Level time: 266480 game time, 34922 day time
+	Level dimension: 0
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 55477 (now: false), thunder time: 15360 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:625)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Linux (amd64) version 3.19.0-33-generic
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 224708856 bytes (214 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1564 9 mods loaded, 9 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	Forge{10.13.4.1564} [Minecraft Forge] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	NotEnoughItems{1.0.3.74} [Not Enough Items] (NotEnoughItems-1.7.10-1.0.3.74-dev.jar) 
+	UCHIJAAAA	CodeChickenCore{1.0.4.29} [CodeChicken Core] (minecraft.jar) 
+	UCHIJAAAA	gregapi{GT6-MC1710} [Greg-API] (gregtech_1.7.10-6.00.58-dev.jar) 
+	UCHIJAAAA	IC2{2.2.790-experimental} [IndustrialCraft 2] (industrialcraft-2-2.2.790-experimental-dev.jar) 
+	UCHIJAAAA	ihl{0.582} [IHL Tools & Machines for IC2V2] (bin) 
+	UCHIJAAAA	gregtech{GT6-MC1710} [GregTech] (gregtech_1.7.10-6.00.58-dev.jar) 
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Player Count: 1 / 8; [EntityPlayerMP['Player411'/11, l='New World', x=1832,15, y=16,00, z=-192,75]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'

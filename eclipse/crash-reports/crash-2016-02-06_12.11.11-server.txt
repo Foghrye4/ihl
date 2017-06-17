@@ -1,0 +1,113 @@
+---- Minecraft Crash Report ----
+// Surprise! Haha. Well, this is awkward.
+
+Time: 06.02.16 12:11
+Description: Exception ticking world
+
+java.lang.OutOfMemoryError: Java heap space
+	at net.minecraft.nbt.NBTBase.func_150284_a(SourceFile:61)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:394)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.NBTTagList.func_152446_a(NBTTagList.java:54)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:398)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:398)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.CompressedStreamTools.func_152455_a(CompressedStreamTools.java:170)
+	at net.minecraft.nbt.CompressedStreamTools.func_152456_a(CompressedStreamTools.java:125)
+	at net.minecraft.nbt.CompressedStreamTools.read(CompressedStreamTools.java:120)
+	at net.minecraft.world.chunk.storage.AnvilChunkLoader.loadChunk__Async(AnvilChunkLoader.java:121)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage1(ChunkIOProvider.java:20)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage1(ChunkIOProvider.java:12)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.init(AsynchronousExecutor.java:151)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.initSync(AsynchronousExecutor.java:125)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.get(AsynchronousExecutor.java:159)
+	at net.minecraftforge.common.util.AsynchronousExecutor.skipQueue(AsynchronousExecutor.java:341)
+	at net.minecraftforge.common.util.AsynchronousExecutor.getSkipQueue(AsynchronousExecutor.java:302)
+	at net.minecraftforge.common.chunkio.ChunkIOExecutor.syncChunkLoad(ChunkIOExecutor.java:12)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:126)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:101)
+	at net.minecraft.world.gen.ChunkProviderServer.provideChunk(ChunkProviderServer.java:199)
+	at net.minecraft.world.World.getChunkFromChunkCoords(World.java:419)
+	at net.minecraft.world.WorldServer.func_147456_g(WorldServer.java:313)
+	at net.minecraft.world.WorldServer.tick(WorldServer.java:183)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:625)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at net.minecraft.nbt.NBTBase.func_150284_a(SourceFile:61)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:394)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.NBTTagList.func_152446_a(NBTTagList.java:54)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:398)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.NBTTagCompound.func_152449_a(NBTTagCompound.java:398)
+	at net.minecraft.nbt.NBTTagCompound.func_152446_a(NBTTagCompound.java:52)
+	at net.minecraft.nbt.CompressedStreamTools.func_152455_a(CompressedStreamTools.java:170)
+	at net.minecraft.nbt.CompressedStreamTools.func_152456_a(CompressedStreamTools.java:125)
+	at net.minecraft.nbt.CompressedStreamTools.read(CompressedStreamTools.java:120)
+	at net.minecraft.world.chunk.storage.AnvilChunkLoader.loadChunk__Async(AnvilChunkLoader.java:121)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage1(ChunkIOProvider.java:20)
+	at net.minecraftforge.common.chunkio.ChunkIOProvider.callStage1(ChunkIOProvider.java:12)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.init(AsynchronousExecutor.java:151)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.initSync(AsynchronousExecutor.java:125)
+	at net.minecraftforge.common.util.AsynchronousExecutor$Task.get(AsynchronousExecutor.java:159)
+	at net.minecraftforge.common.util.AsynchronousExecutor.skipQueue(AsynchronousExecutor.java:341)
+	at net.minecraftforge.common.util.AsynchronousExecutor.getSkipQueue(AsynchronousExecutor.java:302)
+	at net.minecraftforge.common.chunkio.ChunkIOExecutor.syncChunkLoad(ChunkIOExecutor.java:12)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:126)
+	at net.minecraft.world.gen.ChunkProviderServer.loadChunk(ChunkProviderServer.java:101)
+	at net.minecraft.world.gen.ChunkProviderServer.provideChunk(ChunkProviderServer.java:199)
+	at net.minecraft.world.World.getChunkFromChunkCoords(World.java:419)
+	at net.minecraft.world.WorldServer.func_147456_g(WorldServer.java:313)
+	at net.minecraft.world.WorldServer.tick(WorldServer.java:183)
+
+-- Affected level --
+Details:
+	Level name: New World
+	All players: 1 total; [EntityPlayerMP['Player435'/113689, l='New World', x=101,08, y=70,60, z=-71,59]]
+	Chunk stats: ServerChunkCache: 291 Drop: 0
+	Level seed: 7371077591560249862
+	Level Data Unobtainable: ~~ERROR~~ OutOfMemoryError: Java heap space
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:625)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Linux (amd64) version 3.19.0-49-generic
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 274824 bytes (0 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1564 9 mods loaded, 9 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAAAAAAAAAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAAAAAAAAAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAAAAAAAAAAAA	Forge{10.13.4.1564} [Minecraft Forge] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAAAAAAAAAAAA	NotEnoughItems{1.0.3.74} [Not Enough Items] (NotEnoughItems-1.7.10-1.0.3.74-dev.jar) 
+	UCHIJAAAAAAAAAAAAAA	CodeChickenCore{1.0.4.29} [CodeChicken Core] (minecraft.jar) 
+	UCHIJAAAAAAAAAAAAAA	gregapi{GT6-MC1710} [Greg-API] (gregtech_1.7.10-6.00.62-dev.jar) 
+	UCHIJAAAAAAAAAAAAAA	IC2{2.2.790-experimental} [IndustrialCraft 2] (industrialcraft-2-2.2.790-experimental-dev.jar) 
+	UCHIJAAAAAAAAAAAAAA	ihl{0.591} [IHL Tools & Machines for IC2V2] (bin) 
+	UCHIJAAAAAAAAAAAAAA	gregtech{GT6-MC1710} [GregTech] (gregtech_1.7.10-6.00.62-dev.jar) 
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Player Count: 1 / 8; [EntityPlayerMP['Player435'/113689, l='New World', x=101,08, y=70,60, z=-71,59]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'

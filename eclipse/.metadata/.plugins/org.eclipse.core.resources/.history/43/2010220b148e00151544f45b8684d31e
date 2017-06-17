@@ -1,0 +1,318 @@
+package ihl.utils;
+
+import ihl.IHLMod;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
+
+public class ExplosionVector 
+{
+	public Set<Long> startVectors = new HashSet();
+	public Map<Long,Set<Long>> vectors = new HashMap();
+	public Map<Long,Integer> explosionPower = new HashMap();
+	public Map<Long,Float> explosionPowerDampingFactor = new HashMap();
+	private Random random = new Random();
+	
+	public ExplosionVector()
+	{
+		this.precalculateExplosion();
+	}
+	
+	public void precalculateExplosion()
+	{
+		int maxExplosionRadius=32;
+		for(int levelRadius=1; levelRadius<maxExplosionRadius; levelRadius++)
+		{
+			for(int ix=-levelRadius;ix<=levelRadius;ix++)
+			{
+				for(int iy=-levelRadius;iy<=levelRadius;iy++)
+				{
+					for(int iz=-levelRadius;iz<=levelRadius;iz++)
+					{
+						{
+							long coordinateKey = IHLUtils.encodeXYZ(ix,iy,iz);
+							if(!vectors.containsKey(coordinateKey))
+							{
+								int prevX=ix;
+								int prevY=iy;
+								int prevZ=iz;
+								if(Math.abs(ix)+Math.abs(iy)+Math.abs(iz)>Math.round(levelRadius*1.8f))
+								{
+									prevX=reduceVariableByAbsoluteValue(prevX);
+									prevY=reduceVariableByAbsoluteValue(prevY);
+									prevZ=reduceVariableByAbsoluteValue(prevZ);
+								}
+								else if(Math.abs(ix)<=Math.abs(iy) && Math.abs(ix)<=Math.abs(iz))
+								{
+									prevY=reduceVariableByAbsoluteValue(prevY);
+									prevZ=reduceVariableByAbsoluteValue(prevZ);
+								}
+								else if(Math.abs(iy)<=Math.abs(ix) && Math.abs(iy)<=Math.abs(iz))
+								{
+									prevX=reduceVariableByAbsoluteValue(prevX);
+									prevZ=reduceVariableByAbsoluteValue(prevZ);
+								}
+								else if(Math.abs(iz)<=Math.abs(ix) && Math.abs(iz)<=Math.abs(iy))
+								{
+									prevY=reduceVariableByAbsoluteValue(prevY);
+									prevX=reduceVariableByAbsoluteValue(prevX);
+								}
+								long prevKey = IHLUtils.encodeXYZ(prevX,prevY,prevZ);
+								if(prevX==ix && prevY==iy && prevZ==iz && levelRadius>1)
+								{
+									IHLMod.log.error("Was:"+ix+"/" +iy+"/" +iz+"/");
+									IHLMod.log.error("Now:"+prevX+"/" +prevY+"/" +prevZ+"/");
+									throw new ArithmeticException("Variables are out of expected range. \n Expected are not equal: "+ix+"="+prevX+" "+iy+"="+prevY+" "+iz+"="+prevZ);
+								}
+								if(levelRadius==1)
+								{
+									startVectors.add(coordinateKey);
+									this.addElement(coordinateKey, prevX, prevY, prevZ, ix, iy, iz);
+								}
+								else if(vectors.containsKey(prevKey))
+								{
+									prevKey=this.getParentWithLowestDescendantsRate(prevKey, prevX, prevY, prevZ, levelRadius);
+									vectors.get(prevKey).add(coordinateKey);
+									this.addElement(coordinateKey, prevX, prevY, prevZ, ix, iy, iz);
+								}
+								else
+								{
+									IHLMod.log.error("Was:"+ix+"/" +iy+"/" +iz+"/");
+									IHLMod.log.error("Now:"+prevX+"/" +prevY+"/" +prevZ+"/");
+									IHLMod.log.info("ExplosionVector is missing parent! Help him!");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private long getParentWithLowestDescendantsRate(long prevKey, int prevX, int prevY, int prevZ, int levelRadius) 
+	{
+		long prevKey1 = prevKey;
+    	int xyzi[] = {0,0,-1,0,0,1,0,0};
+    	int x2,y2,z2;
+    	int descendantsRate=vectors.get(prevKey).size();
+    	for(int i=0;i<=5;i++)
+		{
+    		x2=prevX+xyzi[i];
+    		y2=prevY+xyzi[i+2];
+    		z2=prevZ+xyzi[i+1];
+    		long newKey = IHLUtils.encodeXYZ(x2, y2, z2);
+    		boolean atALevelRadius = (Math.abs(x2)==levelRadius-1||Math.abs(y2)==levelRadius-1||Math.abs(z2)==levelRadius-1)&&(Math.abs(x2)<levelRadius && Math.abs(y2)<levelRadius && Math.abs(z2)<levelRadius);
+    		if(atALevelRadius && vectors.get(newKey).size()<descendantsRate)
+    		{
+    			descendantsRate=vectors.get(newKey).size();
+    			prevKey1=newKey;
+    		}
+    		else if(atALevelRadius && vectors.get(newKey).size()==descendantsRate)
+    		{
+    			if(random.nextBoolean())
+    			{
+        			descendantsRate=vectors.get(newKey).size();
+        			prevKey1=newKey;
+    			}
+    		}
+		}
+		return prevKey1;
+	}
+
+	private void addElement(long coordinateKey, int prevX, int prevY, int prevZ, int ix, int iy, int iz)
+	{
+		vectors.put(coordinateKey, new HashSet());
+		float df = (float)(prevX*prevX+prevY*prevY+prevZ*prevZ+1)/(float)(ix*ix+iy*iy+iz*iz+1);
+		explosionPowerDampingFactor.put(coordinateKey,df);
+	}
+
+	public void setPower(int power1) 
+	{
+		for(long ev:startVectors)
+		{
+			this.explosionPower.put(ev, power1);
+		}
+
+	}
+
+	public Set<Long> breakBlocksAndGetDescendants(World world, EntityIHLExplosion exploder, Explosion explosion, long longNumber)
+	{
+		int multiplier = exploder.multiplier;
+		int[] xyz = IHLUtils.decodeXYZ(longNumber);
+		int power1 = explosionPower.get(longNumber);
+		int repeat=0;
+		//System.out.println("Power before " + power1);
+		if(Math.abs(xyz[0])>=Math.abs(xyz[1]) && Math.abs(xyz[0])>=Math.abs(xyz[2]))
+		{
+			for(int ix=xyz[0]>0?0:multiplier-1;ix<multiplier && ix>=0;ix=xyz[0]>0?ix+1:ix-1)
+			{
+				for(int iy=xyz[1]>0?0:multiplier-1;iy<multiplier && iy>=0;iy=xyz[1]>0?iy+1:iy-1)
+				{
+					for(int iz=xyz[2]>0?0:multiplier-1;iz<multiplier && iz>=0;iz=xyz[2]>0?iz+1:iz-1)
+					{
+						power1 = this.getNewPowerAndProcessBlocks(world, exploder, explosion, xyz, multiplier, ix, iy, iz, power1);
+					}
+				}
+			}
+		}
+		else if(Math.abs(xyz[1])>=Math.abs(xyz[0]) && Math.abs(xyz[1])>=Math.abs(xyz[2]))
+		{
+			for(int iy=xyz[1]>0?0:multiplier-1;iy<multiplier && iy>=0;iy=xyz[1]>0?iy+1:iy-1)
+			{
+				for(int ix=xyz[0]>0?0:multiplier-1;ix<multiplier && ix>=0;ix=xyz[0]>0?ix+1:ix-1)
+				{
+					for(int iz=xyz[2]>0?0:multiplier-1;iz<multiplier && iz>=0;iz=xyz[2]>0?iz+1:iz-1)
+					{
+						power1 = this.getNewPowerAndProcessBlocks(world, exploder, explosion, xyz, multiplier, ix, iy, iz, power1);
+					}
+				}
+			}
+		}
+		else
+		{
+			for(int iz=xyz[2]>0?0:multiplier-1;iz<multiplier && iz>=0;iz=xyz[2]>0?iz+1:iz-1)
+			{
+				for(int ix=xyz[0]>0?0:multiplier-1;ix<multiplier && ix>=0;ix=xyz[0]>0?ix+1:ix-1)
+				{
+					for(int iy=xyz[1]>0?0:multiplier-1;iy<multiplier && iy>=0;iy=xyz[1]>0?iy+1:iy-1)
+					{
+						power1 = this.getNewPowerAndProcessBlocks(world, exploder, explosion, xyz, multiplier, ix, iy, iz, power1);
+					}
+				}
+			}
+		}
+		power1=Math.round(power1*explosionPowerDampingFactor.get(longNumber)-0.5f);
+		//System.out.println("Power after " + power1 + " \n repeats "+repeat);
+		if(power1<=1 || !vectors.containsKey(longNumber)|| vectors.get(longNumber).isEmpty())
+		{
+			exploder.effectBorderBlocks.add(longNumber);
+			if(xyz[1]<0 || (exploder.y<=6 && xyz[1]<=6))
+			{
+				exploder.effectBorderBlocksWithLowPosition.add(longNumber);
+			}
+			return null;
+		}
+		else
+		{
+			for(long d1:vectors.get(longNumber))
+			{
+				explosionPower.put(d1, power1);
+			}
+			return vectors.get(longNumber);
+		}
+	} 
+	
+	
+	public Set<Long> breakBlocksAndGetDescendantsForEBS(World world, EntityIHLExplosion exploder, Explosion explosion, long longNumber)
+	{
+		int multiplier = exploder.multiplier;
+		int[] xyz = IHLUtils.decodeXYZ(longNumber);
+		int power1 = explosionPower.get(longNumber);
+		power1 = this.getNewPowerAndProcessBlocks(world, exploder, explosion, xyz, multiplier, ix, iy, iz, power1);
+		power1=Math.round(power1*explosionPowerDampingFactor.get(longNumber)-0.5f);
+		if(power1<=1 || !vectors.containsKey(longNumber)|| vectors.get(longNumber).isEmpty())
+		{
+			exploder.effectBorderBlocks.add(longNumber);
+			if(xyz[1]<0 || (exploder.y<=6 && xyz[1]<=6))
+			{
+				exploder.effectBorderBlocksWithLowPosition.add(longNumber);
+			}
+			return null;
+		}
+		else
+		{
+			for(long d1:vectors.get(longNumber))
+			{
+				explosionPower.put(d1, power1);
+			}
+			return vectors.get(longNumber);
+		}
+
+	}
+	
+	private int reduceVariableByAbsoluteValue(int variable)
+	{
+		if(variable==0)
+		{
+			return 0;
+		}
+		else if(variable<0)
+		{
+			return variable+1;
+		}
+		else
+		{
+			return variable-1;
+		}
+	}
+	
+	private int getNewPowerAndProcessBlocks(World world, EntityIHLExplosion exploder, Explosion explosion, int xyz[], int multiplier, int ix, int iy, int iz, int power2)
+	{
+		int power1=power2;
+		int x = exploder.x+xyz[0]*multiplier+ix;
+		int y = exploder.y+xyz[1]*multiplier+iy;
+		int z = exploder.z+xyz[2]*multiplier+iz;
+		if(y<=4 || y>256)
+		{
+			return 0;
+		}
+		Block block = exploder.getBlock(x, y, z);
+		int explosionResistance = Math.round(block.getExplosionResistance(exploder, world, x, y, z, exploder.x, exploder.y, exploder.z)*10f);
+		if(explosionResistance>=power1)
+		{
+			power1=0;
+		}
+		else
+		{
+			power1-=Math.round(block.getExplosionResistance(exploder, world, x, y, z, exploder.x, exploder.y, exploder.z)*10f);
+			Entity entity = exploder.getEntity(x, y, z);
+			if(entity!=null)
+			{
+				entity.attackEntityFrom(exploder.damageSource, power1/10f);
+			}
+			block.onBlockDestroyedByExplosion(world, x, y, z, explosion);
+			exploder.setBlockToAir(x, y, z);
+		}
+		return power1;
+	}
+	
+	private int getNewPowerAndProcessBlocksEBS(World world, EntityIHLExplosion exploder, Explosion explosion, int xyz[], int multiplier, int ix, int iy, int iz, int power2)
+	{
+		int power1=power2;
+		int x = exploder.x+xyz[0]*multiplier+ix;
+		int y = exploder.y+xyz[1]*multiplier+iy;
+		int z = exploder.z+xyz[2]*multiplier+iz;
+		if(y<=4 || y>256)
+		{
+			return 0;
+		}
+		int explosionResistance = exploder.getEBSResistance(x, y, z);
+		if(explosionResistance>=power1)
+		{
+			power1=0;
+		}
+		else
+		{
+			power1-=Math.round(block.getExplosionResistance(exploder, world, x, y, z, exploder.x, exploder.y, exploder.z)*10f);
+			Entity entity = exploder.getEntity(x, y, z);
+			if(entity!=null)
+			{
+				entity.attackEntityFrom(exploder.damageSource, power1/10f);
+			}
+			block.onBlockDestroyedByExplosion(world, x, y, z, explosion);
+			exploder.setBlockToAir(x, y, z);
+		}
+		return power1;
+	}
+
+}

@@ -1,0 +1,578 @@
+package ihl.flexible_cable;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import ihl.IHLMod;
+import ihl.IHLModInfo;
+import ihl.interfaces.ICableHolder;
+import ihl.interfaces.IDataCableHolder;
+import ihl.interfaces.IEnergyNetNode;
+import ihl.interfaces.INetworkListener;
+import ihl.utils.IHLUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.Unpooled;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+public class NodeEntity extends Entity implements INetworkListener{
+	
+	public NodeEntity prevAnchorEntity;
+	public Entity nextAnchorEntity;
+	private int anchorX;
+	private int anchorY;
+	private int anchorZ;
+	private short anchorFacing;
+	private int anchorDimensionId;
+	public ItemStack attachedItem;
+	protected int chainUniqueID=-2;
+	public int chainArrangeNumber=-2;
+	protected int checkTimer=201;
+	public int colorIndex=16777215;
+	public int type=1;//0 - uninsulated wire; 1 - insulated cable; 2 - data cable
+	public float dx0=0;
+	public float dy0=0;
+	public float dz0=0;
+	public final int n=64;
+	public final float[] rotationPitchArray = new float[n+1];
+	public final float[] rotationYawArray = new float[n+1];
+	public final float[] translationX = new float[n+1];
+	public final float[] translationY = new float[n+1];
+	public final float[] translationZ = new float[n+1];
+	public float virtualNodePosX;
+	public float virtualNodePosY;
+	public float virtualNodePosZ;
+	public float renderPosX;
+	public float renderPosY;
+	public float renderPosZ;
+	private boolean alreadyRegistered=false;
+
+	public NodeEntity(World world) 
+	{
+		super(world);
+		if(world.isRemote)
+    	{
+			IHLMod.proxy.addEntityToList(this);
+    		this.setSize(2f, 0.2f);
+    	}
+		else
+		{
+			IHLMod.proxy.addEntityToServerList(this);
+			this.setSize(0.5F, 0.1F);
+		}
+		this.renderDistanceWeight = 5.0D;
+		this.yOffset+=0.15F;
+		this.virtualNodePosX=(float) this.posX;
+		this.virtualNodePosY=(float) this.posY;
+		this.virtualNodePosZ=(float) this.posZ;
+	}
+	
+	@Override
+	public void setInPortal(){}
+	
+	@Override
+	public void travelToDimension(int dimensionId){}
+	
+	public void setSize(float width, float heigth)
+	{
+		super.setSize(width, heigth);
+	}
+	
+	public void setVirtualNodePos(float posX,float posY, float posZ)
+	{
+		virtualNodePosX=posX;
+		virtualNodePosY=posY;
+		virtualNodePosZ=posZ;
+		this.registerAndSendData(null);
+	}
+	
+	public void registerAndSendData(EntityPlayerMP player)
+	{
+    	if(!worldObj.isRemote)
+    	{
+    		if(!alreadyRegistered)
+    		{
+        		Set<NodeEntity> nes;
+        		if(IHLMod.proxy.nodeEntityRegistry.containsKey(this.getChainUniqueID()))
+        		{
+        			nes=IHLMod.proxy.nodeEntityRegistry.get(this.getChainUniqueID());
+        		}
+        		else
+        		{
+        			nes=new HashSet();
+        			IHLMod.proxy.nodeEntityRegistry.put(this.getChainUniqueID(),nes);
+        		}
+        		nes.add(this);
+        		alreadyRegistered=true;
+    		}
+    		ByteBuf bb = Unpooled.buffer(30); 
+    		ByteBufOutputStream byteBufOutputStream = new ByteBufOutputStream(bb);
+    		try 
+    		{
+    			byteBufOutputStream.write(1);
+    			byteBufOutputStream.writeInt(this.getEntityId());
+    			byteBufOutputStream.writeInt(this.getChainUniqueID());
+    			byteBufOutputStream.writeInt(this.chainArrangeNumber);
+    			byteBufOutputStream.writeByte(this.type);
+    			byteBufOutputStream.writeInt(this.colorIndex);
+    			byteBufOutputStream.writeFloat(this.virtualNodePosX);
+    			byteBufOutputStream.writeFloat(this.virtualNodePosY);
+    			byteBufOutputStream.writeFloat(this.virtualNodePosZ);
+    			if(player==null)
+    			{
+        			IHLMod.proxy.sendFromServerToAll(new FMLProxyPacket(byteBufOutputStream.buffer(), IHLModInfo.MODID));
+    			}
+    			else
+    			{
+        			IHLMod.proxy.sendFromServerToPlayer(new FMLProxyPacket(byteBufOutputStream.buffer(), IHLModInfo.MODID),player);
+    			}
+    			byteBufOutputStream.close();
+    		} 
+    		catch (IOException e) 
+    		{
+    			e.printStackTrace();
+    		}
+    	}		
+	}
+	
+    @Override
+	public void onUpdate()
+    {
+        super.onUpdate();
+        if(!noClip && !worldObj.isRemote)
+        {
+        	this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        }
+		if(this.checkTimer==201)
+		{
+			if(worldObj.isRemote)
+			{
+				IHLMod.proxy.recieveDelayedDataPacket(this);
+			}
+			else
+			{
+				this.registerAndSendData(null);
+			}
+		}
+        if((prevAnchorEntity==null && !noClip)||(nextAnchorEntity==null || nextAnchorEntity instanceof EntityPlayer || nextAnchorEntity instanceof EntityItem))
+        {
+    			double range = 16D;
+    			AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.posX-range,this.posY-range,this.posZ-range,this.posX+range,this.posY+range,this.posZ+range);
+    			List<NodeEntity> eItemsList = this.worldObj.getEntitiesWithinAABB(NodeEntity.class, searchArea);
+    			if(!eItemsList.isEmpty())
+    			{
+    				Iterator ei = eItemsList.iterator();
+                	while(ei.hasNext())
+                	{
+                		NodeEntity node=(NodeEntity) ei.next();
+                		if(node.getChainUniqueID()==this.getChainUniqueID())
+                		{
+                			if(node.chainArrangeNumber==this.chainArrangeNumber-1)
+                			{
+                				this.prevAnchorEntity=node;
+                				node.nextAnchorEntity=this;
+                			}
+                			else if(node.chainArrangeNumber==this.chainArrangeNumber+1)
+                			{
+                				this.nextAnchorEntity=node;
+                				node.prevAnchorEntity=this;
+                			}
+                		}
+            			if(prevAnchorEntity!=null && nextAnchorEntity!=null)
+            			{
+            				break;
+            			}
+                	}
+    			}
+        }
+    	if(this.attachedItem!=null && (this.nextAnchorEntity == null || this.nextAnchorEntity.isDead) && !this.noClip)
+    	{
+			double range = 16D;
+			AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.posX-range,this.posY-range,this.posZ-range,this.posX+range,this.posY+range,this.posZ+range);
+			List<EntityPlayer> eItemsList = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, searchArea);
+			if(!eItemsList.isEmpty())
+			{
+				Iterator ei = eItemsList.iterator();
+            	while(ei.hasNext())
+            	{
+            		EntityPlayer player=(EntityPlayer) ei.next();
+            		if(this.playerHasItemStack(player))
+            		{
+            			this.nextAnchorEntity=player;
+            		}
+            		
+            	}
+			}
+    	}
+    	if(this.attachedItem!=null && this.nextAnchorEntity instanceof EntityPlayer && !noClip)
+    	{
+    		EntityPlayer player = (EntityPlayer) this.nextAnchorEntity;
+    		if(!this.playerHasItemStack(player))
+    		{
+    			double range = 16D;
+    			AxisAlignedBB searchArea = AxisAlignedBB.getBoundingBox(this.posX-range,this.posY-range,this.posZ-range,this.posX+range,this.posY+range,this.posZ+range);
+    			List<EntityItem> eItemsList = this.worldObj.getEntitiesWithinAABB(EntityItem.class, searchArea);
+    			if(!eItemsList.isEmpty())
+    			{
+    				Iterator<EntityItem> ei = eItemsList.iterator();
+                	while(ei.hasNext())
+                	{
+                		EntityItem eitem = ei.next();
+                		if(eitem.getEntityItem().isItemEqual(this.attachedItem))
+                		{
+                			this.nextAnchorEntity=eitem;
+                			break;
+                		}
+                	}
+    			}
+    		}
+    	}
+    	if(!worldObj.isRemote)
+        {
+        	{
+        		double x0,x2,y0,y2,z0,z2;
+        		x2=x0=this.virtualNodePosX;
+        		y2=y0=this.virtualNodePosY;
+        		z2=z0=this.virtualNodePosZ;
+        		if(nextAnchorEntity!=null)
+        		{
+        			x2=nextAnchorEntity.posX;
+        			y2=nextAnchorEntity.posY;
+        			z2=nextAnchorEntity.posZ;
+        		}
+        		if(prevAnchorEntity!=null)
+        		{
+        			x0=prevAnchorEntity.posX;
+        			y0=prevAnchorEntity.posY;
+        			z0=prevAnchorEntity.posZ;
+        		}
+        		
+    			double d1 = (x0-x2)*(x0-x2)+(y0-y2)*(y0-y2)+(z0-z2)*(z0-z2);
+            	if(d1>4D)
+            	{
+            		this.motionX=(x0+x2)*0.5D-this.posX*1D;
+            		this.motionY=(y0+y2)*0.5D-this.posY*1D;
+            		this.motionZ=(z0+z2)*0.5D-this.posZ*1D;
+            		if(nextAnchorEntity!=null && this.getDistanceSqToEntity(nextAnchorEntity)>4D)
+            		{
+           				this.nextAnchorEntity.addVelocity((this.posX-this.nextAnchorEntity.posX)*0.01D, (this.posY-this.nextAnchorEntity.posY)*0.01D, (this.posZ-this.nextAnchorEntity.posZ)*0.01D);
+            		}
+            	}
+            	else
+            	{
+            		double d2 = this.getDistanceSq(x2,y2,z2);
+            		if(d2>1D)
+            		{
+            			this.motionX+=(x2-this.posX)*0.1D;
+            			this.motionY+=(y2-this.posY)*0.1D;
+            			this.motionZ+=(z2-this.posZ)*0.1D;
+            		}
+            		double d3 = this.getDistanceSq(x0,y0,z0);
+            		if(d3>1D)
+            		{
+            			this.motionX+=(x0-this.posX)*0.1D;
+            			this.motionY+=(y0-this.posY)*0.1D;
+            			this.motionZ+=(z0-this.posZ)*0.1D;
+            		}
+            	}
+    			this.motionY-=0.005D;
+        	}
+        }
+        if(this.onGround)
+        {
+            this.motionY *= -0.5D;
+        }
+        this.motionX*=0.9D;
+        this.motionY*=0.9D; 
+        this.motionZ*=0.9D;
+        if(worldObj.isRemote)
+        {
+        	float movvmentSpeed=0.05f;
+        	this.renderPosX=this.renderPosX*(1f-movvmentSpeed)+(float) this.prevPosX*movvmentSpeed;
+        	this.renderPosY=this.renderPosY*(1f-movvmentSpeed)+(float) this.prevPosY*movvmentSpeed;
+        	this.renderPosZ=this.renderPosZ*(1f-movvmentSpeed)+(float) this.prevPosZ*movvmentSpeed;
+			float xi,yi,zi;
+			float x0=xi=(float)this.prevPosX;
+			float y0=yi=(float)this.prevPosY;
+			float z0=zi=(float)this.prevPosZ;
+			float dx0=this.dx0;
+			float dy0=this.dy0;
+			float dz0=this.dz0;
+			float dx1=this.virtualNodePosX-xi;
+			float dy1=this.virtualNodePosY-yi;
+			float dz1=this.virtualNodePosZ-zi;
+			if(this.nextAnchorEntity!=null)
+			{
+				dx1=(float) (this.nextAnchorEntity.prevPosX-xi);
+				dy1=(float) (this.nextAnchorEntity.prevPosY-yi);
+				dz1=(float) (this.nextAnchorEntity.prevPosZ-zi);
+			}
+			if(this.prevAnchorEntity==null)
+			{
+				this.renderPosX=x0=xi=this.virtualNodePosX;
+				this.renderPosY=y0=yi=this.virtualNodePosY;
+				this.renderPosZ=z0=zi=this.virtualNodePosZ;
+			}
+			if(this.nextAnchorEntity instanceof NodeEntity)
+			{
+				if(((NodeEntity)this.nextAnchorEntity).nextAnchorEntity!=null)
+				{
+					Entity nne = ((NodeEntity)this.nextAnchorEntity).nextAnchorEntity;
+					dx1=(float) (nne.prevPosX-xi);
+					dy1=(float) (nne.prevPosY-yi);
+					dz1=(float) (nne.prevPosZ-zi);
+				}
+				else
+				{
+					dx1=(float) (((NodeEntity) this.nextAnchorEntity).virtualNodePosX-xi);
+					dy1=(float) (((NodeEntity) this.nextAnchorEntity).virtualNodePosY-yi);
+					dz1=(float) (((NodeEntity) this.nextAnchorEntity).virtualNodePosZ-zi);
+				}
+			}
+			float x1=this.virtualNodePosX;
+			float y1=this.virtualNodePosY;
+			float z1=this.virtualNodePosZ;
+			if(this.nextAnchorEntity!=null)
+			{
+				x1=(float)this.nextAnchorEntity.prevPosX;
+				y1=(float)this.nextAnchorEntity.prevPosY;
+				z1=(float)this.nextAnchorEntity.prevPosZ;
+			}
+			int i1=0;
+			for(float i=1f/n;i<=1f+1f/n;i+=1f/n,i1++)
+			{
+				float dxi = xi;
+				float dyi = yi;
+				float dzi = zi;
+				xi=(dx1-2*x1+2*dx0+2*x0-dx0)*i*i*i+(3*x1-dx1-3*dx0-3*x0+dx0)*i*i+dx0*i+x0;
+				yi=(dy1-2*y1+2*dy0+2*y0-dy0)*i*i*i+(3*y1-dy1-3*dy0-3*y0+dy0)*i*i+dy0*i+y0;
+				zi=(dz1-2*z1+2*dz0+2*z0-dz0)*i*i*i+(3*z1-dz1-3*dz0-3*z0+dz0)*i*i+dz0*i+z0;
+				int blockX=(int)xi;
+				int blockY=(int)yi;
+				int blockZ=(int)zi;
+				dxi-=xi;
+				dyi-=yi;
+				dzi-=zi;
+	            double var7 = MathHelper.sqrt_double(dxi * dxi + dzi * dzi);
+	            float var9 = (float)(Math.atan2(dzi, dxi) * 180.0D / Math.PI) - 90.0F;
+	            float var10 = (float)(-(Math.atan2(dyi, var7) * 180.0D / Math.PI));
+	            float rotationPitch = (float) Math.atan2(dxi, dzi);
+	            float rotationYaw = (float) (-Math.atan2(dyi, var7));
+	            rotationPitchArray[i1]=rotationPitch;
+	            rotationYawArray[i1]=rotationYaw;
+	            translationX[i1]=dxi;
+	            translationY[i1]=dyi;
+	            translationZ[i1]=dzi;
+			}
+			if(this.nextAnchorEntity instanceof NodeEntity)
+			{
+				NodeEntity next = (NodeEntity) this.nextAnchorEntity;
+				next.dx0=dx1;
+				next.dy0=dy1;
+				next.dz0=dz1;
+			}
+		}
+        if(--this.checkTimer<=0)
+        {
+        	if(!worldObj.isRemote)
+        	{
+        		WorldServer world = MinecraftServer.getServer().worldServerForDimension(this.anchorDimensionId);
+        		TileEntity te = world.getTileEntity(this.anchorX, this.anchorY, this.anchorZ);
+				if(te==null || !(te instanceof ICableHolder || te instanceof AnchorTileEntity))
+				{
+					this.setDead();
+				}
+        	}
+			this.checkTimer=200;
+        }
+    }
+
+	@Override
+	protected void readEntityFromNBT(NBTTagCompound nbt) 
+	{
+		this.noClip=nbt.getBoolean("noClip");
+		this.setChainUniqueID(nbt.getInteger("chainUniqueID"));
+		this.chainArrangeNumber=nbt.getInteger("chainArrangeNumber");
+		this.anchorX=nbt.getInteger("anchorX");
+		this.anchorY=nbt.getInteger("anchorY");
+		this.anchorZ=nbt.getInteger("anchorZ");
+		this.anchorFacing=nbt.getShort("anchorFacing");
+		this.anchorDimensionId=nbt.getInteger("anchorDimensionId");
+		this.type=nbt.getInteger("type");
+		this.colorIndex=nbt.getInteger("colorIndex");
+		if(nbt.hasKey("itemStack"))
+		{
+			NBTTagCompound stackTag = (NBTTagCompound) nbt.getTag("itemStack");
+			this.attachedItem = ItemStack.loadItemStackFromNBT(stackTag);
+		}
+		if(nbt.hasKey("width"))
+		{
+			this.setSize(nbt.getFloat("width"), nbt.getFloat("height"));
+		}
+		this.virtualNodePosX=nbt.getFloat("virtualNodePosX");
+		this.virtualNodePosY=nbt.getFloat("virtualNodePosY");
+		this.virtualNodePosZ=nbt.getFloat("virtualNodePosZ");
+	}
+
+	@Override
+	protected void writeEntityToNBT(NBTTagCompound nbt) 
+	{
+		nbt.setFloat("width", this.width);
+		nbt.setFloat("height", this.height);
+		nbt.setBoolean("noClip", noClip);
+		nbt.setInteger("chainUniqueID", this.getChainUniqueID());
+		nbt.setInteger("chainArrangeNumber", this.chainArrangeNumber);
+		nbt.setInteger("anchorX", this.anchorX);
+		nbt.setInteger("anchorY", this.anchorY);
+		nbt.setInteger("anchorZ", this.anchorZ);
+		nbt.setShort("anchorFacing",this.anchorFacing);
+		nbt.setInteger("anchorDimensionId",this.anchorDimensionId);
+		nbt.setInteger("type", this.type);
+		nbt.setInteger("colorIndex", this.colorIndex);
+		if(this.attachedItem!=null)
+		{
+			NBTTagCompound stackTag = new NBTTagCompound();
+			this.attachedItem.writeToNBT(stackTag);
+			nbt.setTag("itemStack",stackTag);
+		}
+		nbt.setFloat("virtualNodePosX",this.virtualNodePosX);
+		nbt.setFloat("virtualNodePosY",this.virtualNodePosY);
+		nbt.setFloat("virtualNodePosZ",this.virtualNodePosZ);
+	}
+	
+	public void setAnchor(int x, int y, int z, short facing, int dimensionId)
+	{
+		this.anchorX=x;
+		this.anchorY=y;
+		this.anchorZ=z;
+		this.anchorFacing=facing;
+		this.anchorDimensionId=dimensionId;
+	}
+	
+    public boolean playerHasItemStack(EntityPlayer player)
+    {
+        int var2;
+
+        for (var2 = 0; var2 < player.inventory.armorInventory.length; ++var2)
+        {
+            if (player.inventory.armorInventory[var2] != null && player.inventory.armorInventory[var2].isItemEqual(this.attachedItem))
+            {
+                return player.inventory.armorInventory[var2].stackTagCompound==null?false:player.inventory.armorInventory[var2].stackTagCompound.getInteger("chainUID")==this.attachedItem.stackTagCompound.getInteger("chainUID");
+            }
+        }
+
+        for (var2 = 0; var2 < player.inventory.mainInventory.length; ++var2)
+        {
+            if (player.inventory.mainInventory[var2] != null && player.inventory.mainInventory[var2].isItemEqual(this.attachedItem))
+            {
+                return player.inventory.mainInventory[var2].stackTagCompound==null?false:player.inventory.mainInventory[var2].stackTagCompound.getInteger("chainUID")==this.attachedItem.stackTagCompound.getInteger("chainUID");
+            }
+        }
+
+        return false;
+    }
+
+	public int getChainUniqueID() {
+		return chainUniqueID;
+	}
+
+	public void setChainUniqueID(int chainUniqueID) {
+		this.chainUniqueID = chainUniqueID;
+	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBox(Entity entity)
+	{
+		if(this.noClip)
+		{
+			return null;
+		}
+		else
+		{
+			return super.getCollisionBox(entity);
+		}
+	}
+
+	@Override
+	public int getId() 
+	{
+		return this.getEntityId();
+	}
+
+	@Override
+	public void recieveData(ByteBufInputStream byteBufInputStream) 
+	{
+   		try 
+   		{
+			this.setChainUniqueID(byteBufInputStream.readInt());
+	   		this.chainArrangeNumber=byteBufInputStream.readInt();
+	   		this.type=byteBufInputStream.readByte();
+			this.colorIndex=byteBufInputStream.readInt();
+			this.virtualNodePosX=byteBufInputStream.readFloat();
+			this.virtualNodePosY=byteBufInputStream.readFloat();
+			this.virtualNodePosZ=byteBufInputStream.readFloat();
+		}
+   		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void entityInit() {}
+
+	@Override
+	public boolean isInvalid() 
+	{
+		return this.isDead;
+	}
+
+	public void setVirtualNodePosToNearestPortal() 
+	{
+		int x0 = (int)this.posX;
+		int y0 = (int)this.posY;
+		int z0 = (int)this.posZ;
+		for(int xi=x0-2;xi<=x0+2;xi++)
+		{
+			for(int yi=y0-2;yi<=y0+2;yi++)
+			{
+				for(int zi=z0-2;zi<=z0+2;zi++)
+				{
+					Block block = worldObj.getBlock(xi, yi, zi);
+					if(block==Blocks.portal||block==Blocks.end_portal)
+					{
+						this.setVirtualNodePos(xi+0.5f, yi+0.5f, zi+0.5f);
+						return;
+					}
+				}
+			}
+		}
+		
+	}
+}

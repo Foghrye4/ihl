@@ -1,0 +1,106 @@
+---- Minecraft Crash Report ----
+// My bad.
+
+Time: 04.03.16 18:18
+Description: Updating screen events
+
+java.lang.NullPointerException: Updating screen events
+	at ihl.flexible_cable.IronWorkbenchGui.mouseClicked(IronWorkbenchGui.java:76)
+	at net.minecraft.client.gui.GuiScreen.handleMouseInput(GuiScreen.java:296)
+	at net.minecraft.client.gui.GuiScreen.handleInput(GuiScreen.java:268)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:1640)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:973)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:898)
+	at net.minecraft.client.main.Main.main(SourceFile:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at ihl.flexible_cable.IronWorkbenchGui.mouseClicked(IronWorkbenchGui.java:76)
+	at net.minecraft.client.gui.GuiScreen.handleMouseInput(GuiScreen.java:296)
+	at net.minecraft.client.gui.GuiScreen.handleInput(GuiScreen.java:268)
+
+-- Affected screen --
+Details:
+	Screen name: ihl.flexible_cable.IronWorkbenchGui
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityClientPlayerMP['Player376'/128, l='MpServer', x=745,45, y=66,27, z=-625,49]]
+	Chunk stats: MultiplayerChunkCache: 621, 621
+	Level seed: 0
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: World: (759,4,-616), Chunk: (at 7,0,8 in 47,-39; contains blocks 752,0,-624 to 767,255,-609), Region: (1,-2; contains chunks 32,-64 to 63,-33, blocks 512,0,-1024 to 1023,255,-513)
+	Level time: 816548 game time, 100459 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 17 total; [EntityClientPlayerMP['Player376'/128, l='MpServer', x=745,45, y=66,27, z=-625,49], EntityBat['Bat'/108, l='MpServer', x=805,63, y=45,10, z=-704,88], EntityItem['item.item.arrow'/11, l='MpServer', x=702,69, y=64,13, z=-649,72], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/46, l='MpServer', x=759,72, y=64,15, z=-603,28], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/47, l='MpServer', x=759,75, y=65,15, z=-603,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/44, l='MpServer', x=763,25, y=65,15, z=-629,50], EntityItem['item.item.arrow'/14, l='MpServer', x=730,22, y=64,13, z=-642,09], EntityItem['item.item.rottenFlesh'/45, l='MpServer', x=756,34, y=64,13, z=-628,31], EntityItem['item.item.bone'/15, l='MpServer', x=729,81, y=64,13, z=-641,91], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/17, l='MpServer', x=750,50, y=65,26, z=-641,22], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/19, l='MpServer', x=749,78, y=65,11, z=-635,41], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/48, l='MpServer', x=759,75, y=65,15, z=-603,28], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/18, l='MpServer', x=749,63, y=65,33, z=-634,06], EntityBat['Bat'/115, l='MpServer', x=806,25, y=45,10, z=-694,47], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/21, l='MpServer', x=750,13, y=64,98, z=-638,22], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/20, l='MpServer', x=750,31, y=65,08, z=-639,59], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/22, l='MpServer', x=750,00, y=64,98, z=-636,84]]
+	Retry entities: 0 total; []
+	Server brand: fml,forge
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:373)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2444)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:919)
+	at net.minecraft.client.main.Main.main(SourceFile:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Linux (amd64) version 3.19.0-51-generic
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 235672032 bytes (224 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1564 9 mods loaded, 9 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	Forge{10.13.4.1564} [Minecraft Forge] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	NotEnoughItems{1.0.3.74} [Not Enough Items] (NotEnoughItems-1.7.10-1.0.3.74-dev.jar) 
+	UCHIJAAAA	CodeChickenCore{1.0.4.29} [CodeChicken Core] (minecraft.jar) 
+	UCHIJAAAA	gregapi{GT6-MC1710} [Greg-API] (gregtech_1.7.10-6.00.62-dev.jar) 
+	UCHIJAAAA	IC2{2.2.790-experimental} [IndustrialCraft 2] (industrialcraft-2-2.2.790-experimental-dev.jar) 
+	UCHIJAAAA	ihl{0.596} [IHL Tools & Machines for IC2V2] (bin) 
+	UCHIJAAAA	gregtech{GT6-MC1710} [GregTech] (gregtech_1.7.10-6.00.62-dev.jar) 
+	GL info: ' Vendor: 'X.Org' Version: '3.0 Mesa 10.5.9' Renderer: 'Gallium 0.4 on AMD SUMO'
+	Launched Version: 1.7.10
+	LWJGL: 2.9.1
+	OpenGL: Gallium 0.4 on AMD SUMO GL version 3.0 Mesa 10.5.9, X.Org
+	GL Caps: Using GL 1.3 multitexturing.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Anisotropic filtering is supported and maximum anisotropy is 16.
+Shaders are available because OpenGL 2.1 is supported.
+
+	Is Modded: Definitely; Client brand changed to 'fml,forge'
+	Type: Client (map_client.txt)
+	Resource Packs: []
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Anisotropic Filtering: Off (1)

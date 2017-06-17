@@ -1,0 +1,494 @@
+package ihl.utils;
+
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.lwjgl.opengl.GL11;
+
+import ic2.core.util.DrawUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+
+public class IHLRenderUtils 
+{
+   private FloatBuffer colorBuffer;
+   private Map<Long, Integer> frameTooltipMap;
+   private int displayScaledWidth=-1;
+   private int displayScaledHeight=-1;
+   private int guiXPos=-1;
+   private int guiYPos=-1;
+   private int prevDisplayWidth=-1;
+   private int prevDisplayHeight=-1;
+   private final int guiContainerWidth = 166;
+   private final int guiContainerHeight = 176;
+   private float lastPlayerYaw;
+   private float lastPlayerPitch;
+   private double lastPlayerPosY;
+   private double lastPlayerPosZ;
+   private double lastPlayerPosX;
+   private double renderMinX=0d;
+   private double renderMaxX=1d;
+   private double renderMinY=0d;
+   private double renderMaxY=1d;
+   private double renderMinZ=0d;
+   private double renderMaxZ=1d;
+   public boolean renderFromInside=false;
+   public static IHLRenderUtils instance;
+   
+   public IHLRenderUtils()
+   {
+	   instance=this;
+	   colorBuffer = GLAllocation.createDirectFloatBuffer(16);
+	   frameTooltipMap = new HashMap();
+   }
+   
+   public  void renderIHLFluidTank(IHLFluidTank fluidTank, int x1, int y1, int x2, int y2, float zLevel, int par1, int par2, int xOffset, int yOffset)
+   {
+      	int liquidHeight = 0;
+       	int prevLiquidHeight = 0;
+       	int i = y2-y1;
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+       	for(int i2 = 0;i2<fluidTank.getNumberOfFluids();i2++)
+       	{
+       		FluidStack fluidStack = fluidTank.getFluid(i2); 
+       		if(fluidStack!=null)
+       		{
+       			Fluid fluid = fluidStack.getFluid();
+       			if(fluid!=null)
+       			{
+       				IIcon fluidIcon = fluid.getIcon();
+       				if (fluidIcon != null)
+       				{
+       					liquidHeight = fluidTank.getFluidAmount(i2) * i /fluidTank.getCapacity();
+       					DrawUtil.drawRepeated(fluidIcon, (double)x1, (double)(y2 - liquidHeight-prevLiquidHeight), (double)(x2-x1), (double)liquidHeight, (double)zLevel);
+       					prevLiquidHeight+=liquidHeight;
+       				}
+       			}
+       		}
+       	}
+       	drawIHLFluidTankTooltip(par1, par2, x1+guiXPos-6, y1+guiYPos+6, x2+guiXPos-6, y2+guiYPos+6, fluidTank);
+	   }
+	   
+	   public  void drawMissingEngineTooltip(GuiContainer gui, int par1, int par2, int xPos, int yPos, int xOffset, int yOffset)
+	   {
+       		gui.drawTexturedModalRect(xPos, yPos, 194, 0, 3, 14);
+       		drawTooltip(par1,par2,3,14,xPos+xOffset,yPos+yOffset,"ihl.gui.missing.engine");
+	   }
+	   
+	   public  void drawWorkspaceElementTooltip(int par1, int par2, int xPos, int yPos, ItemStack workSpaceElement)
+	   {
+       		drawTooltip(par1,par2,16,16,xPos,yPos,workSpaceElement.getUnlocalizedName()+".tooltip");
+	   }
+	   
+	   public  void drawIHLFluidTankTooltip(int par1, int par2, int x1, int y1, int x2, int y2, IHLFluidTank fluidTank)
+	   {
+		   String fluidListNames="";
+		   List<FluidStack> fli = fluidTank.getFluidList();
+		   for(int i=fli.size()-1;i>=0;i--)
+		   {
+			   FluidStack fluidStack = fli.get(i);
+			   fluidListNames+=StatCollector.translateToLocal(fluidStack.getUnlocalizedName())+": "+fluidStack.amount+"mB /n ";
+		   }
+       		drawTooltip(par1,par2,x2-x1,y2-y1,x1,y1,fluidListNames);
+	   }
+	   
+	   public  boolean drawTooltip(int cursorPosX, int cursorPosY, int width, int height, int xPos, int yPos, String text)
+	   {
+		   updateScreenSize();
+		   long key = xPos+yPos*1024;
+		   Integer frame=0;
+		   if(frameTooltipMap.containsKey(key))
+		   {
+			   frame=frameTooltipMap.get(key);
+		   }
+		   boolean showString=true;
+		   if(cursorPosX<xPos || cursorPosX>xPos+width||
+			   cursorPosY<yPos || cursorPosY>yPos+height)
+		   {
+			   if(frame>0)
+			   {
+				   frame-=20;
+				   frameTooltipMap.put(key, frame);
+			   }
+			   showString=false;
+		   }
+		   else
+		   {
+			   frame+=10;
+			   frameTooltipMap.put(key, frame);
+		   }
+		   if(frame>0)
+		   {
+			   	int strokeHeight=15;
+			   	int i,x1,x2,y1,y2,tooltipWidth,tooltipHeight;
+			   	tooltipWidth=tooltipHeight=0;
+			   	String[] splittedText = StatCollector.translateToLocal(text).split(" /n ");
+			   	for(i=0;i<splittedText.length;i++)
+			   	{
+			   		if(Minecraft.getMinecraft().fontRenderer.getStringWidth(splittedText[i])+8>tooltipWidth)
+			   		{
+			   			tooltipWidth=Math.min(frame,Minecraft.getMinecraft().fontRenderer.getStringWidth(splittedText[i])+8);
+			   		}
+			   	}
+			   	tooltipHeight=Math.min(Math.max(frame-tooltipWidth,strokeHeight),strokeHeight*splittedText.length);
+			   	x1=cursorPosX-xPos;
+			   	x2=x1+tooltipWidth;
+			   	y1=cursorPosY-guiYPos+18;
+			   	y2=y1+tooltipHeight;
+		        GL11.glPushAttrib(16704);
+		        GL11.glDisable(GL11.GL_DEPTH_TEST);
+		        GL11.glDisable(GL11.GL_TEXTURE_2D);
+		        GL11.glEnable(GL11.GL_BLEND);
+		        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		        if(showString)
+		        {
+				   	drawRectangle(Tessellator.instance, x1,y1,x2,y2,128);
+			        GL11.glEnable(GL11.GL_TEXTURE_2D);
+		        	for(i=0;i<splittedText.length;i++)
+		        	{
+		        		if(i<tooltipHeight/strokeHeight)
+		        		{
+		        			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(splittedText[i].substring(0, Math.min(splittedText[i].length(), tooltipWidth/5)), x1+4, y1+i*strokeHeight+4, 16768125);
+		        		}
+		        	}
+		        }
+		        else
+		        {
+				   	drawRectangle(Tessellator.instance, x1,y1,x2,y2,Math.min(128,frame/2));
+			        GL11.glEnable(GL11.GL_TEXTURE_2D);
+		        }
+		        GL11.glPopAttrib();
+		        frame=Math.min(tooltipWidth+tooltipHeight,frame);
+		        frameTooltipMap.put(key, frame);
+		        return true;
+		   }
+		   return false;
+	   }
+	   
+	    public  void enableAmbientLighting()
+	    {
+	        GL11.glDisable(GL11.GL_LIGHT0);
+	        GL11.glDisable(GL11.GL_LIGHT1);
+	        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(1.0f, 1.0f, 1.0f, 1.0F));
+	    }
+	    
+	    public  void disableAmbientLighting()
+	    {
+	        GL11.glEnable(GL11.GL_LIGHT0);
+	        GL11.glEnable(GL11.GL_LIGHT1);
+	        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(0.0f, 0.0f, 0.0f, 1.0F));
+	    }
+
+	/**
+	 * Update and return colorBuffer with the RGBA values passed as arguments
+	 */
+	private  FloatBuffer setColorBuffer(float par0, float par1, float par2, float par3)
+	{
+	    colorBuffer.clear();
+	    colorBuffer.put(par0).put(par1).put(par2).put(par3);
+	    colorBuffer.flip();
+	    return colorBuffer;
+	}
+	
+    private  void drawRectangle(Tessellator tessellator, int x1, int y1, int x2, int y2, int color)
+    {
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(color >>> 24 & 255, color >>> 16 & 255, color >>> 8 & 255, color & 255);
+        tessellator.addVertex((double)x2, (double)y1, 300.0D);
+        tessellator.addVertex((double)x1, (double)y1, 300.0D);
+        tessellator.addVertex((double)x1, (double)y2, 300.0D);
+        tessellator.addVertex((double)x2, (double)y2, 300.0D);
+        tessellator.draw();
+    }
+    
+    public  void drawThermometerTemperature(long temperature, boolean show)
+    {
+    	updateScreenSize();
+    	long key = 0;
+    	int frame=0;
+	   if(frameTooltipMap.containsKey(key))
+	   {
+		   frame=frameTooltipMap.get(key);
+	   }
+	   if(frame<=0)
+	   {
+		   updatePlayerView();
+	   }
+	   boolean showString=true;
+	   if(show && frame<=122)
+	   {
+		   frame+=1;
+		   frameTooltipMap.put(key, frame);
+	   }
+	   else
+	   {
+			if(frame>0)
+		   {
+			   frame-=2;
+			   frameTooltipMap.put(key, frame);	
+		   }
+		   showString=false;
+	   }
+	   if(frame>0)
+	   {
+		   int width=Math.min(frame, 122);
+		   int height=Math.min(frame, 48);
+		   int xShift = Math.round(displayScaledWidth/100*(lastPlayerYaw - Minecraft.getMinecraft().renderViewEntity.prevRotationYaw));
+		   int yShift = Math.round(displayScaledHeight/64*(lastPlayerPitch - Minecraft.getMinecraft().renderViewEntity.prevRotationPitch));
+		   int xPos = displayScaledWidth/2+xShift;
+		   int yPos = displayScaledHeight/2-48+yShift;
+	       GL11.glEnable(GL11.GL_BLEND);
+	       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		   drawTexturedModalRect(xPos,yPos,0,0,width,height);
+	       GL11.glDisable(GL11.GL_DEPTH_TEST);
+		   if(showString)
+		   {
+			   Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(temperature+"\u00B0K", xPos+35, yPos+3, 16768125);
+		   }
+		   GL11.glEnable(GL11.GL_DEPTH_TEST);
+		   GL11.glDisable(GL11.GL_BLEND);
+	   }
+    }    
+    
+    public  void drawTexturedModalRect(int x1, int y1, int u, int v, int x2, int y2) {
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_F(1f, 1f, 1f, 0.5f);
+        tessellator.addVertexWithUV((double)(x1 + 0), (double)(y1 + y2), 300D, (double)((float)(u + 0) * f), (double)((float)(v + y2) * f1));
+        tessellator.addVertexWithUV((double)(x1 + x2), (double)(y1 + y2), 300D, (double)((float)(u + x2) * f), (double)((float)(v + y2) * f1));
+        tessellator.addVertexWithUV((double)(x1 + x2), (double)(y1 + 0), 300D, (double)((float)(u + x2) * f), (double)((float)(v + 0) * f1));
+        tessellator.addVertexWithUV((double)(x1 + 0), (double)(y1 + 0), 300D, (double)((float)(u + 0) * f), (double)((float)(v + 0) * f1));
+        tessellator.draw();
+    }
+
+    
+    private  void updateScreenSize()
+    {
+        if(prevDisplayHeight!=Minecraft.getMinecraft().displayHeight || prevDisplayWidth!=Minecraft.getMinecraft().displayWidth)
+        {
+			   	ScaledResolution var2 = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+	            displayScaledWidth = var2.getScaledWidth();
+	            displayScaledHeight = var2.getScaledHeight();
+	            guiXPos = (displayScaledWidth - guiContainerWidth)/2;
+	            guiYPos = (displayScaledHeight - guiContainerHeight)/2;
+	            prevDisplayWidth=Minecraft.getMinecraft().displayWidth;
+	            prevDisplayHeight=Minecraft.getMinecraft().displayHeight;
+        }
+    }
+    
+    public  void updatePlayerView()
+    {
+    	lastPlayerYaw = Minecraft.getMinecraft().renderViewEntity.prevRotationYaw;
+    	lastPlayerPitch = Minecraft.getMinecraft().renderViewEntity.prevRotationPitch;
+    	lastPlayerPosX = Minecraft.getMinecraft().renderViewEntity.prevPosX;
+    	lastPlayerPosY = Minecraft.getMinecraft().renderViewEntity.prevPosY;
+    	lastPlayerPosZ = Minecraft.getMinecraft().renderViewEntity.prevPosZ;
+    }
+    
+    public void renderPipeOutside(double xPos, double yPos, double zPos, IIcon icon)
+    {
+    	double minX = this.renderMinX;
+        double maxX = this.renderMaxX;
+        double minY = this.renderMinY;
+        double maxY = this.renderMaxY;
+        double minZ = this.renderMinZ;
+        double maxZ = this.renderMaxZ;
+        this.setRenderBounds(0d, 0d, 0d, 1/3d, 1/3d, 1/3d);
+    }
+	
+	public  void renderFaceXpYmNeg(double xPos, double yPos, double zPos, IIcon icon)
+    {
+        Tessellator var9 = Tessellator.instance;
+
+        double u1 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double u2 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+
+        double v2 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double v1 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+
+        if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
+        {
+            u1 = (double)icon.getMinU();
+            u2 = (double)icon.getMaxU();
+        }
+
+        if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
+        {
+            v2 = (double)icon.getMinV();
+            v1 = (double)icon.getMaxV();
+        }
+
+        double vertexX1 = xPos + this.renderMinX;
+        double vertexX2 = xPos + this.renderMaxX;
+        double vertexY1 = yPos + this.renderMinY;
+        double vertexY2 = yPos + this.renderMaxY;
+        double vertexZ1 = zPos + this.renderMinZ;
+        double vertexZ2 = zPos + this.renderMaxZ;
+
+        if(this.renderFromInside)
+        {
+            vertexZ1 = zPos + this.renderMaxZ;
+            vertexZ2 = zPos + this.renderMinZ;
+        }
+        var9.addVertexWithUV(vertexX1, vertexY1, vertexZ2, u1, v1);
+        var9.addVertexWithUV(vertexX1, vertexY1, vertexZ1, u2, v1);
+        var9.addVertexWithUV(vertexX2, vertexY2, vertexZ1, u2, v2);
+        var9.addVertexWithUV(vertexX2, vertexY2, vertexZ2, u1, v2);
+    }
+	
+	public  void renderFaceXmYpPos(double xPos, double yPos, double zPos, IIcon icon)
+    {
+        Tessellator var9 = Tessellator.instance;
+
+        double u1 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double u2 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+
+        double v2 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double v1 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+
+        if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
+        {
+            u1 = (double)icon.getMinU();
+            u2 = (double)icon.getMaxU();
+        }
+
+        if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
+        {
+            v2 = (double)icon.getMinV();
+            v1 = (double)icon.getMaxV();
+        }
+
+        double vertexX1 = xPos + this.renderMinX;
+        double vertexX2 = xPos + this.renderMaxX;
+        double vertexY1 = yPos + this.renderMinY;
+        double vertexY2 = yPos + this.renderMaxY;
+        double vertexZ1 = zPos + this.renderMaxZ;
+        double vertexZ2 = zPos + this.renderMinZ;
+
+        if(this.renderFromInside)
+        {
+        	vertexZ1 = zPos + this.renderMinZ;
+            vertexZ2 = zPos + this.renderMaxZ;
+        }
+        var9.addVertexWithUV(vertexX1, vertexY1, vertexZ2, u1, v1);
+        var9.addVertexWithUV(vertexX1, vertexY1, vertexZ1, u2, v1);
+        var9.addVertexWithUV(vertexX2, vertexY2, vertexZ1, u2, v2);
+        var9.addVertexWithUV(vertexX2, vertexY2, vertexZ2, u1, v2);
+    }
+	
+	
+	public  void renderFaceXmYmPos(double xPos, double yPos, double zPos, IIcon icon)
+    {
+        Tessellator var9 = Tessellator.instance;
+
+        double u1 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double u2 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+
+        double v2 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double v1 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+
+        if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
+        {
+            u1 = (double)icon.getMinU();
+            u2 = (double)icon.getMaxU();
+        }
+
+        if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
+        {
+            v2 = (double)icon.getMinV();
+            v1 = (double)icon.getMaxV();
+        }
+
+        double vertexX1 = xPos + this.renderMinX;
+        double vertexX2 = xPos + this.renderMaxX;
+        double vertexY1 = yPos + this.renderMinY;
+        double vertexY2 = yPos + this.renderMaxY;
+        double vertexZ1 = zPos + this.renderMinZ;
+        double vertexZ2 = zPos + this.renderMaxZ;
+
+        if(this.renderFromInside)
+        {
+            vertexZ1 = zPos + this.renderMaxZ;
+            vertexZ2 = zPos + this.renderMinZ;
+        }
+        var9.addVertexWithUV(vertexX2, vertexY1, vertexZ2, u1, v1);
+        var9.addVertexWithUV(vertexX2, vertexY1, vertexZ1, u2, v1);
+        var9.addVertexWithUV(vertexX1, vertexY2, vertexZ1, u2, v2);
+        var9.addVertexWithUV(vertexX1, vertexY2, vertexZ2, u1, v2);
+    }
+	
+	public  void renderFaceXpYpNeg(double xPos, double yPos, double zPos, IIcon icon)
+    {
+        Tessellator var9 = Tessellator.instance;
+
+        double u1 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double u2 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+
+        double v2 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double v1 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+
+        if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
+        {
+            u1 = (double)icon.getMinU();
+            u2 = (double)icon.getMaxU();
+        }
+
+        if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
+        {
+            v2 = (double)icon.getMinV();
+            v1 = (double)icon.getMaxV();
+        }
+
+        double vertexX1 = xPos + this.renderMinX;
+        double vertexX2 = xPos + this.renderMaxX;
+        double vertexY1 = yPos + this.renderMinY;
+        double vertexY2 = yPos + this.renderMaxY;
+        double vertexZ1 = zPos + this.renderMaxZ;
+        double vertexZ2 = zPos + this.renderMinZ;
+
+        if(this.renderFromInside)
+        {
+        	vertexZ1 = zPos + this.renderMinZ;
+            vertexZ2 = zPos + this.renderMaxZ;
+        }
+        var9.addVertexWithUV(vertexX2, vertexY1, vertexZ2, u1, v1);
+        var9.addVertexWithUV(vertexX2, vertexY1, vertexZ1, u2, v1);
+        var9.addVertexWithUV(vertexX1, vertexY2, vertexZ1, u2, v2);
+        var9.addVertexWithUV(vertexX1, vertexY2, vertexZ2, u1, v2);
+    }
+
+
+	
+	public void setRenderBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+	{
+        this.renderMinX = minX;
+        this.renderMaxX = maxX;
+        this.renderMinY = minY;
+        this.renderMaxY = maxY;
+        this.renderMinZ = minZ;
+        this.renderMaxZ = maxZ;
+	}
+}

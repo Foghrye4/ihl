@@ -1,0 +1,108 @@
+---- Minecraft Crash Report ----
+// Ooh. Shiny.
+
+Time: 03.02.16 21:17
+Description: Rendering screen
+
+java.lang.NullPointerException: Rendering screen
+	at ihl.datanet.RedstoneSignalConverterGui.drawLink(RedstoneSignalConverterGui.java:74)
+	at ihl.datanet.RedstoneSignalConverterGui.drawGuiContainerBackgroundLayer(RedstoneSignalConverterGui.java:106)
+	at net.minecraft.client.gui.inventory.GuiContainer.drawScreen(GuiContainer.java:78)
+	at net.minecraft.client.renderer.EntityRenderer.updateCameraAndRender(EntityRenderer.java:1061)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1001)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:898)
+	at net.minecraft.client.main.Main.main(SourceFile:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at ihl.datanet.RedstoneSignalConverterGui.drawLink(RedstoneSignalConverterGui.java:74)
+	at ihl.datanet.RedstoneSignalConverterGui.drawGuiContainerBackgroundLayer(RedstoneSignalConverterGui.java:106)
+	at net.minecraft.client.gui.inventory.GuiContainer.drawScreen(GuiContainer.java:78)
+
+-- Screen render details --
+Details:
+	Screen name: ihl.datanet.RedstoneSignalConverterGui
+	Mouse location: Scaled: (215, 42). Absolute: (430, 394)
+	Screen size: Scaled: (427, 240). Absolute: (854, 480). Scale factor of 2
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityClientPlayerMP['Player464'/263, l='MpServer', x=752,66, y=65,62, z=-618,46]]
+	Chunk stats: MultiplayerChunkCache: 599, 599
+	Level seed: 0
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: World: (759,4,-616), Chunk: (at 7,0,8 in 47,-39; contains blocks 752,0,-624 to 767,255,-609), Region: (1,-2; contains chunks 32,-64 to 63,-33, blocks 512,0,-1024 to 1023,255,-513)
+	Level time: 93722 game time, 3756 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 127 total; [EntityClientPlayerMP['Player464'/263, l='MpServer', x=752,66, y=65,62, z=-618,46], EntityWitch['Witch'/28, l='MpServer', x=686,88, y=64,00, z=-687,25], EntityItem['item.item.rottenFlesh'/38, l='MpServer', x=707,25, y=64,13, z=-677,94], EntityItem['item.item.arrow'/39, l='MpServer', x=713,69, y=64,13, z=-608,06], EntityItem['item.item.rottenFlesh'/37, l='MpServer', x=717,19, y=64,13, z=-684,16], EntityItem['item.item.arrow'/42, l='MpServer', x=722,34, y=64,13, z=-631,81], EntityItem['item.item.bone'/43, l='MpServer', x=722,44, y=64,13, z=-631,59], EntityItem['item.item.arrow'/40, l='MpServer', x=719,63, y=64,13, z=-584,97], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/47, l='MpServer', x=745,75, y=64,15, z=-629,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/51, l='MpServer', x=745,75, y=64,15, z=-633,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/50, l='MpServer', x=747,25, y=64,15, z=-629,44], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/49, l='MpServer', x=745,75, y=64,15, z=-632,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/48, l='MpServer', x=745,75, y=64,15, z=-630,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/55, l='MpServer', x=748,75, y=64,15, z=-634,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/54, l='MpServer', x=748,25, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/53, l='MpServer', x=747,38, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/52, l='MpServer', x=746,53, y=64,15, z=-634,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/59, l='MpServer', x=751,63, y=64,15, z=-624,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/58, l='MpServer', x=751,75, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/57, l='MpServer', x=750,75, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/56, l='MpServer', x=749,75, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/63, l='MpServer', x=748,75, y=64,15, z=-629,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/62, l='MpServer', x=751,50, y=64,15, z=-631,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/61, l='MpServer', x=749,66, y=64,15, z=-630,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/60, l='MpServer', x=750,56, y=64,15, z=-631,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/68, l='MpServer', x=749,84, y=64,45, z=-628,78], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/69, l='MpServer', x=748,53, y=64,33, z=-629,13], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/70, l='MpServer', x=751,56, y=64,33, z=-626,44], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/71, l='MpServer', x=751,50, y=64,33, z=-630,06], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/64, l='MpServer', x=748,75, y=64,15, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/65, l='MpServer', x=748,75, y=64,15, z=-626,38], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/66, l='MpServer', x=749,50, y=64,15, z=-624,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/67, l='MpServer', x=750,59, y=64,15, z=-624,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/76, l='MpServer', x=751,75, y=64,15, z=-622,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/77, l='MpServer', x=751,66, y=64,15, z=-623,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/78, l='MpServer', x=751,75, y=64,15, z=-620,66], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/79, l='MpServer', x=751,72, y=64,15, z=-621,59], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/72, l='MpServer', x=751,50, y=65,15, z=-627,53], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/73, l='MpServer', x=751,53, y=64,33, z=-626,56], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/74, l='MpServer', x=751,63, y=64,33, z=-624,56], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/75, l='MpServer', x=751,56, y=64,33, z=-625,56], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/84, l='MpServer', x=751,66, y=64,33, z=-623,56], NodeEntity['entity.ihl.NodeEntity.name'/81, l='MpServer', x=750,25, y=64,15, z=-619,25], NodeEntity['entity.ihl.NodeEntity.name'/80, l='MpServer', x=749,25, y=64,15, z=-619,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/83, l='MpServer', x=751,69, y=64,33, z=-622,53], NodeEntity['entity.ihl.NodeEntity.name'/82, l='MpServer', x=751,25, y=64,15, z=-619,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/102, l='MpServer', x=758,50, y=64,15, z=-625,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/103, l='MpServer', x=758,59, y=64,15, z=-627,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/101, l='MpServer', x=758,44, y=64,15, z=-624,44], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/110, l='MpServer', x=758,38, y=64,15, z=-631,50], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/111, l='MpServer', x=757,50, y=64,15, z=-636,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/108, l='MpServer', x=755,75, y=64,15, z=-633,72], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/109, l='MpServer', x=759,25, y=64,15, z=-630,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/106, l='MpServer', x=754,25, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/107, l='MpServer', x=755,25, y=64,15, z=-634,50], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/104, l='MpServer', x=758,75, y=64,15, z=-628,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/105, l='MpServer', x=752,75, y=64,15, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/119, l='MpServer', x=754,75, y=64,15, z=-632,31], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/118, l='MpServer', x=755,38, y=64,15, z=-636,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/117, l='MpServer', x=755,44, y=64,15, z=-637,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/116, l='MpServer', x=755,50, y=64,15, z=-638,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/115, l='MpServer', x=755,53, y=64,15, z=-639,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/114, l='MpServer', x=756,53, y=64,15, z=-639,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/113, l='MpServer', x=757,25, y=64,15, z=-637,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/112, l='MpServer', x=757,75, y=64,15, z=-635,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/127, l='MpServer', x=754,25, y=64,17, z=-629,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/126, l='MpServer', x=755,25, y=64,15, z=-633,59], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/125, l='MpServer', x=757,50, y=64,15, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/124, l='MpServer', x=756,25, y=64,15, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/123, l='MpServer', x=753,75, y=64,15, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/122, l='MpServer', x=754,75, y=64,15, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/121, l='MpServer', x=755,59, y=64,17, z=-634,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/120, l='MpServer', x=754,53, y=64,15, z=-630,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/137, l='MpServer', x=755,31, y=64,33, z=-634,94], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/136, l='MpServer', x=758,03, y=64,33, z=-634,78], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/139, l='MpServer', x=758,72, y=65,15, z=-635,97], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/138, l='MpServer', x=753,06, y=64,39, z=-629,13], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/141, l='MpServer', x=757,34, y=64,33, z=-635,66], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/140, l='MpServer', x=758,00, y=64,33, z=-636,00], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/143, l='MpServer', x=753,34, y=64,67, z=-630,91], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/142, l='MpServer', x=752,53, y=65,15, z=-629,63], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/129, l='MpServer', x=760,00, y=64,51, z=-628,66], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/128, l='MpServer', x=761,25, y=65,15, z=-629,06], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/131, l='MpServer', x=756,59, y=64,33, z=-633,00], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/130, l='MpServer', x=757,50, y=64,33, z=-632,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/133, l='MpServer', x=759,16, y=64,33, z=-631,00], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/132, l='MpServer', x=758,91, y=64,33, z=-631,97], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/135, l='MpServer', x=758,34, y=64,33, z=-633,88], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/134, l='MpServer', x=758,56, y=64,33, z=-632,94], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/152, l='MpServer', x=758,25, y=64,15, z=-621,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/153, l='MpServer', x=758,34, y=64,15, z=-623,06], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/154, l='MpServer', x=757,47, y=64,15, z=-620,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/155, l='MpServer', x=752,25, y=64,15, z=-621,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/156, l='MpServer', x=752,31, y=64,15, z=-620,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/157, l='MpServer', x=752,75, y=64,15, z=-620,13], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/158, l='MpServer', x=752,75, y=64,15, z=-623,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/159, l='MpServer', x=754,25, y=64,15, z=-622,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/144, l='MpServer', x=754,03, y=64,39, z=-632,06], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/145, l='MpServer', x=754,75, y=64,23, z=-633,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/146, l='MpServer', x=756,47, y=64,20, z=-635,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/147, l='MpServer', x=753,72, y=64,33, z=-627,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/148, l='MpServer', x=752,78, y=64,33, z=-628,00], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/149, l='MpServer', x=752,25, y=65,15, z=-628,53], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/150, l='MpServer', x=758,78, y=64,33, z=-628,22], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/151, l='MpServer', x=760,34, y=64,86, z=-628,72], NodeEntity['entity.ihl.NodeEntity.name'/163, l='MpServer', x=752,25, y=64,15, z=-618,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/162, l='MpServer', x=752,75, y=64,15, z=-619,13], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/161, l='MpServer', x=752,25, y=64,15, z=-619,75], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/160, l='MpServer', x=754,75, y=64,17, z=-622,25], PowerCableNodeEntity['entity.ihl.PowerCableNodeEntity.name'/165, l='MpServer', x=756,66, y=64,33, z=-620,13], NodeEntity['entity.ihl.NodeEntity.name'/164, l='MpServer', x=752,25, y=64,15, z=-618,25], EntityItem['item.item.rottenFlesh'/186, l='MpServer', x=774,47, y=64,13, z=-639,44], EntityItem['item.item.bone'/184, l='MpServer', x=769,75, y=64,13, z=-655,94], EntityItem['item.item.arrow'/185, l='MpServer', x=779,41, y=64,13, z=-639,19], EntityItem['item.item.bone'/205, l='MpServer', x=786,28, y=64,13, z=-622,94], EntitySkeleton['Skeleton'/204, l='MpServer', x=799,50, y=45,00, z=-695,50], EntityZombie['Zombie'/203, l='MpServer', x=793,91, y=45,00, z=-693,47], EntityItem['item.item.arrow'/237, l='MpServer', x=800,13, y=64,13, z=-558,97], EntityItem['item.item.bone'/236, l='MpServer', x=801,41, y=64,13, z=-557,16], EntityItem['item.item.bone'/234, l='MpServer', x=804,19, y=64,13, z=-630,69], EntityItem['item.item.bone'/233, l='MpServer', x=802,06, y=64,13, z=-629,16], EntityItem['item.item.arrow'/232, l='MpServer', x=802,53, y=64,13, z=-630,19], EntitySkeleton['Skeleton'/231, l='MpServer', x=801,50, y=45,00, z=-695,50], EntityZombie['Zombie'/230, l='MpServer', x=801,09, y=45,00, z=-693,53], EntitySpider['Spider'/229, l='MpServer', x=803,50, y=45,00, z=-694,50], EntityCreeper['Creeper'/228, l='MpServer', x=790,94, y=45,00, z=-694,50], EntityBat['Bat'/225, l='MpServer', x=806,47, y=44,00, z=-699,44]]
+	Retry entities: 0 total; []
+	Server brand: fml,forge
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:373)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2444)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:919)
+	at net.minecraft.client.main.Main.main(SourceFile:148)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at net.minecraft.launchwrapper.Launch.launch(Launch.java:135)
+	at net.minecraft.launchwrapper.Launch.main(Launch.java:28)
+	at net.minecraftforge.gradle.GradleStartCommon.launch(Unknown Source)
+	at GradleStart.main(Unknown Source)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Linux (amd64) version 3.19.0-49-generic
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 295876112 bytes (282 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1564 9 mods loaded, 9 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	Forge{10.13.4.1564} [Minecraft Forge] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	NotEnoughItems{1.0.3.74} [Not Enough Items] (NotEnoughItems-1.7.10-1.0.3.74-dev.jar) 
+	UCHIJAAAA	CodeChickenCore{1.0.4.29} [CodeChicken Core] (minecraft.jar) 
+	UCHIJAAAA	gregapi{GT6-MC1710} [Greg-API] (gregtech_1.7.10-6.00.62-dev.jar) 
+	UCHIJAAAA	IC2{2.2.790-experimental} [IndustrialCraft 2] (industrialcraft-2-2.2.790-experimental-dev.jar) 
+	UCHIJAAAA	ihl{0.589} [IHL Tools & Machines for IC2V2] (bin) 
+	UCHIJAAAA	gregtech{GT6-MC1710} [GregTech] (gregtech_1.7.10-6.00.62-dev.jar) 
+	GL info: ' Vendor: 'X.Org' Version: '3.0 Mesa 10.5.9' Renderer: 'Gallium 0.4 on AMD SUMO'
+	Launched Version: 1.7.10
+	LWJGL: 2.9.1
+	OpenGL: Gallium 0.4 on AMD SUMO GL version 3.0 Mesa 10.5.9, X.Org
+	GL Caps: Using GL 1.3 multitexturing.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Anisotropic filtering is supported and maximum anisotropy is 16.
+Shaders are available because OpenGL 2.1 is supported.
+
+	Is Modded: Definitely; Client brand changed to 'fml,forge'
+	Type: Client (map_client.txt)
+	Resource Packs: [minimalist_technology_legacy_v0_7.zip]
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Anisotropic Filtering: Off (1)

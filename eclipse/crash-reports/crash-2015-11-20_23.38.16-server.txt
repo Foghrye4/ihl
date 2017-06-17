@@ -1,0 +1,99 @@
+---- Minecraft Crash Report ----
+// Uh... Did I do that?
+
+Time: 20.11.15 23:38
+Description: Ticking entity
+
+java.lang.ArrayIndexOutOfBoundsException: Indexes: x2=31 z2=31
+ explosion power=10000
+	at ihl.utils.EntityIHLExplosion.getEBSResistance(EntityIHLExplosion.java:422)
+	at ihl.utils.ExplosionVector.getNewPowerAndProcessBlocksEBS(ExplosionVector.java:311)
+	at ihl.utils.ExplosionVector.breakBlocksAndGetDescendantsForEBS(ExplosionVector.java:224)
+	at ihl.utils.EntityIHLExplosion.update(EntityIHLExplosion.java:298)
+	at ihl.utils.EntityIHLExplosion.onUpdate(EntityIHLExplosion.java:203)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2070)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:648)
+	at net.minecraft.world.World.updateEntity(World.java:2034)
+	at net.minecraft.world.World.updateEntities(World.java:1887)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:489)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:636)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at ihl.utils.EntityIHLExplosion.getEBSResistance(EntityIHLExplosion.java:422)
+	at ihl.utils.ExplosionVector.getNewPowerAndProcessBlocksEBS(ExplosionVector.java:311)
+	at ihl.utils.ExplosionVector.breakBlocksAndGetDescendantsForEBS(ExplosionVector.java:224)
+	at ihl.utils.EntityIHLExplosion.update(EntityIHLExplosion.java:298)
+	at ihl.utils.EntityIHLExplosion.onUpdate(EntityIHLExplosion.java:203)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2070)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:648)
+	at net.minecraft.world.World.updateEntity(World.java:2034)
+
+-- Entity being ticked --
+Details:
+	Entity Type: null (ihl.utils.EntityIHLExplosion)
+	Entity ID: 1292
+	Entity Name: unknown
+	Entity's Exact location: 1671,50, 64,50, -1043,50
+	Entity's Block location: World: (1671,64,-1044), Chunk: (at 7,4,12 in 104,-66; contains blocks 1664,0,-1056 to 1679,255,-1041), Region: (3,-3; contains chunks 96,-96 to 127,-65, blocks 1536,0,-1536 to 2047,255,-1025)
+	Entity's Momentum: 0,00, 0,00, 0,00
+Stacktrace:
+	at net.minecraft.world.World.updateEntities(World.java:1887)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:489)
+
+-- Affected level --
+Details:
+	Level name: New World
+	All players: 1 total; [EntityPlayerMP['Player709'/12, l='New World', x=1668,76, y=64,00, z=-1044,35]]
+	Chunk stats: ServerChunkCache: 1506 Drop: 0
+	Level seed: -2012760655077185016
+	Level generator: ID 01 - flat, ver 0. Features enabled: true
+	Level generator options: 2;7,3x1,52x24,8x12;2;stronghold,biome_1,village,decoration,dungeon,mineshaft
+	Level spawn location: World: (395,4,-811), Chunk: (at 11,0,5 in 24,-51; contains blocks 384,0,-816 to 399,255,-801), Region: (0,-2; contains chunks 0,-64 to 31,-33, blocks 0,0,-1024 to 511,255,-513)
+	Level time: 82559 game time, 18172 day time
+	Level dimension: 0
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 12256 (now: false), thunder time: 8067 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:636)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:547)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:111)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:427)
+	at net.minecraft.server.MinecraftServer$2.run(MinecraftServer.java:685)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Linux (amd64) version 3.19.0-33-generic
+	Java Version: 1.7.0_80, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 340788704 bytes (325 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP v9.05 FML v7.10.99.99 Minecraft Forge 10.13.4.1564 9 mods loaded, 9 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.05} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{7.10.99.99} [Forge Mod Loader] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	Forge{10.13.4.1564} [Minecraft Forge] (forgeBin-1.7.10-10.13.4.1564-1.7.10.jar) 
+	UCHIJAAAA	NotEnoughItems{1.0.3.74} [Not Enough Items] (NotEnoughItems-1.7.10-1.0.3.74-dev.jar) 
+	UCHIJAAAA	CodeChickenCore{1.0.4.29} [CodeChicken Core] (minecraft.jar) 
+	UCHIJAAAA	gregapi{GT6-MC1710} [Greg-API] (gregtech_1.7.10-6.00.58-dev.jar) 
+	UCHIJAAAA	IC2{2.2.790-experimental} [IndustrialCraft 2] (industrialcraft-2-2.2.790-experimental-dev.jar) 
+	UCHIJAAAA	ihl{0.582} [IHL Tools & Machines for IC2V2] (bin) 
+	UCHIJAAAA	gregtech{GT6-MC1710} [GregTech] (gregtech_1.7.10-6.00.58-dev.jar) 
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Player Count: 1 / 8; [EntityPlayerMP['Player709'/12, l='New World', x=1668,76, y=64,00, z=-1044,35]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'

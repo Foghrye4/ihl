@@ -1,0 +1,207 @@
+package ihl.utils;
+
+import ihl.IHLMod;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.ChunkCache;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+
+public class EntityIHLExplosion extends Entity {
+	private Explosion explosion;
+	private Set<Long> sv;
+	public Set<Long> effectBorderBlocks;
+	public Set<Long> effectBorderBlocksWithLowPosition;
+	public int explosionPower;
+	public int x;
+	public int y;
+	public int z;
+    private Chunk[][] chunkArray;
+    private boolean[][][] entityCached;
+    private Map<Long,Entity> entityCache = new HashMap();
+	public int multiplier;
+	private int chunkX;
+	private int chunkZ;
+	public DamageSource damageSource;
+	
+	public EntityIHLExplosion(World world,int x1,int y1,int z1, int explosionPower1) {
+		super(world);
+		this.effectBorderBlocks=new HashSet();
+		this.isImmuneToFire=true;
+		this.noClip=true;
+		this.setSize(0F, 0F);
+		this.x=x1;
+		this.y=y1;
+		this.z=z1;
+		this.setPosition(x+0.5d, y+0.5d, z+0.5d);
+		this.explosionPower = explosionPower1;
+		this.multiplier = Math.min(4,Math.max(this.explosionPower/4063232,1));
+		int areaSize = 32*multiplier;
+		this.explosion=new Explosion(world, this, this.posX, this.posY, this.posZ, 4.0f);
+        chunkX = x-areaSize >> 4;
+        chunkZ = z-areaSize >> 4;
+        int var9 = x+areaSize >> 4;
+        int var10 = z+areaSize >> 4;
+        this.chunkArray = new Chunk[var9 - this.chunkX + 1][var10 - this.chunkZ + 1];
+        this.entityCached = new boolean[var9 - this.chunkX + 1][var10 - this.chunkZ + 1][16];
+        int var11;
+        int var12;
+        Chunk var13;
+        for (var11 = chunkX; var11 <= var9; ++var11)
+        {
+            for (var12 = chunkZ; var12 <= var10; ++var12)
+            {
+                var13 =this.worldObj.getChunkFromChunkCoords(var11, var12);
+
+                if (var13 != null)
+                {
+                    this.chunkArray[var11 - this.chunkX][var12 - this.chunkZ] = var13;
+                    for(int eay=0;eay<this.entityCached[var11 - this.chunkX][var12 - this.chunkZ].length;eay++)
+                    {
+                        this.entityCached[var11 - this.chunkX][var12 - this.chunkZ][eay] = false;
+                    }
+                }
+            }
+        }
+        damageSource = DamageSource.setExplosionSource(this.explosion);
+        }
+
+    public void onUpdate()
+    {
+    	while(!this.isDead)
+    	{
+    		update();
+    	}
+    }
+    
+    public void update()
+    {
+    	Set<Long> sv2=new HashSet();
+    	if(sv==null)
+    	{
+        	sv = IHLMod.explosionHandler.startVectors;
+    		IHLMod.explosionHandler.setPower(explosionPower);
+    		System.out.println("Start");
+    	}
+   		for(long ev:sv)
+ 		{
+   			Set<Long> sv3 = IHLMod.explosionHandler.breakBlocksAndGetDescendants(this.worldObj, this, this.explosion, ev);
+   			if(sv3!=null)
+   			{
+   	   			sv2.addAll(sv3);
+   			}
+    	}
+   		if(sv2.isEmpty())
+   		{
+   			this.setDead();
+    		System.out.println("End");
+   		}
+   		else
+   		{
+   			sv=sv2;
+   		}
+    }
+    
+	@Override
+	protected void entityInit() {}
+
+	@Override
+	protected void readEntityFromNBT(NBTTagCompound arg0) {}
+
+	@Override
+	protected void writeEntityToNBT(NBTTagCompound arg0) {}
+	
+    public Block getBlock(int x1, int y1, int z1)
+    {
+        Block var4 = Blocks.air;
+        if (y1 >= 0 && y1 < 256)
+        {
+            int var5 = (x1 >> 4) - this.chunkX;
+            int var6 = (z1 >> 4) - this.chunkZ;
+            if (var5 >= 0 && var5 < this.chunkArray.length && var6 >= 0 && var6 < this.chunkArray[var5].length)
+            {
+                Chunk var7 = this.chunkArray[var5][var6];
+                if (var7 != null)
+                {
+                    var4 = var7.getBlock(x1 & 15, y1, z1 & 15);
+                }
+            }
+        }
+        return var4;
+    }
+    
+    public void setBlockToAir(int x1, int y1, int z1)
+    {
+        if (y1 >= 0 && y1 < 256)
+        {
+            int var5 = (x1 >> 4) - this.chunkX;
+            int var6 = (z1 >> 4) - this.chunkZ;
+            if (var5 >= 0 && var5 < this.chunkArray.length && var6 >= 0 && var6 < this.chunkArray[var5].length)
+            {
+                Chunk var7 = this.chunkArray[var5][var6];
+                if (var7 != null)
+                {
+                    var7.func_150807_a(x1 & 15, y1, z1 & 15, Blocks.air, 0);
+                    this.worldObj.markBlockForUpdate(x1, y1, z1);
+                }
+            }
+        }
+    }
+    
+    public Entity getEntity(int x1, int y1, int z1)
+    {
+    	int x2 = x1-x;
+    	int y2 = y1-y;
+    	int z2 = z1-z;
+        if (y1 >= 0 && y1 < 256)
+        {
+            int cax = (x1 >> 4) - this.chunkX;
+            int caz = (z1 >> 4) - this.chunkZ;
+            int eay = (y1 >> 4);
+            if (cax >= 0 && cax < this.entityCached.length && caz >= 0 && caz < this.entityCached[cax].length && eay<=16)
+            {
+            	if(this.entityCached[cax][caz][eay])
+            	{
+            		return this.entityCache.get(IHLUtils.encodeXYZ(x2, y2, z2));
+            	}
+            	else
+            	{
+                    Chunk var7 = this.chunkArray[cax][caz];
+                    if (var7 != null)
+                    {
+                    	for(Object entityo:var7.entityLists[eay])
+                    	{
+                    		Entity entity=(Entity) entityo;
+                    		int x3 = (int)entity.posX-x;
+                    		int y3 = (int)entity.posY-y;
+                    		int z3 = (int)entity.posZ-z;
+                    		long key = IHLUtils.encodeXYZ(x3, y3, z3);
+                    		this.entityCache.put(key, entity);
+                    		if(entity.height>1f && y3<254)
+                    		{
+                        		long key2 = IHLUtils.encodeXYZ(x3, y3+1, z3);
+                        		this.entityCache.put(key2, entity);
+                    		}
+                    	}
+                    }
+                    this.entityCached[cax][caz][eay]=true;
+                    return this.entityCache.get(IHLUtils.encodeXYZ(x2, y2, z2));
+            	}
+            }
+        }
+        return null;
+    }
+
+}

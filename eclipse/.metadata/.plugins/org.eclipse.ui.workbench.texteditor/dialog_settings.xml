@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="447" key="DIALOG_WIDTH"/>
+		<item value="0" key="DIALOG_Y_ORIGIN"/>
+		<item value="56" key="DIALOG_X_ORIGIN"/>
+		<item value="992" key="DIALOG_HEIGHT"/>
+		<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="hull_mv" key="selection"/>
+		<list key="findhistory">
+			<item value="Once upon a time there was a surgeon. He was a really kind man. So, when amputation was inevitable, he made it gently and very-very slowly."/>
+			<item value="Hull_MV"/>
+			<item value="getEmptyCell"/>
+			<item value="GT_ModHandler.getAirCell"/>
+			<item value="GT_ModHandler.getAirCell(5)"/>
+			<item value="IL.Shape_Empty.get(1, (Object) null)"/>
+			<item value="Shape_Empty."/>
+			<item value="ItemList.Shape_Empty.get(1L, new Object[]{null})"/>
+		</list>
+		<list key="replacehistory">
+			<item value="OreDictManager.INSTANCE.getStack(OP.cell,MT.Air, 5)"/>
+			<item value="OreDictManager.INSTANCE.getStack(OP.cell,MT.Air, 1)"/>
+			<item value="OP.plate.get(MT.Steel)"/>
+			<item value="OP.stick.get(MT.Steel)"/>
+			<item value="OrePrefixes.plate.get(Materials.Steel)"/>
+			<item value="FlexibleCableItemRender"/>
+			<item value="yStart"/>
+			<item value="this."/>
+		</list>
+	</section>
+</section>

@@ -1,0 +1,16 @@
+[
+{
+	"modid": "IHL",
+	"name": "IHL Tools & Machines",
+	"description": "IC2 addon",
+        "version": "${version}",
+	"mcversion": "1.7.10",
+	"credits": "Thank to Player, Spwnx, GregoriousT, Chocohead and other IC2 forum members for help and moral support. Thank to Ldog, wormzjl and Chocohead for betatesting. Especially Chocohead and wormzjl. Chocohead made a lot of work and wormzjl is really concerned by this mod.",
+	"authorList": ["Foghrye4"],
+	"logoFile": "",
+	"url": "http://forum.industrial-craft.net/index.php?page=Thread&postID=152495",
+	"updateUrl": "",
+	"parent": "",
+	"screenshots": []
+}
+]

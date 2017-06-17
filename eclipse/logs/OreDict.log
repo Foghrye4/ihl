@@ -1,0 +1,97 @@
+**********************************************************************
+* This is the complete Log of the GregTech OreDictionary Handler     *
+* Everything in the OreDict goes through it sometimes causing Errors *
+* These Errors are getting logged aswell as properly registered Ores *
+* If you see something fishy going on in this Log, such as improper  *
+* Items being registered, then mention it to the corresponding Mod   *
+* In case it mentions GregTech itself improperly registering Stuff   *
+* then please contact me about that immediatly                       *
+*                                                                    *
+* In case of something being 'ignored properly', that one isnt a Bug *
+**********************************************************************
+GT_API: ======================
+GT_API: PreLoad-Phase started!
+GT_API: PreLoad-Phase finished!
+GT_API: =======================
+GT_Mod: ======================
+GT_Mod: PreLoad-Phase started!
+GT_Mod: PreLoad-Phase finished!
+GT_Mod: =======================
+GT_API: ===================
+GT_API: Load-Phase started!
+GT_API: Load-Phase finished!
+GT_API: ====================
+GT_Mod: ===================
+GT_Mod: Load-Phase started!
+GT_Mod: Load-Phase finished!
+GT_Mod: ====================
+GT_API: =======================
+GT_API: PostLoad-Phase started!
+GT_API: PostLoad-Phase finished!
+GT_API: ========================
+GT_Mod: =======================
+GT_Mod: PostLoad-Phase started!
+GT_Mod: PostLoad-Phase finished!
+GT_Mod: ========================
+============================
+Outputting Unknown Materials
+============================
+stickBoronCarbide
+crushedPurifiedGyubnera
+cellTurpentine
+cellLimemilk
+dustCalciumCarbide
+dustCalciumTungstate
+dustTungstenOxide
+dustDatolite
+dustBoronCarbide
+dustSodiumHydrogenSulfate
+cellTrichlorosilane
+dustAntimonyOxide
+dustSodiumSulfate
+oreGyubnera
+cellHydrogenChloride
+cellMineralOil
+cellOleicAcid
+dustSodiumAluminate
+cellAcetylene
+cellSulfuricAnhydride
+dustTinyIronOxide
+cellLiquidGlass
+dustSodiumHydroxide
+dustManganeseOxide
+dustPorcelain
+cellSpruceResin
+cellCablingColophony
+dustPotassiumSulphate
+dustLeadPlumbate
+oreBischofite
+dustLithiumOxide
+dustBoricAcid
+dustSodiumZeoliteCoked
+dustIridiumAndSodiumOxide
+cellNickelSulfateDissolvedInWater
+dustIrongraphite
+cellBlueVitriolDissolvedInWater
+dustMagnesiumOxide
+dustIronOxide
+dustTinyManganeseOxide
+cellNatriumTungstateDissolvedInWater
+dustFerrite
+cellNatriumHydroxideDissolvedInWater
+oreDatolite
+dustTungsticAcid
+dustCalciumChloride
+plateHotTungsten
+cellFuelOil
+dustSodiumZeolite
+ringFerrite
+crushedGyubnera
+dustLithiumChloride
+dustBischofite
+cellSiliconTetrachloride
+============================
+================================
+Outputting Unknown OreDict Names
+================================
+================================

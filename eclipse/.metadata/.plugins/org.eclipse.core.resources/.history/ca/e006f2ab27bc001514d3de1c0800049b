@@ -1,0 +1,269 @@
+package ihl.flexible_cable;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.core.IC2;
+import ihl.IHLMod;
+import ihl.interfaces.IEnergyNetNode;
+import ihl.utils.IHLUtils;
+
+public class SubAnchorEnergyNetNode implements IEnergyNetNode{
+
+	private AnchorTileEntity base;
+	private short facing;
+	private int gridID=-1;
+	private Set<NBTTagCompound> cableList = new HashSet();
+	
+	public SubAnchorEnergyNetNode(AnchorTileEntity base1, short facing1)
+	{
+		base=base1;
+		facing=facing1;
+	}
+	
+	@Override
+	public double[] getPortPos(EntityLivingBase player) 
+	{
+		double d=0.5D;
+		double f=-0.1D;
+		switch(facing)
+		{
+			case 0:
+				return new double[]{
+				(base.xCoord+d),
+				(base.yCoord+1D-f),
+				(base.zCoord+0.5D)};
+			case 1:
+				return new double[]{
+				(base.xCoord+d),
+				(base.yCoord+f),
+				(base.zCoord+0.5D)};
+			case 2:
+				return new double[]{
+				(base.xCoord+0.5D),
+				(base.yCoord+d),
+				(base.zCoord+1D-f)};
+			case 3:
+				return new double[]{
+				(base.xCoord+0.5D),
+				(base.yCoord+d),
+				(base.zCoord+f)};
+			case 4:
+				return new double[]{
+				(base.xCoord+1D-f),
+				(base.yCoord+d),
+				(base.zCoord+0.5D)};
+			case 5:
+				return new double[]{
+				(base.xCoord+f),
+				(base.yCoord+d),
+				(base.zCoord+0.5D)};
+			default:
+				return new double[]{
+				(base.xCoord+f),
+				(base.yCoord+d),
+				(base.zCoord+0.5D)};
+		}
+	}
+
+	@Override
+	public IHLGrid getGrid() 
+	{
+		if(gridID!=-1)
+		{
+			return IHLMod.enet.getGrid(gridID);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	@Override
+	public int getGridID() 
+	{
+		return gridID;
+	}
+
+	@Override
+	public void setGrid(int newgridID)
+	{
+    	if(IC2.platform.isSimulating()&& base.addedToEnergyNet)
+    	{
+    		MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(base));
+    		base.addedToEnergyNet = false;
+    	}
+		if(newgridID!=-1)
+		{
+			this.gridID=newgridID;
+			IHLMod.enet.getGrid(newgridID).add(this);
+		}
+		else
+		{
+			this.gridID=-1;
+		}
+        if (IC2.platform.isSimulating()&& !base.addedToEnergyNet)
+        {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(base));
+            base.addedToEnergyNet = true;
+        }
+	}
+
+	@Override
+	public double getMaxAllowableVoltage() 
+	{
+		return 64000d;
+	}
+
+	@Override
+	public boolean addCable(NBTTagCompound cable) 
+	{
+		base.hasCableOnSide[this.facing]=true;
+		return this.cableList.add(cable);
+	}
+
+	@Override
+	public Set<NBTTagCompound> getCableList() {
+		return cableList;
+	}
+
+	@Override
+	public void removeAttachedChains() 
+	{
+		Iterator<NBTTagCompound> cli = this.getCableList().iterator();
+		while(cli.hasNext())
+		{
+			NBTTagCompound c = cli.next();
+			IHLMod.enet.removeCableEntities(c);
+			ItemStack is = IHLUtils.getThisModItemStack("copperWire");
+			is.stackTagCompound=c;
+			EntityItem eitem = new EntityItem(base.getWorldObj(), base.xCoord+0.5D, base.yCoord+0.5D, base.zCoord+0.5D, is);
+			base.getWorldObj().spawnEntityInWorld(eitem);
+		}
+		if(gridID!=-1)
+		{
+			IHLMod.enet.splitGrids(gridID, this);
+		}
+		this.getCableList().clear();
+		base.hasCableOnSide[this.facing]=false;
+	}
+
+	public void onLoaded() 
+	{
+        if(gridID!=-1)
+        {
+        	IHLGrid grid = IHLMod.enet.getGrid(gridID);
+        	grid.add(this);
+        }
+	}
+	
+	public NBTTagCompound writeToNBT()
+	{
+		NBTTagCompound nbt = new NBTTagCompound();
+        NBTTagList cableNBTList = new NBTTagList();
+        for(NBTTagCompound cable:this.cableList)
+        {
+        	cableNBTList.appendTag(cable);
+        }
+        nbt.setTag("cableList", cableNBTList);
+        nbt.setInteger("gridID", this.gridID);
+        return nbt;
+	}
+	
+	public void readFromNBT(NBTTagCompound nbt) {
+        NBTTagList cableNBTList=nbt.getTagList("cableList", 10);
+        for(int i=0;i<cableNBTList.tagCount();i++)
+        {
+            this.cableList.add(cableNBTList.getCompoundTagAt(i));
+        }
+        this.gridID=nbt.getInteger("gridID");
+		if(this.gridID!=-1)
+		{
+			base.hasCableOnSide[this.facing]=true;
+		}
+	}
+
+	public double getOfferedEnergy() 
+	{
+		if(this.gridID==-1)
+		{
+			return 0D;
+		}
+		else
+		{
+			return Math.max(this.getGrid().energy, 0D);
+		}
+	}
+	
+	public double getDemandedEnergy()
+	{
+		if(this.gridID==-1 || this.getGrid().energy>1d)
+		{
+			return 0D;
+		}
+		else
+		{
+			return this.getGrid().getDemandedEnergy();
+		}
+	}
+
+	public double drawEnergy(double amount) 
+	{
+		if(this.gridID==-1)
+		{
+			return 0D;
+		}
+		else
+		{
+			double dEnergy = Math.min(this.getGrid().energy, amount);
+			this.getGrid().energy-=dEnergy;
+			return dEnergy;
+		}
+	}
+
+	public double getVoltage() 
+	{
+		if(this.gridID==-1)
+		{
+			return 0D;
+		}
+		else
+		{
+			return this.getGrid().getSinkVoltage(this);
+		}
+	}
+
+	@Override
+	public void remove(NBTTagCompound cable) 
+	{
+		this.cableList.remove(cable);
+		if(this.cableList.isEmpty())
+		{
+			base.hasCableOnSide[this.facing]=false;
+		}
+	}
+
+	public double injectEnergy(double amount) 
+	{
+		if(this.gridID==-1)
+		{
+			return amount;
+		}
+		else
+		{
+			this.getGrid().injectEnergy(amount, 400d, this);
+			return 0d;
+		}
+	}
+
+}
