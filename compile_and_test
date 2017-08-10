@@ -1,0 +1,12 @@
+rm /home/foghrye4/.minecraft/mods/1.7.10/ihl-tools_n_machines-*.jar
+rm /home/foghrye4/Games/Forge_server/mods/1.7.10/ihl-tools_n_machines-*.jar
+./gradlew build
+zip ./build/libs/ihl-tools_n_machines-1.0.jar "ihl*/*" --copy --out "/home/foghrye4/.minecraft/mods/1.7.10/ihl-tools_n_machines-0.$1-1.7.10.jar"
+cd src/main/resources
+zip -r /home/foghrye4/.minecraft/mods/1.7.10/ihl-tools_n_machines-0.$1-1.7.10.jar . -x *~
+cd ../java
+zip -r /home/foghrye4/.minecraft/mods/1.7.10/ihl-tools_n_machines-0.$1-1.7.10.jar ./assets/ -x *~
+cp /home/foghrye4/.minecraft/mods/1.7.10/ihl-tools_n_machines-0.$1-1.7.10.jar /home/foghrye4/Games/Forge_server/mods/1.7.10/ihl-tools_n_machines-0.$1-1.7.10.jar
+java -jar /home/foghrye4/Games/Minecraft.jar
+cd ../../..
+
