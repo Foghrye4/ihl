@@ -50,8 +50,8 @@ public class ApparatusProcessableInvSlot extends InvSlot {
 				this.get(i).stackSize -= iRecipeInput.getAmount();
 				if (this.get(i).stackSize <= 0) {
 					this.put(i, null);
-					return;
 				}
+				return;
 			}
 		}
 	}
